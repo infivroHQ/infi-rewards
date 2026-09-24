@@ -1,4 +1,14 @@
 === infiRewards – Loyalty Points & Rewards ===
+Contributors: infivro
+Tags: woocommerce, loyalty, points, rewards, discounts
+Requires at least: 6.0
+Tested up to: 7.1
+Requires PHP: 7.4
+Requires plugins: woocommerce
+Stable tag: 0.1.0
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
+
 Loyalty points and rewards for WooCommerce. Let your customers earn points from purchases and account registration, and spend them on rewards.
 
 == Description ==
@@ -40,11 +50,6 @@ Yes, administrators can adjust point balances directly from the admin panel.
 * WooCommerce integration.
 * Customer wallet and account endpoints.
 
-== Author ==
-Infivro
-
-== Plugin URI ==
-https://infivro.com
-
-== License ==
-GPLv2 or later
+== Open Questions ==
+* WooCommerce is required for this plugin to function, but no minimum WooCommerce version is declared anywhere in the code — confirm and add a "WC requires at least" / "WC tested up to" header if applicable.
+* Plugin URI: https://infivro.com
