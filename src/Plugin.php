@@ -24,6 +24,7 @@ class Plugin {
 		$this->register_admin();
 		$this->register_woocommerce();
 		\InfiRewards\Customer\RewardsShortcode::init();
+		\InfiRewards\Customer\AccountEndpoint::init();
 	}
 
 	protected function register_admin(): void {

@@ -11,6 +11,7 @@ class Admin {
 		add_action( 'admin_menu', array( __CLASS__, 'register_menu' ) );
 		add_action( 'admin_post_infirewards_save_earning_rule', array( __CLASS__, 'save_earning_rule' ) );
 		add_action( 'admin_post_infirewards_save_reward', array( __CLASS__, 'save_reward' ) );
+		add_action( 'admin_post_infirewards_save_display', array( __CLASS__, 'save_display' ) );
 	}
 
 	public static function register_menu(): void {
@@ -41,7 +42,37 @@ class Admin {
 	}
 
 	public static function render_dashboard(): void {
-		echo '<div class="wrap"><h1>' . esc_html__( 'infiRewards', 'infirewards' ) . '</h1></div>';
+		if ( ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		echo '<div class="wrap"><h1>' . esc_html__( 'infiRewards', 'infirewards' ) . '</h1>';
+		$notice = isset( $_GET['infirewards_notice'] ) && is_scalar( $_GET['infirewards_notice'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_notice'] ) ) : '';
+		if ( 'saved' === $notice ) {
+			echo '<div class="notice notice-success"><p>' . esc_html__( 'Display settings saved.', 'infirewards' ) . '</p></div>';
+		}
+		echo '<h2>' . esc_html__( 'Customer rewards page', 'infirewards' ) . '</h2>';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">';
+		echo '<input type="hidden" name="action" value="infirewards_save_display">';
+		wp_nonce_field( 'infirewards_save_display' );
+		echo '<p><label><input type="checkbox" name="show_in_my_account" value="1" ' . checked( \InfiRewards\Customer\AccountEndpoint::is_enabled(), true, false ) . '> ' . esc_html__( 'Show Points & Rewards in WooCommerce My Account', 'infirewards' ) . '</label></p>';
+		echo '<p class="description">' . esc_html__( 'Enabled by default. Turn this off to remove the My Account menu item; customers can still use the shortcode.', 'infirewards' ) . '</p>';
+		submit_button( __( 'Save Settings', 'infirewards' ) );
+		echo '</form>';
+		echo '<h2>' . esc_html__( 'Shortcode', 'infirewards' ) . '</h2>';
+		echo '<p>' . esc_html__( 'Add this shortcode to any page or post to show customers their points, rewards, and history:', 'infirewards' ) . '</p>';
+		echo '<p><code>[infirewards]</code></p></div>';
+	}
+
+	/** Save whether rewards appear in the account menu. */
+	public static function save_display(): void {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( esc_html__( 'You cannot edit display settings.', 'infirewards' ) );
+		}
+		check_admin_referer( 'infirewards_save_display' );
+		$enabled = isset( $_POST['show_in_my_account'] ) && is_scalar( $_POST['show_in_my_account'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['show_in_my_account'] ) );
+		update_option( 'infirewards_show_in_my_account', $enabled ? 'yes' : 'no', false );
+		wp_safe_redirect( add_query_arg( 'infirewards_notice', 'saved', admin_url( 'admin.php?page=infirewards' ) ) );
+		exit;
 	}
 
 	public static function save_earning_rule(): void {

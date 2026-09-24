@@ -17,7 +17,7 @@ Define the earning calculation before implementation: use the order's eligible a
 | Store owner creates a points-per-currency-unit rule | **Automated integration verified; browser unverified** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
 | Store owner creates a reward | **Automated integration verified; browser unverified** | Rewards are stored in a versioned table and can be created, edited, disabled, and listed in wp-admin. |
 | Customer earns points for a purchase | **Automated integration verified; browser unverified** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
-| Customer sees points and redeems a reward | **Automated integration verified; browser unverified** | The [infirewards] shortcode shows balance, active rewards, points activity, and redemption history. Redemption reserves points and records a pending coupon for retry. |
+| Customer sees points and redeems a reward | **Core redemption integration verified; account tab browser unverified** | The My Account Points & Rewards tab is enabled by default, and the [infirewards] shortcode remains available anywhere. Both show balance, active rewards, points activity, and redemption history. Redemption reserves points and records a pending coupon for retry. |
 
 **Progress:** The four flows now pass automated integration checks on a disposable WordPress + WooCommerce installation. The wp-admin forms and customer flow have not been checked manually in a browser. The plugin bootstrap, five table definitions, admin screens, and order event hooks are in place.
 
@@ -52,7 +52,7 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 - [x] Create a redemption record linked to the customer, reward, points debit, and issued coupon. Issue a customer-specific, single-use fixed cart discount coupon; make a retry safe if coupon creation fails after a debit.
 - [x] Show the issued coupon and a clear success/error message. Keep a basic points/redemption history so the customer can see what happened.
 
-Place `[infirewards]` on a customer-facing page to show the balance, available rewards, recent points activity, and coupons. Pending coupon issuance can be retried from that page without another debit.
+The customer view appears by default under **My Account → Points & Rewards**. The store owner can turn off that menu entry on the **infiRewards** admin page. The same page displays the optional `[infirewards]` shortcode, which works on any customer-facing page even when the My Account entry is off. Both locations show the balance, available rewards, recent points activity, and coupons. Pending coupon issuance can be retried from either location without another debit.
 
 ### 5. Verify the complete path
 
