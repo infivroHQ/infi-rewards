@@ -55,6 +55,66 @@ class WalletService {
 	}
 
 	/**
+	 * Reverse an order earn once. If any points have been spent since the earn,
+	 * record a waived reversal instead of taking points from later credits.
+	 */
+	public function reverse_order_points( int $order_id ): bool {
+		global $wpdb;
+		if ( $order_id <= 0 || version_compare( get_option( 'infirewards_db_version', '0' ), Installer::LEDGER_CONTEXT_VERSION, '<' ) ) {
+			return false;
+		}
+		$wallet_table = WalletTable::table_name();
+		$txn_table = TransactionsTable::table_name();
+		$earn = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$txn_table} WHERE event_key = %s AND event_type = 'order_earn'", 'order_earn:' . $order_id ), ARRAY_A );
+		if ( ! $earn || (int) $earn['points'] <= 0 ) {
+			return false;
+		}
+		$user_id = (int) $earn['user_id'];
+		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
+			return false;
+		}
+		$balance = $wpdb->get_var( $wpdb->prepare( "SELECT balance FROM {$wallet_table} WHERE user_id = %d FOR UPDATE", $user_id ) );
+		if ( null === $balance ) {
+			$wpdb->query( 'ROLLBACK' );
+			return false;
+		}
+		$existing = $wpdb->get_var( $wpdb->prepare( "SELECT transaction_id FROM {$txn_table} WHERE event_key = %s", 'order_reversal:' . $order_id ) );
+		if ( null !== $existing ) {
+			$wpdb->query( 'ROLLBACK' );
+			return true;
+		}
+		$spent = $wpdb->get_var( $wpdb->prepare( "SELECT transaction_id FROM {$txn_table} WHERE user_id = %d AND transaction_id > %d AND type = 'debit' AND points > 0 LIMIT 1", $user_id, (int) $earn['transaction_id'] ) );
+		if ( ! empty( $wpdb->last_error ) ) {
+			$wpdb->query( 'ROLLBACK' );
+			return false;
+		}
+		$reverse = null === $spent && (int) $balance >= (int) $earn['points'];
+		$points = $reverse ? (int) $earn['points'] : 0;
+		if ( $reverse ) {
+			$updated = $wpdb->update( $wallet_table, array( 'balance' => (int) $balance - $points, 'updated_at' => current_time( 'mysql' ) ), array( 'user_id' => $user_id ), array( '%d', '%s' ), array( '%d' ) );
+			if ( 1 !== $updated ) {
+				$wpdb->query( 'ROLLBACK' );
+				return false;
+			}
+		}
+		$inserted = $wpdb->insert( $txn_table, array(
+			'user_id' => $user_id,
+			'order_id' => $order_id,
+			'points' => $points,
+			'type' => 'debit',
+			'event_type' => 'order_reversal',
+			'event_key' => 'order_reversal:' . $order_id,
+			'reason' => $reverse ? sprintf( 'Reversed points for order #%d', $order_id ) : sprintf( 'Reversal waived: points spent since order #%d', $order_id ),
+			'created_at' => current_time( 'mysql' ),
+		), array( '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s' ) );
+		if ( 1 !== $inserted || false === $wpdb->query( 'COMMIT' ) ) {
+			$wpdb->query( 'ROLLBACK' );
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Debit a reward once for a stable request key supplied by the caller.
 	 */
 	public function redeem_points( int $user_id, int $points, int $reward_id, string $request_key, string $reason = '' ): bool {

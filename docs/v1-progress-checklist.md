@@ -14,12 +14,12 @@ Define the earning calculation before implementation: use the order's eligible a
 
 | Requested customer/store-owner flow | Status | Evidence |
 | --- | --- | --- |
-| Store owner creates a points-per-currency-unit rule | **Missing** | The rules table exists, but there is no rule form, save action, or per-amount calculation. `RulesEngine` currently calculates fixed per-order or per-product points from JSON config. |
+| Store owner creates a points-per-currency-unit rule | **Implemented in code; unverified in WooCommerce** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
 | Store owner creates a reward | **Missing** | `src/Rewards/` is empty and there is no rewards table or admin screen. |
-| Customer earns points for a purchase | **Partial** | Wallet writes and ledger entries are atomic, and order earns have a unique event key. The earning rule and completed-order policy are still missing. |
+| Customer earns points for a purchase | **Implemented in code; unverified in WooCommerce** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
 | Customer sees points and redeems a reward | **Missing** | There is no customer view, redemption handler, reward issuance, or redemption record. |
 
-**Progress:** 0 of the 4 requested end-to-end flows are complete. The plugin bootstrap, three initial table definitions, a basic admin menu, and order event hooks are in place. The remaining work is the earning and redemption flows, owner/customer screens, and verification. This is a feature count, not an estimate of time or effort.
+**Progress:** 0 of the 4 requested end-to-end flows are verified; the earning-rule and purchase-earning flows are implemented in code. The plugin bootstrap, three initial table definitions, a basic admin menu, and order event hooks are in place. The remaining work is reward creation, customer redemption, and end-to-end verification. This is a feature count, not an estimate of time or effort.
 
 ## Implementation checklist
 
@@ -35,10 +35,10 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 ### 2. Let the owner configure the single earning rule
 
 - [x] Create a rules table and a class that loads rules.
-- [ ] Choose one stored rule format (rate, active status), validate a nonnegative rate, and implement create/edit/disable in an admin **Earning Rule** screen. For the smallest v1, one active rate for the store is sufficient.
-- [ ] Replace the current fixed per-order/per-product calculation with `floor(eligible order amount × points per currency unit)`. Read the saved active rule and document the amount and rounding policy in the UI.
-- [ ] Award only for a logged-in customer's completed order, and only once even if an order changes status repeatedly. Define the treatment of guest orders.
-- [ ] Make cancellation/refund reversals happen only once and never deduct unrelated credits. Handle a customer who has already spent the earned points with a documented policy.
+- [x] Choose one stored rule format (rate, active status), validate a nonnegative rate, and implement create/edit/disable in an admin **Earning Rule** screen. For the smallest v1, one active rate for the store is sufficient.
+- [x] Replace the current fixed per-order/per-product calculation with `floor(eligible order amount × points per currency unit)`. Read the saved active rule and document the amount and rounding policy in the UI.
+- [x] Award only for a logged-in customer's completed order, and only once even if an order changes status repeatedly. Define the treatment of guest orders.
+- [x] Make cancellation/refund reversals happen only once and never deduct unrelated credits. Handle a customer who has already spent the earned points with a documented policy.
 
 ### 3. Let the owner create a redeemable reward
 
@@ -57,6 +57,8 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 - [ ] On a fresh WordPress + WooCommerce site, activate the plugin, create a rate and reward, complete an order, confirm the exact points calculation, and redeem the reward for a working coupon.
 - [ ] Check existing-install migration, repeat order hooks, refund/cancellation, insufficient points, disabled rewards, guest orders, double clicks, and two simultaneous redemption attempts.
 - [ ] Run PHP syntax/style checks and add focused automated tests for earning arithmetic, once-only awarding, ledger/balance consistency, and redemption/retry behavior.
+
+The reversal policy is conservative: if any positive point debit occurs after an order earn, its cancellation or full refund records a zero-point waived reversal. This prevents later credits from being taken for spent order points. Guest orders never earn points, including after account creation. Only completed orders earn; only cancelled or fully refunded order statuses reverse.
 
 ## Release is done when
 

@@ -51,9 +51,6 @@ class Hooks {
 		// Reverse awarded points when an order is refunded
 		add_action( 'woocommerce_order_status_refunded', array( $this, 'on_order_refunded' ), 10, 1 );
 
-		// Optional: award points earlier when order goes to processing
-		add_action( 'woocommerce_order_status_processing', array( $this, 'on_order_processing' ), 10, 1 );
-
 		// Optional: remove/reverse points when order is cancelled
 		add_action( 'woocommerce_order_status_cancelled', array( $this, 'on_order_cancelled' ), 10, 1 );
 
@@ -91,24 +88,6 @@ class Hooks {
 
 		if ( class_exists( PointsManager::class ) ) {
 			PointsManager::get_instance()->handle_refund_points( $id );
-		}
-	}
-
-	/**
-	 * Optional handler for `woocommerce_order_status_processing`.
-	 * Some stores may want to award points when order is processing.
-	 * Delegates to the same handler as completed for now.
-	 *
-	 * @param int|\WC_Order $order_id
-	 */
-	public function on_order_processing( $order_id ): void {
-		$id = is_object( $order_id ) && method_exists( $order_id, 'get_id' ) ? (int) $order_id->get_id() : (int) $order_id;
-		if ( $id <= 0 ) {
-			return;
-		}
-
-		if ( class_exists( PointsManager::class ) ) {
-			PointsManager::get_instance()->handle_order_points( $id );
 		}
 	}
 
