@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 	public const TRANSACTIONAL_VERSION = '1.2';
 	public const LEDGER_CONTEXT_VERSION = '1.3';
-	private const DB_VERSION = self::LEDGER_CONTEXT_VERSION;
+	private const DB_VERSION = '1.4';
 	/** @var Installer|null */
 	private static $instance = null;
 
@@ -107,10 +107,24 @@ class Installer {
             KEY status_idx (status)
         ) {$charset_collate};";
 
+		$rewards_table = $prefix . 'infirewards_rewards';
+		$sql_rewards  = "CREATE TABLE {$rewards_table} (
+            reward_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            name VARCHAR(255) NOT NULL,
+            discount_amount DECIMAL(18,6) NOT NULL,
+            points_cost INT UNSIGNED NOT NULL,
+            status TINYINT(1) NOT NULL DEFAULT 1,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (reward_id),
+            KEY status_idx (status)
+        ) ENGINE=InnoDB {$charset_collate};";
+
 		// Execute the table creation / updates using dbDelta which is safe to run multiple times
 		dbDelta( $sql_wallets );
 		dbDelta( $sql_transactions );
 		dbDelta( $sql_rules );
+		dbDelta( $sql_rewards );
 
 		// Older rows had no type. Normalize any signed debits before marking this version installed.
 		$installed_version = get_option( 'infirewards_db_version', '0' );
@@ -125,6 +139,10 @@ class Installer {
 		$event_column  = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_type' ) );
 		$key_column    = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_key' ) );
 		$reward_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'reward_id' ) );
+		$reward_name_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'name' ) );
+		$discount_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'discount_amount' ) );
+		$cost_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'points_cost' ) );
+		$status_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'status' ) );
 		$unique_key    = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0',
@@ -134,8 +152,10 @@ class Installer {
 		);
 		if ( $migrated && 'balance' === $wallet_column && 'type' === $type_column &&
 			'event_type' === $event_column && 'event_key' === $key_column && 'reward_id' === $reward_column &&
+			'name' === $reward_name_column && 'discount_amount' === $discount_column &&
+			'points_cost' === $cost_column && 'status' === $status_column &&
 			1 === (int) $unique_key && $this->ensure_innodb( $wallets_table ) &&
-			$this->ensure_innodb( $transactions_table ) &&
+			$this->ensure_innodb( $transactions_table ) && $this->ensure_innodb( $rewards_table ) &&
 			$this->reconcile_legacy_balances( $wallets_table, $transactions_table ) &&
 			$this->backfill_order_events( $transactions_table ) ) {
 			update_option( 'infirewards_db_version', self::DB_VERSION );
@@ -315,6 +335,7 @@ class Installer {
 			$prefix . 'infirewards_wallets',
 			$prefix . 'infirewards_transactions',
 			$prefix . 'infirewards_rules',
+			$prefix . 'infirewards_rewards',
 		);
 
 		foreach ( $tables as $table ) {

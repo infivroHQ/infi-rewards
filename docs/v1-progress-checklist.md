@@ -15,11 +15,11 @@ Define the earning calculation before implementation: use the order's eligible a
 | Requested customer/store-owner flow | Status | Evidence |
 | --- | --- | --- |
 | Store owner creates a points-per-currency-unit rule | **Implemented in code; unverified in WooCommerce** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
-| Store owner creates a reward | **Missing** | `src/Rewards/` is empty and there is no rewards table or admin screen. |
+| Store owner creates a reward | **Implemented in code; unverified in WooCommerce** | Rewards are stored in a versioned table and can be created, edited, disabled, and listed in wp-admin. |
 | Customer earns points for a purchase | **Implemented in code; unverified in WooCommerce** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
 | Customer sees points and redeems a reward | **Missing** | There is no customer view, redemption handler, reward issuance, or redemption record. |
 
-**Progress:** 0 of the 4 requested end-to-end flows are verified; the earning-rule and purchase-earning flows are implemented in code. The plugin bootstrap, three initial table definitions, a basic admin menu, and order event hooks are in place. The remaining work is reward creation, customer redemption, and end-to-end verification. This is a feature count, not an estimate of time or effort.
+**Progress:** 0 of the 4 requested end-to-end flows are verified; the earning-rule, reward-creation, and purchase-earning flows are implemented in code. The plugin bootstrap, four table definitions, admin screens, and order event hooks are in place. The remaining work is customer redemption and end-to-end verification. This is a feature count, not an estimate of time or effort.
 
 ## Implementation checklist
 
@@ -42,8 +42,8 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 
 ### 3. Let the owner create a redeemable reward
 
-- [ ] Add reward persistence with at least name, fixed discount amount, points cost, and active status. Include creation/update handling for existing installations.
-- [ ] Add an admin **Rewards** screen to create, edit, disable, and list rewards. Validate amounts and costs; use capability checks, nonces, sanitization, and escaped output.
+- [x] Add reward persistence with at least name, fixed discount amount, points cost, and active status. Include creation/update handling for existing installations.
+- [x] Add an admin **Rewards** screen to create, edit, disable, and list rewards. Validate amounts and costs; use capability checks, nonces, sanitization, and escaped output.
 
 ### 4. Let the customer redeem
 
