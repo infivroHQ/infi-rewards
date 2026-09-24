@@ -5,6 +5,7 @@
  * Version:     0.1.0
  * Author:      Infivro
  * Text Domain: infirewards
+ * Requires Plugins: woocommerce
  */
 
 defined( 'ABSPATH' ) || exit;
