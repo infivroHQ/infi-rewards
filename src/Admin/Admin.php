@@ -15,7 +15,7 @@ class Admin {
 	}
 
 	public static function register_menu(): void {
-		add_menu_page(
+		$dashboard_hook = add_menu_page(
 			__( 'infiRewards', 'infirewards' ),
 			__( 'infiRewards', 'infirewards' ),
 			'manage_options',
@@ -23,7 +23,7 @@ class Admin {
 			array( __CLASS__, 'render_dashboard' ),
 			'dashicons-star-filled'
 		);
-		add_submenu_page(
+		$rule_hook      = add_submenu_page(
 			'infirewards',
 			__( 'Earning Rule', 'infirewards' ),
 			__( 'Earning Rule', 'infirewards' ),
@@ -31,7 +31,7 @@ class Admin {
 			'infirewards-earning-rule',
 			array( __CLASS__, 'render_earning_rule' )
 		);
-		add_submenu_page(
+		$rewards_hook   = add_submenu_page(
 			'infirewards',
 			__( 'Rewards', 'infirewards' ),
 			__( 'Rewards', 'infirewards' ),
@@ -39,6 +39,23 @@ class Admin {
 			'infirewards-rewards',
 			array( __CLASS__, 'render_rewards' )
 		);
+		foreach ( array( $dashboard_hook, $rule_hook, $rewards_hook ) as $hook ) {
+			add_action( 'load-' . $hook, array( __CLASS__, 'prepare_quiet_screen' ) );
+		}
+	}
+
+	/** Suppress outside admin notices on infiRewards screens only. */
+	public static function prepare_quiet_screen(): void {
+		add_action( 'admin_head', array( __CLASS__, 'suppress_external_notices' ), PHP_INT_MAX );
+	}
+
+	/** Remove standard notice callbacks just before WordPress displays them. */
+	public static function suppress_external_notices(): void {
+		foreach ( array( 'admin_notices', 'all_admin_notices', 'network_admin_notices', 'user_admin_notices' ) as $hook ) {
+			remove_all_actions( $hook );
+		}
+		// Catch notices printed directly or added to the notice area by JavaScript.
+		echo '<style>#wpbody-content > :is(.notice, .update-nag, .updated, .error, .woocommerce-message, .woocommerce-error, .woocommerce-info, #message) { display: none !important; }</style>';
 	}
 
 	public static function render_dashboard(): void {
