@@ -28,7 +28,7 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 ### 1. Make points storage trustworthy
 
 - [x] Load plugin classes, create initial wallet/transaction/rule tables on activation, and register WooCommerce order hooks.
-- [ ] Reconcile the installed schema with the runtime code: use one wallet balance column name and one transaction shape everywhere. Add a migration for sites that already activated the plugin.
+- [x] Reconcile the installed schema with the runtime code: use one wallet balance column name and one transaction shape everywhere. Add a migration for sites that already activated the plugin.
 - [ ] Make every credit/debit and its ledger entry succeed or fail together. Prevent a negative balance and make the ledger sufficient to explain/rebuild a balance.
 - [ ] Record enough transaction context to distinguish order earns, reversals, and redemptions. Add uniqueness/idempotency protection for an order earn and a redemption.
 

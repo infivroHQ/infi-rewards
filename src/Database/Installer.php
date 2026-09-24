@@ -9,6 +9,7 @@ defined( 'ABSPATH' ) || exit;
  * Creates required tables on plugin activation and provides a migration entrypoint.
  */
 class Installer {
+	private const DB_VERSION = '1.1';
 	/** @var Installer|null */
 	private static $instance = null;
 
@@ -31,7 +32,7 @@ class Installer {
 	}
 
 	/**
-	 * Run installer to create or update tables. Intended to be called on plugin activation.
+	 * Run installer to create or update tables.
 	 */
 	public function install(): void {
 		global $wpdb;
@@ -62,7 +63,8 @@ class Installer {
 		// - transaction_id: primary key
 		// - user_id: WordPress user ID
 		// - order_id: related order (nullable)
-		// - points: points credited/debited
+		// - points: positive integer points credited/debited
+		// - type: credit or debit
 		// - reason: short description
 		// - created_at: timestamp
 		$transactions_table = $prefix . 'infirewards_transactions';
@@ -71,6 +73,7 @@ class Installer {
             user_id BIGINT(20) UNSIGNED NOT NULL,
             order_id BIGINT(20) UNSIGNED DEFAULT NULL,
             points INT NOT NULL,
+            type VARCHAR(20) NOT NULL DEFAULT 'credit',
             reason VARCHAR(255) DEFAULT '',
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (transaction_id),
@@ -101,26 +104,30 @@ class Installer {
 		dbDelta( $sql_transactions );
 		dbDelta( $sql_rules );
 
-		// Store DB version for future migrations
-		$installed_version = get_option( 'infirewards_db_version' );
-		$current_version   = '1.0';
-		if ( $installed_version !== $current_version ) {
-			update_option( 'infirewards_db_version', $current_version );
+		// Older rows had no type. Normalize any signed debits before marking this version installed.
+		$installed_version = get_option( 'infirewards_db_version', '0' );
+		$migrated          = true;
+		if ( version_compare( $installed_version, self::DB_VERSION, '<' ) ) {
+			$migrated = false !== $wpdb->query( "UPDATE {$transactions_table} SET type = 'debit', points = ABS(points) WHERE points < 0" );
+		}
+
+		// Do not claim a completed migration if dbDelta could not add a column.
+		$wallet_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$wallets_table} LIKE %s", 'balance' ) );
+		$type_column   = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'type' ) );
+		if ( $migrated && 'balance' === $wallet_column && 'type' === $type_column ) {
+			update_option( 'infirewards_db_version', self::DB_VERSION );
 		}
 	}
 
 	/**
-	 * Entry point for future migrations. Compares stored DB version and applies changes.
+	 * Upgrade sites that activated a previous plugin version.
 	 * This method should be safe to call repeatedly.
 	 */
 	public function maybe_update_tables(): void {
-		$installed_version = get_option( 'infirewards_db_version', '1.0' );
-
-		// Example migration pattern: if ( version_compare( $installed_version, '1.1', '<' ) ) { ... }
-		// For now there are no migrations; placeholder for future updates.
-
-		// After applying migrations, update version option.
-		// update_option( 'infirewards_db_version', '1.1' );
+		$installed_version = get_option( 'infirewards_db_version', '0' );
+		if ( version_compare( $installed_version, self::DB_VERSION, '<' ) ) {
+			$this->install();
+		}
 	}
 
 	/**

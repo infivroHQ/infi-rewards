@@ -20,6 +20,7 @@ class Plugin {
 
 	public function boot(): void {
 		// Register core components, hooks, and services
+		\InfiRewards\Database\Installer::get_instance()->maybe_update_tables();
 		$this->register_admin();
 		$this->register_woocommerce();
 	}

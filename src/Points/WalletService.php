@@ -31,7 +31,7 @@ class WalletService {
 			return null;
 		}
 
-		$wallet = new WalletModel( (int) $row['user_id'], (float) $row['points'] );
+		$wallet = new WalletModel( (int) $row['user_id'], (int) $row['balance'] );
 		return $wallet;
 	}
 
@@ -51,9 +51,9 @@ class WalletService {
 			$new_balance = $current->points + $points;
 			$updated     = $wpdb->update(
 				$wallet_table,
-				array( 'points' => $new_balance ),
+				array( 'balance' => $new_balance ),
 				array( 'user_id' => $user_id ),
-				array( '%f' ),
+				array( '%d' ),
 				array( '%d' )
 			);
 			if ( false === $updated ) {
@@ -64,9 +64,9 @@ class WalletService {
 				$wallet_table,
 				array(
 					'user_id' => $user_id,
-					'points'  => $points,
+					'balance' => $points,
 				),
-				array( '%d', '%f' )
+				array( '%d', '%d' )
 			);
 			if ( false === $inserted ) {
 				return false;
@@ -84,7 +84,7 @@ class WalletService {
 				'order_id'   => $order_id,
 				'created_at' => current_time( 'mysql' ),
 			),
-			array( '%d', '%f', '%s', '%s', '%d', '%s' )
+			array( '%d', '%d', '%s', '%s', '%d', '%s' )
 		);
 
 		return false !== $txn_inserted;
@@ -101,7 +101,7 @@ class WalletService {
 		$txn_table    = TransactionsTable::table_name();
 
 		$current = $this->get_wallet_for_user( $user_id );
-		$balance = $current ? $current->points : 0.0;
+		$balance = $current ? $current->points : 0;
 
 		if ( $balance < $points ) {
 			// Not enough points — business rule: could allow negative balances or fail. We fail by default.
@@ -111,9 +111,9 @@ class WalletService {
 		$new_balance = $balance - $points;
 		$updated     = $wpdb->update(
 			$wallet_table,
-			array( 'points' => $new_balance ),
+			array( 'balance' => $new_balance ),
 			array( 'user_id' => $user_id ),
-			array( '%f' ),
+			array( '%d' ),
 			array( '%d' )
 		);
 		if ( false === $updated ) {
@@ -130,14 +130,14 @@ class WalletService {
 				'order_id'   => $order_id,
 				'created_at' => current_time( 'mysql' ),
 			),
-			array( '%d', '%f', '%s', '%s', '%d', '%s' )
+			array( '%d', '%d', '%s', '%s', '%d', '%s' )
 		);
 
 		return false !== $txn_inserted;
 	}
 
-	public function get_balance( int $user_id ): float {
+	public function get_balance( int $user_id ): int {
 		$wallet = $this->get_wallet_for_user( $user_id );
-		return $wallet ? $wallet->points : 0.0;
+		return $wallet ? $wallet->points : 0;
 	}
 }
