@@ -11,7 +11,8 @@ defined( 'ABSPATH' ) || exit;
 class Installer {
 	public const TRANSACTIONAL_VERSION = '1.2';
 	public const LEDGER_CONTEXT_VERSION = '1.3';
-	private const DB_VERSION = '1.4';
+	public const REDEMPTION_VERSION = '1.5';
+	private const DB_VERSION = self::REDEMPTION_VERSION;
 	/** @var Installer|null */
 	private static $instance = null;
 
@@ -120,11 +121,31 @@ class Installer {
             KEY status_idx (status)
         ) ENGINE=InnoDB {$charset_collate};";
 
+		$redemptions_table = $prefix . 'infirewards_redemptions';
+		$sql_redemptions = "CREATE TABLE {$redemptions_table} (
+            redemption_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            user_id BIGINT(20) UNSIGNED NOT NULL,
+            reward_id BIGINT(20) UNSIGNED NOT NULL,
+            transaction_id BIGINT(20) UNSIGNED NOT NULL,
+            request_key VARCHAR(64) NOT NULL,
+            discount_amount DECIMAL(18,6) NOT NULL,
+            customer_email VARCHAR(100) NOT NULL,
+            coupon_code VARCHAR(64) NOT NULL,
+            coupon_id BIGINT(20) UNSIGNED DEFAULT NULL,
+            status VARCHAR(20) NOT NULL DEFAULT 'pending',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY  (redemption_id),
+            UNIQUE KEY request_key (request_key),
+            UNIQUE KEY transaction_id (transaction_id),
+            KEY user_id_idx (user_id)
+        ) ENGINE=InnoDB {$charset_collate};";
+
 		// Execute the table creation / updates using dbDelta which is safe to run multiple times
 		dbDelta( $sql_wallets );
 		dbDelta( $sql_transactions );
 		dbDelta( $sql_rules );
 		dbDelta( $sql_rewards );
+		dbDelta( $sql_redemptions );
 
 		// Older rows had no type. Normalize any signed debits before marking this version installed.
 		$installed_version = get_option( 'infirewards_db_version', '0' );
@@ -143,6 +164,11 @@ class Installer {
 		$discount_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'discount_amount' ) );
 		$cost_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'points_cost' ) );
 		$status_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'status' ) );
+		$redemption_coupon_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'coupon_id' ) );
+		$redemption_amount_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'discount_amount' ) );
+		$redemption_email_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'customer_email' ) );
+		$redemption_code_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'coupon_code' ) );
+		$redemption_key_unique = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0', $redemptions_table, 'request_key' ) );
 		$unique_key    = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0',
@@ -154,8 +180,11 @@ class Installer {
 			'event_type' === $event_column && 'event_key' === $key_column && 'reward_id' === $reward_column &&
 			'name' === $reward_name_column && 'discount_amount' === $discount_column &&
 			'points_cost' === $cost_column && 'status' === $status_column &&
+			'coupon_id' === $redemption_coupon_column && 'discount_amount' === $redemption_amount_column &&
+			'customer_email' === $redemption_email_column && 'coupon_code' === $redemption_code_column &&
+			1 === (int) $redemption_key_unique &&
 			1 === (int) $unique_key && $this->ensure_innodb( $wallets_table ) &&
-			$this->ensure_innodb( $transactions_table ) && $this->ensure_innodb( $rewards_table ) &&
+			$this->ensure_innodb( $transactions_table ) && $this->ensure_innodb( $rewards_table ) && $this->ensure_innodb( $redemptions_table ) &&
 			$this->reconcile_legacy_balances( $wallets_table, $transactions_table ) &&
 			$this->backfill_order_events( $transactions_table ) ) {
 			update_option( 'infirewards_db_version', self::DB_VERSION );
@@ -336,6 +365,7 @@ class Installer {
 			$prefix . 'infirewards_transactions',
 			$prefix . 'infirewards_rules',
 			$prefix . 'infirewards_rewards',
+			$prefix . 'infirewards_redemptions',
 		);
 
 		foreach ( $tables as $table ) {

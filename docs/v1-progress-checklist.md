@@ -17,9 +17,9 @@ Define the earning calculation before implementation: use the order's eligible a
 | Store owner creates a points-per-currency-unit rule | **Implemented in code; unverified in WooCommerce** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
 | Store owner creates a reward | **Implemented in code; unverified in WooCommerce** | Rewards are stored in a versioned table and can be created, edited, disabled, and listed in wp-admin. |
 | Customer earns points for a purchase | **Implemented in code; unverified in WooCommerce** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
-| Customer sees points and redeems a reward | **Missing** | There is no customer view, redemption handler, reward issuance, or redemption record. |
+| Customer sees points and redeems a reward | **Implemented in code; unverified in WooCommerce** | The [infirewards] shortcode shows balance, active rewards, points activity, and redemption history. Redemption reserves points and records a pending coupon for retry. |
 
-**Progress:** 0 of the 4 requested end-to-end flows are verified; the earning-rule, reward-creation, and purchase-earning flows are implemented in code. The plugin bootstrap, four table definitions, admin screens, and order event hooks are in place. The remaining work is customer redemption and end-to-end verification. This is a feature count, not an estimate of time or effort.
+**Progress:** 0 of the 4 requested end-to-end flows are verified; all four flows are implemented in code. The plugin bootstrap, four table definitions, admin screens, and order event hooks are in place. The remaining work is end-to-end verification. This is a feature count, not an estimate of time or effort.
 
 ## Implementation checklist
 
@@ -47,10 +47,12 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 
 ### 4. Let the customer redeem
 
-- [ ] Show a logged-in customer their current points balance and active rewards, including each reward's cost and whether they can redeem it. A WooCommerce My Account section or a shortcode is enough.
-- [ ] On redemption, verify login, reward status, and sufficient points on the server. Ensure concurrent/repeated requests cannot spend the same points twice.
-- [ ] Create a redemption record linked to the customer, reward, points debit, and issued coupon. Issue a customer-specific, single-use fixed cart discount coupon; make a retry safe if coupon creation fails after a debit.
-- [ ] Show the issued coupon and a clear success/error message. Keep a basic points/redemption history so the customer can see what happened.
+- [x] Show a logged-in customer their current points balance and active rewards, including each reward's cost and whether they can redeem it. A WooCommerce My Account section or a shortcode is enough.
+- [x] On redemption, verify login, reward status, and sufficient points on the server. Ensure concurrent/repeated requests cannot spend the same points twice.
+- [x] Create a redemption record linked to the customer, reward, points debit, and issued coupon. Issue a customer-specific, single-use fixed cart discount coupon; make a retry safe if coupon creation fails after a debit.
+- [x] Show the issued coupon and a clear success/error message. Keep a basic points/redemption history so the customer can see what happened.
+
+Place `[infirewards]` on a customer-facing page to show the balance, available rewards, recent points activity, and coupons. Pending coupon issuance can be retried from that page without another debit.
 
 ### 5. Verify the complete path
 

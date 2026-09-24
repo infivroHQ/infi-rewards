@@ -23,6 +23,7 @@ class Plugin {
 		\InfiRewards\Database\Installer::get_instance()->maybe_update_tables();
 		$this->register_admin();
 		$this->register_woocommerce();
+		\InfiRewards\Customer\RewardsShortcode::init();
 	}
 
 	protected function register_admin(): void {
