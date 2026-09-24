@@ -1,6 +1,6 @@
 # infiRewards: smallest v1 progress and checklist
 
-_Code review: 24 September 2026. This records what is present in the repository, not a verified WordPress/WooCommerce run._
+_Updated 24 September 2026 after automated verification on a disposable WordPress + WooCommerce installation._
 
 ## The v1 target
 
@@ -14,12 +14,12 @@ Define the earning calculation before implementation: use the order's eligible a
 
 | Requested customer/store-owner flow | Status | Evidence |
 | --- | --- | --- |
-| Store owner creates a points-per-currency-unit rule | **Implemented in code; unverified in WooCommerce** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
-| Store owner creates a reward | **Implemented in code; unverified in WooCommerce** | Rewards are stored in a versioned table and can be created, edited, disabled, and listed in wp-admin. |
-| Customer earns points for a purchase | **Implemented in code; unverified in WooCommerce** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
-| Customer sees points and redeems a reward | **Implemented in code; unverified in WooCommerce** | The [infirewards] shortcode shows balance, active rewards, points activity, and redemption history. Redemption reserves points and records a pending coupon for retry. |
+| Store owner creates a points-per-currency-unit rule | **Automated integration verified; browser unverified** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
+| Store owner creates a reward | **Automated integration verified; browser unverified** | Rewards are stored in a versioned table and can be created, edited, disabled, and listed in wp-admin. |
+| Customer earns points for a purchase | **Automated integration verified; browser unverified** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
+| Customer sees points and redeems a reward | **Automated integration verified; browser unverified** | The [infirewards] shortcode shows balance, active rewards, points activity, and redemption history. Redemption reserves points and records a pending coupon for retry. |
 
-**Progress:** 0 of the 4 requested end-to-end flows are verified; all four flows are implemented in code. The plugin bootstrap, four table definitions, admin screens, and order event hooks are in place. The remaining work is end-to-end verification. This is a feature count, not an estimate of time or effort.
+**Progress:** The four flows now pass automated integration checks on a disposable WordPress + WooCommerce installation. The wp-admin forms and customer flow have not been checked manually in a browser. The plugin bootstrap, five table definitions, admin screens, and order event hooks are in place.
 
 ## Implementation checklist
 
@@ -56,9 +56,22 @@ Place `[infirewards]` on a customer-facing page to show the balance, available r
 
 ### 5. Verify the complete path
 
-- [ ] On a fresh WordPress + WooCommerce site, activate the plugin, create a rate and reward, complete an order, confirm the exact points calculation, and redeem the reward for a working coupon.
-- [ ] Check existing-install migration, repeat order hooks, refund/cancellation, insufficient points, disabled rewards, guest orders, double clicks, and two simultaneous redemption attempts.
-- [ ] Run PHP syntax/style checks and add focused automated tests for earning arithmetic, once-only awarding, ledger/balance consistency, and redemption/retry behavior.
+- [x] On a fresh WordPress + WooCommerce site, activate the plugin, create a rate and reward, complete an order, confirm the exact points calculation, and redeem the reward for a working coupon. Verified through plugin services and WooCommerce coupon validation on a disposable site; manual wp-admin/browser interaction remains to be checked.
+- [x] Check existing-install migration, repeat order hooks, refund/cancellation, insufficient points, disabled rewards, guest orders, double clicks, and two simultaneous redemption attempts.
+- [x] Run PHP syntax/style checks and add focused automated tests for earning arithmetic, once-only awarding, ledger/balance consistency, and redemption/retry behavior. PHP syntax passes; the repository-wide PHPCS check still reports pre-existing style violations (details below).
+
+### Verification record (24 September 2026)
+
+The checks in `tests/integration.php` ran against a disposable WordPress database with WooCommerce and infiRewards activated. They covered a 12.75 eligible amount at 2 points per currency unit (25 points after rounding down), repeat completion, customer shortcode output, coupon validation for the owner and rejection for another account, one-use coupon properties, insufficient points, disabled rewards, repeat request keys, pending coupon retry, both reversal policies, guest account assignment, signed ledger reconciliation, and two simultaneous redemption attempts. `tests/migration.php` rebuilt a v1.2 schema in that disposable database and verified schema upgrade, signed debit normalization, balance reconciliation, historical order keys, and repeatable migration.
+
+Run these tests only on a disposable WordPress installation with WooCommerce and infiRewards activated:
+
+```sh
+IR_TEST_DISPOSABLE=1 IR_TEST_WP_ROOT=/path/to/disposable/site php tests/integration.php
+IR_TEST_DISPOSABLE=1 IR_TEST_SCHEMA_RESET=1 IR_TEST_WP_ROOT=/path/to/disposable/site php tests/migration.php
+```
+
+Run the migration script last: it drops and rebuilds the five infiRewards tables and requires a database named `ir_verify_*`. PHP syntax passed for plugin files and tests. The repository-wide `vendor/bin/phpcs --report=summary` check reports 170 errors and 257 warnings in production files, mostly existing style debt; it is not a clean style gate yet. The CLI integration scripts are excluded from the production PHPCS ruleset because they intentionally use direct database and filesystem operations. Manual browser checks of the admin forms and customer page are still open.
 
 The reversal policy is conservative: if any positive point debit occurs after an order earn, its cancellation or full refund records a zero-point waived reversal. This prevents later credits from being taken for spent order points. Guest orders never earn points, including after account creation. Only completed orders earn; only cancelled or fully refunded order statuses reverse.
 

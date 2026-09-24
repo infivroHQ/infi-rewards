@@ -27,7 +27,13 @@ class PointsManager {
 		}
 		$user_id = (int) $order->get_user_id();
 		if ( $user_id <= 0 ) {
-			return; // Guest orders are not awarded points later.
+			// A guest order cannot become eligible if an account is attached later.
+			$order->update_meta_data( '_infirewards_completed_as_guest', 'yes' );
+			$order->save();
+			return;
+		}
+		if ( 'yes' === $order->get_meta( '_infirewards_completed_as_guest', true ) ) {
+			return;
 		}
 		$points = RulesEngine::get_instance()->evaluate_rules_for_order( $user_id, $order_id );
 		if ( $points > 0 ) {

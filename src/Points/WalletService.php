@@ -203,6 +203,22 @@ class WalletService {
 			return false;
 		}
 
+		// A repeated keyed event is a successful no-op after the wallet lock.
+		if ( null !== $event_key ) {
+			$existing = $wpdb->get_row(
+				$wpdb->prepare( "SELECT user_id, type, event_type FROM {$txn_table} WHERE event_key = %s", $event_key ),
+				ARRAY_A
+			);
+			if ( $existing ) {
+				$wpdb->query( 'ROLLBACK' );
+				return (int) $existing['user_id'] === $user_id && $existing['type'] === $type && $existing['event_type'] === $event_type;
+			}
+			if ( ! empty( $wpdb->last_error ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				return false;
+			}
+		}
+
 		$balance = (int) $balance;
 		if ( $balance < 0 || ( 'debit' === $type && $balance < $points ) ||
 			( 'credit' === $type && $balance > 2147483647 - $points ) ) {
