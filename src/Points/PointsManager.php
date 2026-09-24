@@ -1,8 +1,7 @@
 <?php
-namespace InfiRewards\Core;
+namespace InfiRewards\Points;
 
-use InfiRewards\Services\WalletService;
-use InfiRewards\Services\RulesEngine;
+use InfiRewards\Rules\RulesEngine;
 
 defined( 'ABSPATH' ) || exit;
 

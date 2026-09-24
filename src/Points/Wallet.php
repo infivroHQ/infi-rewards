@@ -1,5 +1,5 @@
 <?php
-namespace InfiRewards\Models;
+namespace InfiRewards\Points;
 
 defined( 'ABSPATH' ) || exit;
 

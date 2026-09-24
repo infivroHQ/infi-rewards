@@ -1,10 +1,9 @@
 <?php
-namespace InfiRewards\Services;
+namespace InfiRewards\Points;
 
 use InfiRewards\Database\WalletTable;
 use InfiRewards\Database\TransactionsTable;
-use InfiRewards\Models\Wallet as WalletModel;
-use InfiRewards\Models\Transaction as TransactionModel;
+use InfiRewards\Points\Wallet as WalletModel;
 
 defined( 'ABSPATH' ) || exit;
 

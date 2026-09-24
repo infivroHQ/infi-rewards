@@ -1,5 +1,5 @@
 <?php
-namespace InfiRewards\Services;
+namespace InfiRewards\Rules;
 
 use InfiRewards\Database\RulesTable;
 

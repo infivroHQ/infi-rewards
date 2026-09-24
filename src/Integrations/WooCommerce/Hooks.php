@@ -1,7 +1,7 @@
 <?php
-namespace InfiRewards\WooCommerce;
+namespace InfiRewards\Integrations\WooCommerce;
 
-use InfiRewards\Core\PointsManager;
+use InfiRewards\Points\PointsManager;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -72,8 +72,8 @@ class Hooks {
 			return;
 		}
 
-		if ( class_exists( \InfiRewards\Core\PointsManager::class ) ) {
-			\InfiRewards\Core\PointsManager::get_instance()->handle_order_points( $id );
+		if ( class_exists( PointsManager::class ) ) {
+			PointsManager::get_instance()->handle_order_points( $id );
 		}
 	}
 
@@ -89,8 +89,8 @@ class Hooks {
 			return;
 		}
 
-		if ( class_exists( \InfiRewards\Core\PointsManager::class ) ) {
-			\InfiRewards\Core\PointsManager::get_instance()->handle_refund_points( $id );
+		if ( class_exists( PointsManager::class ) ) {
+			PointsManager::get_instance()->handle_refund_points( $id );
 		}
 	}
 
@@ -107,8 +107,8 @@ class Hooks {
 			return;
 		}
 
-		if ( class_exists( \InfiRewards\Core\PointsManager::class ) ) {
-			\InfiRewards\Core\PointsManager::get_instance()->handle_order_points( $id );
+		if ( class_exists( PointsManager::class ) ) {
+			PointsManager::get_instance()->handle_order_points( $id );
 		}
 	}
 
@@ -125,8 +125,8 @@ class Hooks {
 			return;
 		}
 
-		if ( class_exists( \InfiRewards\Core\PointsManager::class ) ) {
-			\InfiRewards\Core\PointsManager::get_instance()->handle_refund_points( $id );
+		if ( class_exists( PointsManager::class ) ) {
+			PointsManager::get_instance()->handle_refund_points( $id );
 		}
 	}
 }

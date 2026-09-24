@@ -1,5 +1,5 @@
 <?php
-namespace InfiRewards\Core;
+namespace InfiRewards;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,7 +21,6 @@ class Plugin {
 	public function boot(): void {
 		// Register core components, hooks, and services
 		$this->register_admin();
-		$this->register_api();
 		$this->register_woocommerce();
 	}
 
@@ -33,15 +32,9 @@ class Plugin {
 		}
 	}
 
-	protected function register_api(): void {
-		if ( class_exists( \InfiRewards\API\Routes::class ) ) {
-			\InfiRewards\API\Routes::register();
-		}
-	}
-
 	protected function register_woocommerce(): void {
-		if ( class_exists( \InfiRewards\WooCommerce\Hooks::class ) ) {
-			\InfiRewards\WooCommerce\Hooks::init();
+		if ( class_exists( \InfiRewards\Integrations\WooCommerce\Hooks::class ) ) {
+			\InfiRewards\Integrations\WooCommerce\Hooks::init();
 		}
 	}
 }
