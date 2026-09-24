@@ -4,6 +4,7 @@
  * Description: Loyalty points and rewards for WooCommerce.
  * Version:     0.1.0
  * Author:      Infivro
+ * Author URI:  https://infivro.com
  * Text Domain: infirewards
  * Requires Plugins: woocommerce
  */
