@@ -16,10 +16,10 @@ Define the earning calculation before implementation: use the order's eligible a
 | --- | --- | --- |
 | Store owner creates a points-per-currency-unit rule | **Missing** | The rules table exists, but there is no rule form, save action, or per-amount calculation. `RulesEngine` currently calculates fixed per-order or per-product points from JSON config. |
 | Store owner creates a reward | **Missing** | `src/Rewards/` is empty and there is no rewards table or admin screen. |
-| Customer earns points for a purchase | **Partial, currently broken** | WooCommerce order hooks call `PointsManager`, but repeat status changes can award twice. The installer creates `wallets.balance` and no `transactions.type`; `WalletService` uses `wallets.points` and inserts `transactions.type`. The current code therefore cannot reliably persist an award against its own schema. |
+| Customer earns points for a purchase | **Partial** | Wallet writes and ledger entries are atomic, and order earns have a unique event key. The earning rule and completed-order policy are still missing. |
 | Customer sees points and redeems a reward | **Missing** | There is no customer view, redemption handler, reward issuance, or redemption record. |
 
-**Progress:** 0 of the 4 requested end-to-end flows are complete. The plugin bootstrap, three initial table definitions, a basic admin menu, and order event hooks are in place. The remaining work is the business logic, working persistence, owner/customer screens, and verification. This is a feature count, not an estimate of time or effort.
+**Progress:** 0 of the 4 requested end-to-end flows are complete. The plugin bootstrap, three initial table definitions, a basic admin menu, and order event hooks are in place. The remaining work is the earning and redemption flows, owner/customer screens, and verification. This is a feature count, not an estimate of time or effort.
 
 ## Implementation checklist
 
@@ -30,7 +30,7 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 - [x] Load plugin classes, create initial wallet/transaction/rule tables on activation, and register WooCommerce order hooks.
 - [x] Reconcile the installed schema with the runtime code: use one wallet balance column name and one transaction shape everywhere. Add a migration for sites that already activated the plugin.
 - [x] Make every credit/debit and its ledger entry succeed or fail together. Prevent a negative balance and make the ledger sufficient to explain/rebuild a balance.
-- [ ] Record enough transaction context to distinguish order earns, reversals, and redemptions. Add uniqueness/idempotency protection for an order earn and a redemption.
+- [x] Record enough transaction context to distinguish order earns, reversals, and redemptions. Add uniqueness/idempotency protection for an order earn and a redemption.
 
 ### 2. Let the owner configure the single earning rule
 

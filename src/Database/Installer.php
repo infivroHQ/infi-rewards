@@ -10,7 +10,8 @@ defined( 'ABSPATH' ) || exit;
  */
 class Installer {
 	public const TRANSACTIONAL_VERSION = '1.2';
-	private const DB_VERSION = self::TRANSACTIONAL_VERSION;
+	public const LEDGER_CONTEXT_VERSION = '1.3';
+	private const DB_VERSION = self::LEDGER_CONTEXT_VERSION;
 	/** @var Installer|null */
 	private static $instance = null;
 
@@ -66,6 +67,8 @@ class Installer {
 		// - order_id: related order (nullable)
 		// - points: positive integer points credited/debited
 		// - type: credit or debit
+		// - event_type/event_key: source of the change and unique retry key
+		// - reward_id: redeemed reward, when applicable
 		// - reason: short description
 		// - created_at: timestamp
 		$transactions_table = $prefix . 'infirewards_transactions';
@@ -75,11 +78,15 @@ class Installer {
             order_id BIGINT(20) UNSIGNED DEFAULT NULL,
             points INT NOT NULL,
             type VARCHAR(20) NOT NULL DEFAULT 'credit',
+            event_type VARCHAR(32) NOT NULL DEFAULT 'legacy',
+            event_key VARCHAR(100) DEFAULT NULL,
+            reward_id BIGINT(20) UNSIGNED DEFAULT NULL,
             reason VARCHAR(255) DEFAULT '',
             created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (transaction_id),
             KEY user_id_idx (user_id),
-            KEY order_id_idx (order_id)
+            KEY order_id_idx (order_id),
+            UNIQUE KEY event_key (event_key)
         ) ENGINE=InnoDB {$charset_collate};";
 
 		// Table: infirewards_rules
@@ -112,12 +119,25 @@ class Installer {
 			$migrated = false !== $wpdb->query( "UPDATE {$transactions_table} SET type = 'debit', points = ABS(points) WHERE points < 0" );
 		}
 
-		// Do not claim a completed migration if dbDelta could not add a column.
+		// Do not claim a completed migration if dbDelta could not add a column or index.
 		$wallet_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$wallets_table} LIKE %s", 'balance' ) );
 		$type_column   = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'type' ) );
+		$event_column  = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_type' ) );
+		$key_column    = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_key' ) );
+		$reward_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'reward_id' ) );
+		$unique_key    = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0',
+				$transactions_table,
+				'event_key'
+			)
+		);
 		if ( $migrated && 'balance' === $wallet_column && 'type' === $type_column &&
-			$this->ensure_innodb( $wallets_table ) && $this->ensure_innodb( $transactions_table ) &&
-			$this->reconcile_legacy_balances( $wallets_table, $transactions_table ) ) {
+			'event_type' === $event_column && 'event_key' === $key_column && 'reward_id' === $reward_column &&
+			1 === (int) $unique_key && $this->ensure_innodb( $wallets_table ) &&
+			$this->ensure_innodb( $transactions_table ) &&
+			$this->reconcile_legacy_balances( $wallets_table, $transactions_table ) &&
+			$this->backfill_order_events( $transactions_table ) ) {
 			update_option( 'infirewards_db_version', self::DB_VERSION );
 		}
 	}
@@ -205,6 +225,55 @@ class Installer {
 			}
 			if ( false === $wpdb->query( 'COMMIT' ) ) {
 				$wpdb->query( 'ROLLBACK' );
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * Give the first historical earn and reversal for each order a stable key.
+	 * Extra historical rows remain in the ledger without claiming the same key.
+	 */
+	private function backfill_order_events( string $transactions_table ): bool {
+		global $wpdb;
+
+		$orders = $wpdb->get_results(
+			"SELECT order_id, type, MIN(transaction_id) AS first_id
+			FROM {$transactions_table}
+			WHERE order_id IS NOT NULL AND order_id > 0 AND type IN ('credit', 'debit')
+			GROUP BY order_id, type",
+			ARRAY_A
+		);
+		if ( null === $orders || ! empty( $wpdb->last_error ) ) {
+			return false;
+		}
+
+		foreach ( $orders as $order ) {
+			$type       = 'credit' === $order['type'] ? 'order_earn' : 'order_reversal';
+			$event_key  = $type . ':' . (int) $order['order_id'];
+			$first_id   = (int) $order['first_id'];
+			$existing   = $wpdb->get_var(
+				$wpdb->prepare( "SELECT event_key FROM {$transactions_table} WHERE transaction_id = %d", $first_id )
+			);
+			if ( null !== $existing ) {
+				if ( $event_key !== $existing ) {
+					return false;
+				}
+				continue;
+			}
+
+			$updated = $wpdb->update(
+				$transactions_table,
+				array(
+					'event_type' => $type,
+					'event_key'  => $event_key,
+				),
+				array( 'transaction_id' => $first_id ),
+				array( '%s', '%s' ),
+				array( '%d' )
+			);
+			if ( 1 !== $updated ) {
 				return false;
 			}
 		}

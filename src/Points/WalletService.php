@@ -37,17 +37,76 @@ class WalletService {
 	}
 
 	public function add_points( int $user_id, int $points, string $reason = '', ?int $order_id = null ): bool {
-		return $this->change_points( $user_id, $points, 'credit', $reason, $order_id );
+		if ( null !== $order_id && $order_id <= 0 ) {
+			return false;
+		}
+		$event_type = null === $order_id ? 'adjustment' : 'order_earn';
+		$event_key  = null === $order_id ? null : 'order_earn:' . $order_id;
+		return $this->change_points( $user_id, $points, 'credit', $reason, $order_id, $event_type, $event_key );
 	}
 
 	public function subtract_points( int $user_id, int $points, string $reason = '', ?int $order_id = null ): bool {
-		return $this->change_points( $user_id, $points, 'debit', $reason, $order_id );
+		if ( null !== $order_id && $order_id <= 0 ) {
+			return false;
+		}
+		$event_type = null === $order_id ? 'adjustment' : 'order_reversal';
+		$event_key  = null === $order_id ? null : 'order_reversal:' . $order_id;
+		return $this->change_points( $user_id, $points, 'debit', $reason, $order_id, $event_type, $event_key );
+	}
+
+	/**
+	 * Debit a reward once for a stable request key supplied by the caller.
+	 */
+	public function redeem_points( int $user_id, int $points, int $reward_id, string $request_key, string $reason = '' ): bool {
+		if ( $reward_id <= 0 || ! preg_match( '/^[A-Za-z0-9_-]{16,64}$/D', $request_key ) ) {
+			return false;
+		}
+		return $this->change_points(
+			$user_id,
+			$points,
+			'debit',
+			$reason,
+			null,
+			'redemption',
+			'redemption:' . $request_key,
+			$reward_id
+		);
+	}
+
+	/**
+	 * Find a prior debit when a redemption request is retried.
+	 */
+	public function get_redemption_transaction( int $user_id, string $request_key ): ?array {
+		global $wpdb;
+
+		if ( $user_id <= 0 || ! preg_match( '/^[A-Za-z0-9_-]{16,64}$/D', $request_key ) ) {
+			return null;
+		}
+		$table = TransactionsTable::table_name();
+		$row   = $wpdb->get_row(
+			$wpdb->prepare(
+				"SELECT * FROM {$table} WHERE user_id = %d AND event_key = %s AND event_type = 'redemption'",
+				$user_id,
+				'redemption:' . $request_key
+			),
+			ARRAY_A
+		);
+		return $row ?: null;
 	}
 
 	/**
 	 * Change a balance and write its ledger entry in one database transaction.
 	 */
-	private function change_points( int $user_id, int $points, string $type, string $reason, ?int $order_id ): bool {
+	private function change_points(
+		int $user_id,
+		int $points,
+		string $type,
+		string $reason,
+		?int $order_id,
+		string $event_type,
+		?string $event_key,
+		?int $reward_id = null
+	): bool {
 		global $wpdb;
 
 		if ( $user_id <= 0 || $points <= 0 || $points > 2147483647 ) {
@@ -56,7 +115,7 @@ class WalletService {
 
 		// Both tables must be transactional before any balance change is allowed.
 		$installed_version = get_option( 'infirewards_db_version', '0' );
-		if ( version_compare( $installed_version, Installer::TRANSACTIONAL_VERSION, '<' ) ) {
+		if ( version_compare( $installed_version, Installer::LEDGER_CONTEXT_VERSION, '<' ) ) {
 			return false;
 		}
 
@@ -113,11 +172,14 @@ class WalletService {
 				'user_id'    => $user_id,
 				'points'     => $points,
 				'type'       => $type,
+				'event_type' => $event_type,
+				'event_key'  => $event_key,
+				'reward_id'  => $reward_id,
 				'reason'     => $reason,
 				'order_id'   => $order_id,
 				'created_at' => current_time( 'mysql' ),
 			),
-			array( '%d', '%d', '%s', '%s', '%d', '%s' )
+			array( '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%s' )
 		);
 		if ( 1 !== $txn_inserted ) {
 			$wpdb->query( 'ROLLBACK' );

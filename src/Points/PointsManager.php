@@ -49,7 +49,7 @@ class PointsManager {
 
 		// When an order is refunded, reverse credited points tied to that order.
 		$txn_table = \InfiRewards\Database\TransactionsTable::table_name();
-		$rows      = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$txn_table} WHERE order_id = %d AND type = %s", $order_id, 'credit' ), ARRAY_A );
+		$rows      = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$txn_table} WHERE order_id = %d AND event_type = %s", $order_id, 'order_earn' ), ARRAY_A );
 		if ( empty( $rows ) ) {
 			return;
 		}
