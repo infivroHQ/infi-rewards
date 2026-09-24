@@ -29,7 +29,7 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 
 - [x] Load plugin classes, create initial wallet/transaction/rule tables on activation, and register WooCommerce order hooks.
 - [x] Reconcile the installed schema with the runtime code: use one wallet balance column name and one transaction shape everywhere. Add a migration for sites that already activated the plugin.
-- [ ] Make every credit/debit and its ledger entry succeed or fail together. Prevent a negative balance and make the ledger sufficient to explain/rebuild a balance.
+- [x] Make every credit/debit and its ledger entry succeed or fail together. Prevent a negative balance and make the ledger sufficient to explain/rebuild a balance.
 - [ ] Record enough transaction context to distinguish order earns, reversals, and redemptions. Add uniqueness/idempotency protection for an order earn and a redemption.
 
 ### 2. Let the owner configure the single earning rule

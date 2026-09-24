@@ -9,7 +9,8 @@ defined( 'ABSPATH' ) || exit;
  * Creates required tables on plugin activation and provides a migration entrypoint.
  */
 class Installer {
-	private const DB_VERSION = '1.1';
+	public const TRANSACTIONAL_VERSION = '1.2';
+	private const DB_VERSION = self::TRANSACTIONAL_VERSION;
 	/** @var Installer|null */
 	private static $instance = null;
 
@@ -57,7 +58,7 @@ class Installer {
             updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY  (wallet_id),
             UNIQUE KEY user_id (user_id)
-        ) {$charset_collate};";
+        ) ENGINE=InnoDB {$charset_collate};";
 
 		// Table: infirewards_transactions
 		// - transaction_id: primary key
@@ -79,7 +80,7 @@ class Installer {
             PRIMARY KEY  (transaction_id),
             KEY user_id_idx (user_id),
             KEY order_id_idx (order_id)
-        ) {$charset_collate};";
+        ) ENGINE=InnoDB {$charset_collate};";
 
 		// Table: infirewards_rules
 		// - rule_id: primary key
@@ -114,9 +115,100 @@ class Installer {
 		// Do not claim a completed migration if dbDelta could not add a column.
 		$wallet_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$wallets_table} LIKE %s", 'balance' ) );
 		$type_column   = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'type' ) );
-		if ( $migrated && 'balance' === $wallet_column && 'type' === $type_column ) {
+		if ( $migrated && 'balance' === $wallet_column && 'type' === $type_column &&
+			$this->ensure_innodb( $wallets_table ) && $this->ensure_innodb( $transactions_table ) &&
+			$this->reconcile_legacy_balances( $wallets_table, $transactions_table ) ) {
 			update_option( 'infirewards_db_version', self::DB_VERSION );
 		}
+	}
+
+	/**
+	 * Convert an older nontransactional table before wallet writes resume.
+	 */
+	private function ensure_innodb( string $table ): bool {
+		global $wpdb;
+
+		$engine = $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
+				$table
+			)
+		);
+		if ( ! $engine ) {
+			return false;
+		}
+		if ( 'InnoDB' === $engine ) {
+			return true;
+		}
+
+		// Table names are built from the configured WordPress prefix.
+		$quoted_table = str_replace( '`', '``', $table );
+		if ( false === $wpdb->query( "ALTER TABLE `{$quoted_table}` ENGINE=InnoDB" ) ) {
+			return false;
+		}
+
+		return 'InnoDB' === $wpdb->get_var(
+			$wpdb->prepare(
+				'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
+				$table
+			)
+		);
+	}
+
+	/**
+	 * Add an opening entry for any balance not explained by the old ledger.
+	 * Row locks make interrupted and concurrent upgrades safe to retry.
+	 */
+	private function reconcile_legacy_balances( string $wallets_table, string $transactions_table ): bool {
+		global $wpdb;
+
+		$wallets = $wpdb->get_results( "SELECT user_id FROM {$wallets_table}", ARRAY_A );
+		if ( null === $wallets || ! empty( $wpdb->last_error ) ) {
+			return false;
+		}
+
+		foreach ( $wallets as $wallet ) {
+			$user_id = (int) $wallet['user_id'];
+			if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
+				return false;
+			}
+			$balance = $wpdb->get_var(
+				$wpdb->prepare( "SELECT balance FROM {$wallets_table} WHERE user_id = %d FOR UPDATE", $user_id )
+			);
+			$ledger = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points WHEN type = 'debit' THEN -points ELSE 0 END), 0) FROM {$transactions_table} WHERE user_id = %d",
+					$user_id
+				)
+			);
+			if ( null === $balance || null === $ledger ) {
+				$wpdb->query( 'ROLLBACK' );
+				return false;
+			}
+
+			$difference = (int) $balance - (int) $ledger;
+			if ( 0 !== $difference ) {
+				$inserted = $wpdb->insert(
+					$transactions_table,
+					array(
+						'user_id' => $user_id,
+						'points'  => abs( $difference ),
+						'type'    => $difference > 0 ? 'credit' : 'debit',
+						'reason'  => 'Legacy balance adjustment',
+					),
+					array( '%d', '%d', '%s', '%s' )
+				);
+				if ( 1 !== $inserted ) {
+					$wpdb->query( 'ROLLBACK' );
+					return false;
+				}
+			}
+			if ( false === $wpdb->query( 'COMMIT' ) ) {
+				$wpdb->query( 'ROLLBACK' );
+				return false;
+			}
+		}
+		return true;
 	}
 
 	/**
