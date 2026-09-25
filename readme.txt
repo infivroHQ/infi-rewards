@@ -1,5 +1,5 @@
 === infiRewards – Loyalty Points & Rewards ===
-Contributors: infivro
+Contributors: infivro, shahriar12
 Tags: woocommerce, loyalty, points, rewards, discounts
 Requires at least: 6.8
 Tested up to: 7.1
