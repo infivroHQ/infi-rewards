@@ -1,0 +1,13 @@
+.git
+.github
+.vscode
+docs
+tests
+vendor
+node_modules
+assets/images
+composer.json
+composer.lock
+phpcs.xml.dist
+.gitignore
+.distignore
