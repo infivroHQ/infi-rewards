@@ -69,9 +69,13 @@ class RewardsPage {
 			<?php if ( isset( $messages[ $notice ] ) && ( ! in_array( $notice, array( 'issued', 'pending' ), true ) || $noticed_record ) ) : ?>
 				<div class="infirewards-customer__notice" role="status"><p><?php echo esc_html( $messages[ $notice ] ); ?></p>
 				<?php
-				if ( 'issued' === $notice && 'issued' === $noticed_record['status'] ) :
+				if ( 'issued' === $notice && 'issued' === $noticed_record['status'] && ! self::coupon_is_used( $noticed_record ) ) :
 					?>
 					<p><?php self::coupon_copy_button( $noticed_record['coupon_code'] ); ?></p>
+					<?php
+				elseif ( 'issued' === $notice && 'issued' === $noticed_record['status'] ) :
+					?>
+					<p><span class="infirewards-redemption__used"><?php esc_html_e( 'Used', 'infirewards' ); ?></span></p>
 					<?php
 elseif ( 'pending' === $notice && 'pending' === $noticed_record['status'] ) :
 	?>
@@ -175,9 +179,13 @@ else :
 		?>
 	<div class="infirewards-customer__activity infirewards-redemption"><div><strong><?php echo esc_html( sprintf( __( 'Reward #%s', 'infirewards' ), $record['reward_id'] ) ); ?></strong><small><?php echo esc_html( $record['created_at'] ); ?></small>
 		<?php
-		if ( 'issued' === $record['status'] ) :
+		if ( 'issued' === $record['status'] && ! self::coupon_is_used( $record ) ) :
 			?>
 				<?php self::coupon_copy_button( $record['coupon_code'] ); ?>
+				<?php
+		elseif ( 'issued' === $record['status'] ) :
+			?>
+				<span class="infirewards-redemption__used"><?php esc_html_e( 'Used', 'infirewards' ); ?></span>
 				<?php
 else :
 	?>
@@ -192,6 +200,17 @@ endif;
 ?>
 </div></section>
 		<?php
+	}
+
+	/** Determine whether WooCommerce has recorded this single-use coupon as redeemed. */
+	private static function coupon_is_used( array $record ): bool {
+		$coupon_id = isset( $record['coupon_id'] ) ? (int) $record['coupon_id'] : 0;
+		if ( ! $coupon_id || ! class_exists( 'WC_Coupon' ) ) {
+			return false;
+		}
+
+		$coupon = new \WC_Coupon( $coupon_id );
+		return $coupon->get_id() === $coupon_id && $coupon->get_usage_count() > 0;
 	}
 
 	/** Render a compact control without exposing the coupon code in the layout. */

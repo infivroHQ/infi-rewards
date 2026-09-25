@@ -87,6 +87,10 @@ wp_set_current_user( $user_id );
 ir_check( 'issued' === $service->redeem( $user_id, $reward_id, $key ) && 5 === ir_balance( $user_id ), 'repeat request key does not debit twice' );
 $customer_page = do_shortcode( '[infirewards]' );
 ir_check( false !== strpos( $customer_page, $redemption['coupon_code'] ) && false !== strpos( $customer_page, 'Current balance:' ) && false !== strpos( $customer_page, $reward['name'] ), 'customer shortcode shows balance, reward, and issued coupon' );
+$coupon->set_usage_count( 1 );
+$coupon->save();
+$customer_page = do_shortcode( '[infirewards]' );
+ir_check( false === strpos( $customer_page, 'infirewards-coupon-copy' ) && false !== strpos( $customer_page, 'Used' ), 'used coupon is labelled used without a copy button' );
 ir_check( 'points' === $service->redeem( $user_id, $reward_id, bin2hex( random_bytes( 16 ) ) ), 'insufficient points rejected' );
 
 // Simulate a delivery that stopped after recording the debit and losing its coupon.

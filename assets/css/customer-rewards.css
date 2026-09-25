@@ -54,5 +54,6 @@
 .infirewards-coupon-copy:hover,.infirewards-coupon-copy:focus{background:#f2f2ff!important;border-color:var(--ir-accent)!important;color:var(--ir-accent)!important}
 .infirewards-coupon-copy.is-copied{background:#eefaf5!important;border-color:#8bd4b7!important;color:#126c4b!important}
 .infirewards-redemption form{margin:0}
+.infirewards-redemption__used{display:inline-block;margin-top:7px;padding:4px 9px;background:#eefaf5;border:1px solid #8bd4b7;border-radius:5px;color:#126c4b;font-size:12px;font-weight:600}
 @media(max-width:780px){.infirewards-customer__ways{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.infirewards-customer__stats,.infirewards-customer__rewards,.infirewards-customer__ways{grid-template-columns:1fr}.infirewards-customer__header h2{font-size:24px}.infirewards-customer__tabs .infirewards-customer__tab{min-width:100px;padding:10px}.infirewards-customer__progress-meta{flex-wrap:wrap}.infirewards-reward__footer{flex-wrap:wrap}}
