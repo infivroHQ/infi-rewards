@@ -71,8 +71,10 @@ class Admin {
 
 	public static function enqueue_admin_assets( string $hook ): void {
 		if ( 'toplevel_page_infirewards' === $hook ) {
+			wp_enqueue_style( 'infirewards-pages', plugins_url( 'assets/css/admin-pages.css', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION );
 			wp_enqueue_style( 'infirewards-overview', plugins_url( 'assets/css/admin-overview.css', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION );
 		} elseif ( 'infirewards_page_infirewards-earning-rule' === $hook ) {
+			wp_enqueue_style( 'infirewards-pages', plugins_url( 'assets/css/admin-pages.css', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION );
 			wp_enqueue_style( 'infirewards-earning-rules', plugins_url( 'assets/css/admin-earning-rules.css', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION );
 		} elseif ( in_array( $hook, array( 'infirewards_page_infirewards-rewards', 'infirewards_page_infirewards-customers', 'infirewards_page_infirewards-settings' ), true ) ) {
 			wp_enqueue_style( 'infirewards-pages', plugins_url( 'assets/css/admin-pages.css', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION );

@@ -61,14 +61,7 @@ class Overview {
 		);
 		?>
 		<div class="wrap infirewards-overview">
-			<h1><?php esc_html_e( 'infiRewards', 'infirewards' ); ?></h1>
-			<nav class="infirewards-overview__nav" aria-label="<?php esc_attr_e( 'infiRewards pages', 'infirewards' ); ?>">
-				<a class="is-current" aria-current="page" href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards' ) ); ?>"><?php esc_html_e( 'Overview', 'infirewards' ); ?></a>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-earning-rule' ) ); ?>"><?php esc_html_e( 'Earning Rules', 'infirewards' ); ?></a>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-rewards' ) ); ?>"><?php esc_html_e( 'Rewards', 'infirewards' ); ?></a>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-customers' ) ); ?>"><?php esc_html_e( 'Customers', 'infirewards' ); ?></a>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-settings' ) ); ?>"><?php esc_html_e( 'Settings', 'infirewards' ); ?></a>
-			</nav>
+			<?php PageHeader::render( 'infirewards' ); ?>
 			<h2 class="infirewards-overview__title"><?php esc_html_e( 'Overview', 'infirewards' ); ?></h2>
 			<div class="infirewards-overview__stats">
 				<?php foreach ( $cards as $card ) : ?>

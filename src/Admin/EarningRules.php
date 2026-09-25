@@ -22,14 +22,7 @@ class EarningRules {
 		$active = $rule && 1 === (int) $rule['status'];
 		?>
 		<div class="wrap infirewards-rules">
-			<h1><?php esc_html_e( 'infiRewards', 'infirewards' ); ?></h1>
-			<nav class="infirewards-rules__nav" aria-label="<?php esc_attr_e( 'infiRewards pages', 'infirewards' ); ?>">
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards' ) ); ?>"><?php esc_html_e( 'Overview', 'infirewards' ); ?></a>
-				<a class="is-current" aria-current="page" href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-earning-rule' ) ); ?>"><?php esc_html_e( 'Earning Rules', 'infirewards' ); ?></a>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-rewards' ) ); ?>"><?php esc_html_e( 'Rewards', 'infirewards' ); ?></a>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-customers' ) ); ?>"><?php esc_html_e( 'Customers', 'infirewards' ); ?></a>
-				<a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-settings' ) ); ?>"><?php esc_html_e( 'Settings', 'infirewards' ); ?></a>
-			</nav>
+			<?php PageHeader::render( 'infirewards-earning-rule' ); ?>
 			<div class="infirewards-rules__heading">
 				<div>
 					<h2><?php esc_html_e( 'Earning Rules', 'infirewards' ); ?></h2>
