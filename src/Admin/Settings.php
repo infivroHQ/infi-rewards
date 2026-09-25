@@ -19,6 +19,7 @@ class Settings {
 		$rule     = RulesEngine::get_instance()->get_rule();
 		$active   = $rule && 1 === (int) $rule['status'] && (float) $rule['rate'] > 0;
 		$currency = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This notice only changes displayed text.
 		$notice   = isset( $_GET['infirewards_notice'] ) && is_scalar( $_GET['infirewards_notice'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_notice'] ) ) : '';
 		?>
 		<div class="wrap infirewards-page">

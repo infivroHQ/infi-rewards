@@ -26,6 +26,7 @@ class RewardsPage {
 		$redemptions = $service->history( $user_id );
 		$history     = $service->points_history( $user_id );
 		$rule        = RulesEngine::get_instance()->get_rule();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- This tab only selects a read-only view.
 		$tab         = isset( $_GET['infirewards_tab'] ) && is_scalar( $_GET['infirewards_tab'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_tab'] ) ) : 'overview';
 		$tab         = in_array( $tab, array( 'overview', 'rewards', 'activity' ), true ) ? $tab : 'overview';
 		$base_url    = remove_query_arg( array( 'infirewards_tab', 'infirewards_notice', 'infirewards_redemption' ) );
@@ -39,8 +40,10 @@ class RewardsPage {
 		$table = TransactionsTable::table_name();
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name comes from the WordPress prefix.
 		$redeemed_points = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(points), 0) FROM {$table} WHERE user_id = %d AND type = 'debit' AND event_type = 'redemption'", $user_id ) );
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Redirect parameters only select a notice and the current user's record.
 		$notice          = isset( $_GET['infirewards_notice'] ) && is_scalar( $_GET['infirewards_notice'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_notice'] ) ) : '';
 		$redemption_id   = isset( $_GET['infirewards_redemption'] ) && is_scalar( $_GET['infirewards_redemption'] ) ? absint( wp_unslash( $_GET['infirewards_redemption'] ) ) : 0;
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$noticed_record  = $redemption_id ? $service->get( $user_id, $redemption_id ) : null;
 		$messages        = array(
 			'issued'      => __( 'Reward redeemed. Your coupon is shown below.', 'infirewards' ),
@@ -88,8 +91,12 @@ elseif ( 'pending' === $notice && 'pending' === $noticed_record['status'] ) :
 					if ( $next_reward ) :
 						$cost     = (int) $next_reward['points_cost'];
 						$progress = min( 100, (int) floor( $balance * 100 / $cost ) );
+						// translators: 1: points needed, 2: reward name.
+						$unlock_label = sprintf( __( '%1$s more points to unlock %2$s', 'infirewards' ), number_format_i18n( $cost - $balance ), $next_reward['name'] );
+						// translators: %d: percentage of the next reward's points cost earned.
+						$progress_label = sprintf( __( 'You’re %d%% of the way there!', 'infirewards' ), $progress );
 						?>
-						<div class="infirewards-customer__progress-card"><span class="infirewards-customer__icon" aria-hidden="true">♧</span><div class="infirewards-customer__progress-content"><strong><?php echo esc_html( sprintf( __( '%1$s more points to unlock %2$s', 'infirewards' ), number_format_i18n( $cost - $balance ), $next_reward['name'] ) ); ?></strong><div class="infirewards-customer__progress-meta"><span><?php echo esc_html( sprintf( __( 'You’re %d%% of the way there!', 'infirewards' ), $progress ) ); ?></span><span><?php echo esc_html( number_format_i18n( $balance ) . ' / ' . number_format_i18n( $cost ) ); ?> <?php esc_html_e( 'points', 'infirewards' ); ?></span></div><div class="infirewards-customer__progress-track" role="progressbar" aria-valuenow="<?php echo esc_attr( $balance ); ?>" aria-valuemin="0" aria-valuemax="<?php echo esc_attr( $cost ); ?>" aria-label="<?php esc_attr_e( 'Progress to next reward', 'infirewards' ); ?>"><span style="width:<?php echo esc_attr( $progress ); ?>%"></span></div></div></div><?php endif; ?>
+						<div class="infirewards-customer__progress-card"><span class="infirewards-customer__icon" aria-hidden="true">♧</span><div class="infirewards-customer__progress-content"><strong><?php echo esc_html( $unlock_label ); ?></strong><div class="infirewards-customer__progress-meta"><span><?php echo esc_html( $progress_label ); ?></span><span><?php echo esc_html( number_format_i18n( $balance ) . ' / ' . number_format_i18n( $cost ) ); ?> <?php esc_html_e( 'points', 'infirewards' ); ?></span></div><div class="infirewards-customer__progress-track" role="progressbar" aria-valuenow="<?php echo esc_attr( $balance ); ?>" aria-valuemin="0" aria-valuemax="<?php echo esc_attr( $cost ); ?>" aria-label="<?php esc_attr_e( 'Progress to next reward', 'infirewards' ); ?>"><span style="width:<?php echo esc_attr( $progress ); ?>%"></span></div></div></div><?php endif; ?>
 				</section>
 				<section aria-labelledby="ir-available-rewards"><div class="infirewards-customer__section-heading"><h3 class="infirewards-customer__section-title" id="ir-available-rewards"><?php esc_html_e( 'Available rewards', 'infirewards' ); ?></h3><a href="<?php echo esc_url( add_query_arg( 'infirewards_tab', 'rewards', $base_url ) ); ?>"><?php esc_html_e( 'View all rewards', 'infirewards' ); ?> →</a></div><div class="infirewards-customer__rewards">
 				<?php
@@ -106,8 +113,10 @@ else :
 				<section aria-labelledby="ir-ways-to-earn"><h3 class="infirewards-customer__section-title" id="ir-ways-to-earn"><?php esc_html_e( 'Ways to earn', 'infirewards' ); ?></h3><div class="infirewards-customer__ways">
 				<?php
 				if ( $rule && 1 === (int) $rule['status'] && (float) $rule['rate'] > 0 ) :
+					// translators: 1: points earned, 2: price of one currency unit.
+					$earning_label = sprintf( __( 'Earn %1$s points for each %2$s spent on eligible orders.', 'infirewards' ), $rule['rate'], wp_strip_all_tags( wc_price( 1 ) ) );
 					?>
-					<div class="infirewards-customer__way"><span class="infirewards-customer__icon" aria-hidden="true">♧</span><div><strong><?php esc_html_e( 'Points for purchases', 'infirewards' ); ?></strong><p><?php echo esc_html( sprintf( __( 'Earn %1$s points for each %2$s spent on eligible orders.', 'infirewards' ), $rule['rate'], wp_strip_all_tags( wc_price( 1 ) ) ) ); ?></p></div></div>
+					<div class="infirewards-customer__way"><span class="infirewards-customer__icon" aria-hidden="true">♧</span><div><strong><?php esc_html_e( 'Points for purchases', 'infirewards' ); ?></strong><p><?php echo esc_html( $earning_label ); ?></p></div></div>
 					<?php
 else :
 	?>
@@ -153,6 +162,8 @@ endif;
 	private static function reward_card( array $reward, int $balance ): void {
 		$cost       = (int) $reward['points_cost'];
 		$can_redeem = $balance >= $cost;
+		// translators: %s: additional points needed to redeem the reward.
+		$needed_label = $can_redeem ? '' : sprintf( __( 'Need %s more points', 'infirewards' ), number_format_i18n( $cost - $balance ) );
 		?>
 		<article class="infirewards-reward"><div class="infirewards-reward__main"><span class="infirewards-customer__icon" aria-hidden="true">♢</span><div><h4><?php echo esc_html( $reward['name'] ); ?></h4><p><?php echo wp_kses_post( wc_price( $reward['discount_amount'] ) ); ?> <?php esc_html_e( 'off your next order', 'infirewards' ); ?></p></div></div><div class="infirewards-reward__footer"><strong>◉ <?php echo esc_html( number_format_i18n( $cost ) ); ?> <?php esc_html_e( 'points', 'infirewards' ); ?></strong>
 		<?php
@@ -162,7 +173,7 @@ endif;
 			<?php
 else :
 	?>
-			<span class="infirewards-reward__unavailable"><?php echo esc_html( sprintf( __( 'Need %s more points', 'infirewards' ), number_format_i18n( $cost - $balance ) ) ); ?></span><?php endif; ?></div></article>
+			<span class="infirewards-reward__unavailable"><?php echo esc_html( $needed_label ); ?></span><?php endif; ?></div></article>
 		<?php
 	}
 
@@ -176,8 +187,10 @@ else :
 			<?php
 else :
 	foreach ( $redemptions as $record ) :
+		// translators: %s: reward ID.
+		$reward_label = sprintf( __( 'Reward #%s', 'infirewards' ), $record['reward_id'] );
 		?>
-	<div class="infirewards-customer__activity infirewards-redemption"><div><strong><?php echo esc_html( sprintf( __( 'Reward #%s', 'infirewards' ), $record['reward_id'] ) ); ?></strong><small><?php echo esc_html( $record['created_at'] ); ?></small>
+	<div class="infirewards-customer__activity infirewards-redemption"><div><strong><?php echo esc_html( $reward_label ); ?></strong><small><?php echo esc_html( $record['created_at'] ); ?></small>
 		<?php
 		if ( 'issued' === $record['status'] && ! self::coupon_is_used( $record ) ) :
 			?>

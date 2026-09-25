@@ -9,7 +9,7 @@ Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Loyalty points and rewards for WooCommerce. Let logged-in customers earn points from completed purchases and spend them on single-use discount coupons.
+WooCommerce loyalty points for completed purchases, redeemable for single-use discount coupons.
 
 == Description ==
 

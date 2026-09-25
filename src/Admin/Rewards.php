@@ -19,12 +19,14 @@ class Rewards {
 		global $wpdb;
 		$repository        = new RewardRepository();
 		$rewards           = $repository->all();
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- GET parameters only select and filter this read-only page.
 		$reward_id         = isset( $_GET['reward_id'] ) && is_scalar( $_GET['reward_id'] ) ? absint( wp_unslash( $_GET['reward_id'] ) ) : 0;
 		$reward            = $reward_id ? $repository->get( $reward_id ) : null;
 		$notice            = isset( $_GET['infirewards_notice'] ) && is_scalar( $_GET['infirewards_notice'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_notice'] ) ) : '';
 		$search            = isset( $_GET['s'] ) && is_scalar( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
 		$filter            = isset( $_GET['status'] ) && is_scalar( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : 'all';
 		$filter            = in_array( $filter, array( 'all', 'active', 'inactive' ), true ) ? $filter : 'all';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$currency          = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '';
 		$code              = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '';
 		$decimals          = function_exists( 'wc_get_price_decimals' ) ? max( 0, min( 6, (int) wc_get_price_decimals() ) ) : 2;

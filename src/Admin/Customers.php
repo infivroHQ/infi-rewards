@@ -19,10 +19,12 @@ class Customers {
 		global $wpdb;
 		$wallets      = WalletTable::table_name();
 		$transactions = TransactionsTable::table_name();
+		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- GET parameters only filter and paginate this read-only page.
 		$search       = isset( $_GET['s'] ) && is_scalar( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
 		$page         = isset( $_GET['paged'] ) && is_scalar( $_GET['paged'] ) ? max( 1, absint( wp_unslash( $_GET['paged'] ) ) ) : 1;
 		$sort         = isset( $_GET['sort'] ) && is_scalar( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : 'balance';
 		$sort         = in_array( $sort, array( 'balance', 'recent', 'name' ), true ) ? $sort : 'balance';
+		// phpcs:enable WordPress.Security.NonceVerification.Recommended
 		$order_by     = array(
 			'balance' => 'w.balance DESC',
 			'recent'  => 'last_activity DESC',
@@ -48,6 +50,7 @@ class Customers {
 			{$where} ORDER BY {$order_by}, w.user_id ASC LIMIT %d OFFSET %d"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Order is chosen from a fixed whitelist.
 		$rows        = $wpdb->get_results( $wpdb->prepare( $list_sql, array_merge( $args, array( $limit, $offset ) ) ), ARRAY_A );
 		$rows        = is_array( $rows ) ? $rows : array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Customer selection is read-only.
 		$selected_id = isset( $_GET['customer_id'] ) && is_scalar( $_GET['customer_id'] ) ? absint( wp_unslash( $_GET['customer_id'] ) ) : 0;
 		if ( ! $selected_id && $rows ) {
 			$selected_id = (int) $rows[0]['user_id'];
