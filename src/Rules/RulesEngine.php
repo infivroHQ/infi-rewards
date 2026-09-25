@@ -6,7 +6,7 @@ use InfiRewards\Database\RulesTable;
 defined( 'ABSPATH' ) || exit;
 
 class RulesEngine {
-	private const TYPE = 'points_per_currency_unit';
+	private const TYPE       = 'points_per_currency_unit';
 	private static $instance = null;
 
 	public static function get_instance(): self {
@@ -21,11 +21,11 @@ class RulesEngine {
 	public function get_rule(): ?array {
 		global $wpdb;
 		$table = RulesTable::table_name();
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE type = %s ORDER BY rule_id ASC LIMIT 1", self::TYPE ), ARRAY_A );
+		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE type = %s ORDER BY rule_id ASC LIMIT 1", self::TYPE ), ARRAY_A );
 		if ( ! $row ) {
 			return null;
 		}
-		$config = json_decode( $row['config'], true );
+		$config      = json_decode( $row['config'], true );
 		$row['rate'] = is_array( $config ) && isset( $config['rate'] ) ? (string) $config['rate'] : '0';
 		return $row;
 	}
@@ -37,13 +37,13 @@ class RulesEngine {
 			return false;
 		}
 		$table = RulesTable::table_name();
-		$data = array(
-			'type' => self::TYPE,
+		$data  = array(
+			'type'   => self::TYPE,
 			'config' => wp_json_encode( array( 'rate' => $rate ) ),
 			'points' => 0,
 			'status' => $active ? 1 : 0,
 		);
-		$rule = $this->get_rule();
+		$rule  = $this->get_rule();
 		if ( $rule ) {
 			return false !== $wpdb->update( $table, $data, array( 'rule_id' => (int) $rule['rule_id'] ) );
 		}
@@ -67,11 +67,11 @@ class RulesEngine {
 		if ( ! preg_match( '/^(?:0|[1-9][0-9]*)(?:\.[0-9]{1,4})?$/D', $rate ) || (float) $rate > 1000000 ) {
 			return 0;
 		}
-		$decimals = function_exists( 'wc_get_price_decimals' ) ? (int) wc_get_price_decimals() : 2;
-		$decimals = max( 0, min( 6, $decimals ) );
-		$scale = 10 ** $decimals;
-		$amount = max( 0, (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total() );
-		$minor = (int) round( $amount * $scale );
+		$decimals   = function_exists( 'wc_get_price_decimals' ) ? (int) wc_get_price_decimals() : 2;
+		$decimals   = max( 0, min( 6, $decimals ) );
+		$scale      = 10 ** $decimals;
+		$amount     = max( 0, (float) $order->get_total() - (float) $order->get_total_tax() - (float) $order->get_shipping_total() );
+		$minor      = (int) round( $amount * $scale );
 		$rate_parts = explode( '.', $rate, 2 );
 		$rate_units = (int) $rate_parts[0] * 10000 + (int) str_pad( $rate_parts[1] ?? '', 4, '0' );
 		if ( $minor <= 0 || $rate_units <= 0 || $minor > intdiv( PHP_INT_MAX, $rate_units ) ) {

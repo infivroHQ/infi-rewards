@@ -43,9 +43,9 @@ class Overview {
 			ARRAY_A
 		);
 		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$rule         = RulesEngine::get_instance()->get_rule();
-		$has_rule     = $rule && 1 === (int) $rule['status'] && (float) $rule['rate'] > 0;
-		$has_reward   = false;
+		$rule       = RulesEngine::get_instance()->get_rule();
+		$has_rule   = $rule && 1 === (int) $rule['status'] && (float) $rule['rate'] > 0;
+		$has_reward = false;
 		foreach ( ( new RewardRepository() )->all() as $reward ) {
 			if ( 1 === (int) $reward['status'] ) {
 				$has_reward = true;

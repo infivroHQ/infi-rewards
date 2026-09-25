@@ -41,11 +41,11 @@ class RewardsPage {
 		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name comes from the WordPress prefix.
 		$redeemed_points = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(points), 0) FROM {$table} WHERE user_id = %d AND type = 'debit' AND event_type = 'redemption'", $user_id ) );
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Redirect parameters only select a notice and the current user's record.
-		$notice          = isset( $_GET['infirewards_notice'] ) && is_scalar( $_GET['infirewards_notice'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_notice'] ) ) : '';
-		$redemption_id   = isset( $_GET['infirewards_redemption'] ) && is_scalar( $_GET['infirewards_redemption'] ) ? absint( wp_unslash( $_GET['infirewards_redemption'] ) ) : 0;
+		$notice        = isset( $_GET['infirewards_notice'] ) && is_scalar( $_GET['infirewards_notice'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_notice'] ) ) : '';
+		$redemption_id = isset( $_GET['infirewards_redemption'] ) && is_scalar( $_GET['infirewards_redemption'] ) ? absint( wp_unslash( $_GET['infirewards_redemption'] ) ) : 0;
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$noticed_record  = $redemption_id ? $service->get( $user_id, $redemption_id ) : null;
-		$messages        = array(
+		$noticed_record = $redemption_id ? $service->get( $user_id, $redemption_id ) : null;
+		$messages       = array(
 			'issued'      => __( 'Reward redeemed. Your coupon is shown below.', 'infi-rewards' ),
 			'pending'     => __( 'Your points were deducted, but the coupon could not be delivered yet. Retry it below; you will not be charged again.', 'infi-rewards' ),
 			'points'      => __( 'You do not have enough points for that reward.', 'infi-rewards' ),

@@ -22,13 +22,13 @@ if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
 	require_once __DIR__ . '/vendor/autoload.php';
 } else {
 	spl_autoload_register(
-		function ( string $class ): void {
+		function ( string $class_name ): void {
 			$prefix = 'InfiRewards\\';
-			if ( 0 !== strpos( $class, $prefix ) ) {
+			if ( 0 !== strpos( $class_name, $prefix ) ) {
 				return;
 			}
 
-			$relative = substr( $class, strlen( $prefix ) );
+			$relative = substr( $class_name, strlen( $prefix ) );
 			$file     = __DIR__ . '/src/' . str_replace( '\\', '/', $relative ) . '.php';
 			if ( is_file( $file ) ) {
 				require_once $file;

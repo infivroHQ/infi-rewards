@@ -9,10 +9,10 @@ defined( 'ABSPATH' ) || exit;
  * Creates required tables on plugin activation and provides a migration entrypoint.
  */
 class Installer {
-	public const TRANSACTIONAL_VERSION = '1.2';
+	public const TRANSACTIONAL_VERSION  = '1.2';
 	public const LEDGER_CONTEXT_VERSION = '1.3';
-	public const REDEMPTION_VERSION = '1.5';
-	private const DB_VERSION = self::REDEMPTION_VERSION;
+	public const REDEMPTION_VERSION     = '1.5';
+	private const DB_VERSION            = self::REDEMPTION_VERSION;
 	/** @var Installer|null */
 	private static $instance = null;
 
@@ -52,7 +52,7 @@ class Installer {
 		// - user_id: WordPress user ID (unique)
 		// - balance: integer point balance
 		// - updated_at: last update timestamp
-		$wallets_table = $prefix . 'infirewards_wallets';
+		$wallets_table = esc_sql( $prefix . 'infirewards_wallets' );
 		$sql_wallets   = "CREATE TABLE {$wallets_table} (
             wallet_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id BIGINT(20) UNSIGNED NOT NULL,
@@ -72,7 +72,7 @@ class Installer {
 		// - reward_id: redeemed reward, when applicable
 		// - reason: short description
 		// - created_at: timestamp
-		$transactions_table = $prefix . 'infirewards_transactions';
+		$transactions_table = esc_sql( $prefix . 'infirewards_transactions' );
 		$sql_transactions   = "CREATE TABLE {$transactions_table} (
             transaction_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id BIGINT(20) UNSIGNED NOT NULL,
@@ -96,7 +96,7 @@ class Installer {
 		// - config: JSON/text configuration for the rule
 		// - points: default points value for the rule
 		// - status: active/inactive flag
-		$rules_table = $prefix . 'infirewards_rules';
+		$rules_table = esc_sql( $prefix . 'infirewards_rules' );
 		$sql_rules   = "CREATE TABLE {$rules_table} (
             rule_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             type VARCHAR(50) NOT NULL DEFAULT '',
@@ -108,8 +108,8 @@ class Installer {
             KEY status_idx (status)
         ) {$charset_collate};";
 
-		$rewards_table = $prefix . 'infirewards_rewards';
-		$sql_rewards  = "CREATE TABLE {$rewards_table} (
+		$rewards_table = esc_sql( $prefix . 'infirewards_rewards' );
+		$sql_rewards   = "CREATE TABLE {$rewards_table} (
             reward_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             name VARCHAR(255) NOT NULL,
             discount_amount DECIMAL(18,6) NOT NULL,
@@ -121,8 +121,8 @@ class Installer {
             KEY status_idx (status)
         ) ENGINE=InnoDB {$charset_collate};";
 
-		$redemptions_table = $prefix . 'infirewards_redemptions';
-		$sql_redemptions = "CREATE TABLE {$redemptions_table} (
+		$redemptions_table = esc_sql( $prefix . 'infirewards_redemptions' );
+		$sql_redemptions   = "CREATE TABLE {$redemptions_table} (
             redemption_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
             user_id BIGINT(20) UNSIGNED NOT NULL,
             reward_id BIGINT(20) UNSIGNED NOT NULL,
@@ -155,21 +155,21 @@ class Installer {
 		}
 
 		// Do not claim a completed migration if dbDelta could not add a column or index.
-		$wallet_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$wallets_table} LIKE %s", 'balance' ) );
-		$type_column   = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'type' ) );
-		$event_column  = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_type' ) );
-		$key_column    = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_key' ) );
-		$reward_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'reward_id' ) );
-		$reward_name_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'name' ) );
-		$discount_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'discount_amount' ) );
-		$cost_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'points_cost' ) );
-		$status_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'status' ) );
+		$wallet_column            = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$wallets_table} LIKE %s", 'balance' ) );
+		$type_column              = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'type' ) );
+		$event_column             = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_type' ) );
+		$key_column               = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_key' ) );
+		$reward_column            = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'reward_id' ) );
+		$reward_name_column       = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'name' ) );
+		$discount_column          = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'discount_amount' ) );
+		$cost_column              = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'points_cost' ) );
+		$status_column            = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'status' ) );
 		$redemption_coupon_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'coupon_id' ) );
 		$redemption_amount_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'discount_amount' ) );
-		$redemption_email_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'customer_email' ) );
-		$redemption_code_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'coupon_code' ) );
-		$redemption_key_unique = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0', $redemptions_table, 'request_key' ) );
-		$unique_key    = $wpdb->get_var(
+		$redemption_email_column  = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'customer_email' ) );
+		$redemption_code_column   = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'coupon_code' ) );
+		$redemption_key_unique    = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0', $redemptions_table, 'request_key' ) );
+		$unique_key               = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0',
 				$transactions_table,
@@ -211,7 +211,7 @@ class Installer {
 		}
 
 		// Table names are built from the configured WordPress prefix.
-		$quoted_table = str_replace( '`', '``', $table );
+		$quoted_table = esc_sql( str_replace( '`', '``', $table ) );
 		if ( false === $wpdb->query( "ALTER TABLE `{$quoted_table}` ENGINE=InnoDB" ) ) {
 			return false;
 		}
@@ -230,6 +230,8 @@ class Installer {
 	 */
 	private function reconcile_legacy_balances( string $wallets_table, string $transactions_table ): bool {
 		global $wpdb;
+		$wallets_table      = esc_sql( $wallets_table );
+		$transactions_table = esc_sql( $transactions_table );
 
 		$wallets = $wpdb->get_results( "SELECT user_id FROM {$wallets_table}", ARRAY_A );
 		if ( null === $wallets || ! empty( $wpdb->last_error ) ) {
@@ -244,7 +246,7 @@ class Installer {
 			$balance = $wpdb->get_var(
 				$wpdb->prepare( "SELECT balance FROM {$wallets_table} WHERE user_id = %d FOR UPDATE", $user_id )
 			);
-			$ledger = $wpdb->get_var(
+			$ledger  = $wpdb->get_var(
 				$wpdb->prepare(
 					"SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points WHEN type = 'debit' THEN -points ELSE 0 END), 0) FROM {$transactions_table} WHERE user_id = %d",
 					$user_id
@@ -286,6 +288,7 @@ class Installer {
 	 */
 	private function backfill_order_events( string $transactions_table ): bool {
 		global $wpdb;
+		$transactions_table = esc_sql( $transactions_table );
 
 		$orders = $wpdb->get_results(
 			"SELECT order_id, type, MIN(transaction_id) AS first_id
@@ -299,10 +302,10 @@ class Installer {
 		}
 
 		foreach ( $orders as $order ) {
-			$type       = 'credit' === $order['type'] ? 'order_earn' : 'order_reversal';
-			$event_key  = $type . ':' . (int) $order['order_id'];
-			$first_id   = (int) $order['first_id'];
-			$existing   = $wpdb->get_var(
+			$type      = 'credit' === $order['type'] ? 'order_earn' : 'order_reversal';
+			$event_key = $type . ':' . (int) $order['order_id'];
+			$first_id  = (int) $order['first_id'];
+			$existing  = $wpdb->get_var(
 				$wpdb->prepare( "SELECT event_key FROM {$transactions_table} WHERE transaction_id = %d", $first_id )
 			);
 			if ( null !== $existing ) {
@@ -361,11 +364,11 @@ class Installer {
 		}
 
 		$tables = array(
-			$prefix . 'infirewards_wallets',
-			$prefix . 'infirewards_transactions',
-			$prefix . 'infirewards_rules',
-			$prefix . 'infirewards_rewards',
-			$prefix . 'infirewards_redemptions',
+			esc_sql( $prefix . 'infirewards_wallets' ),
+			esc_sql( $prefix . 'infirewards_transactions' ),
+			esc_sql( $prefix . 'infirewards_rules' ),
+			esc_sql( $prefix . 'infirewards_rewards' ),
+			esc_sql( $prefix . 'infirewards_redemptions' ),
 		);
 
 		foreach ( $tables as $table ) {

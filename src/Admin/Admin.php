@@ -56,7 +56,7 @@ class Admin {
 			'infirewards-customers',
 			array( __CLASS__, 'render_customers' )
 		);
-		$settings_hook = add_submenu_page(
+		$settings_hook  = add_submenu_page(
 			'infirewards',
 			__( 'Settings', 'infi-rewards' ),
 			__( 'Settings', 'infi-rewards' ),
@@ -131,9 +131,9 @@ class Admin {
 			wp_die( esc_html__( 'You cannot edit earning rules.', 'infi-rewards' ) );
 		}
 		check_admin_referer( 'infirewards_save_earning_rule' );
-		$rate = isset( $_POST['rate'] ) && is_scalar( $_POST['rate'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['rate'] ) ) ) : '';
+		$rate   = isset( $_POST['rate'] ) && is_scalar( $_POST['rate'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['rate'] ) ) ) : '';
 		$active = isset( $_POST['active'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['active'] ) );
-		$saved = RulesEngine::get_instance()->save_rule( $rate, $active );
+		$saved  = RulesEngine::get_instance()->save_rule( $rate, $active );
 		wp_safe_redirect( add_query_arg( 'infirewards_notice', $saved ? 'saved' : 'invalid', admin_url( 'admin.php?page=infirewards-earning-rule' ) ) );
 		exit;
 	}
@@ -145,12 +145,12 @@ class Admin {
 		}
 		check_admin_referer( 'infirewards_save_reward' );
 		$reward_id = isset( $_POST['reward_id'] ) && is_scalar( $_POST['reward_id'] ) ? absint( wp_unslash( $_POST['reward_id'] ) ) : 0;
-		$name = isset( $_POST['name'] ) && is_scalar( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
-		$amount = isset( $_POST['discount_amount'] ) && is_scalar( $_POST['discount_amount'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['discount_amount'] ) ) ) : '';
-		$cost = isset( $_POST['points_cost'] ) && is_scalar( $_POST['points_cost'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['points_cost'] ) ) ) : '';
-		$active = isset( $_POST['active'] ) && is_scalar( $_POST['active'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['active'] ) );
-		$saved = ( new RewardRepository() )->save( $reward_id, $name, $amount, $cost, $active );
-		$url = admin_url( 'admin.php?page=infirewards-rewards' );
+		$name      = isset( $_POST['name'] ) && is_scalar( $_POST['name'] ) ? sanitize_text_field( wp_unslash( $_POST['name'] ) ) : '';
+		$amount    = isset( $_POST['discount_amount'] ) && is_scalar( $_POST['discount_amount'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['discount_amount'] ) ) ) : '';
+		$cost      = isset( $_POST['points_cost'] ) && is_scalar( $_POST['points_cost'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['points_cost'] ) ) ) : '';
+		$active    = isset( $_POST['active'] ) && is_scalar( $_POST['active'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['active'] ) );
+		$saved     = ( new RewardRepository() )->save( $reward_id, $name, $amount, $cost, $active );
+		$url       = admin_url( 'admin.php?page=infirewards-rewards' );
 		if ( $reward_id > 0 ) {
 			$url = add_query_arg( 'reward_id', $reward_id, $url );
 		}

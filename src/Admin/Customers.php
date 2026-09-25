@@ -20,36 +20,43 @@ class Customers {
 		$wallets      = WalletTable::table_name();
 		$transactions = TransactionsTable::table_name();
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- GET parameters only filter and paginate this read-only page.
-		$search       = isset( $_GET['s'] ) && is_scalar( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
-		$page         = isset( $_GET['paged'] ) && is_scalar( $_GET['paged'] ) ? max( 1, absint( wp_unslash( $_GET['paged'] ) ) ) : 1;
-		$sort         = isset( $_GET['sort'] ) && is_scalar( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : 'balance';
-		$sort         = in_array( $sort, array( 'balance', 'recent', 'name' ), true ) ? $sort : 'balance';
+		$search = isset( $_GET['s'] ) && is_scalar( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+		$page   = isset( $_GET['paged'] ) && is_scalar( $_GET['paged'] ) ? max( 1, absint( wp_unslash( $_GET['paged'] ) ) ) : 1;
+		$sort   = isset( $_GET['sort'] ) && is_scalar( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : 'balance';
+		$sort   = in_array( $sort, array( 'balance', 'recent', 'name' ), true ) ? $sort : 'balance';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$order_by     = array(
+		$order_by = sanitize_sql_orderby( array(
 			'balance' => 'w.balance DESC',
 			'recent'  => 'last_activity DESC',
 			'name'    => 'u.display_name ASC',
-		)[ $sort ];
-		$where        = '';
-		$args         = array();
-		if ( '' !== $search ) {
-			$where = ' WHERE (u.display_name LIKE %s OR u.user_email LIKE %s)';
-			$like  = '%' . $wpdb->esc_like( $search ) . '%';
-			$args  = array( $like, $like );
-		}
-		// Dynamic table names are internal; search values and limits are prepared.
-		// phpcs:disable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$base        = "FROM {$wallets} w INNER JOIN {$wpdb->users} u ON u.ID = w.user_id"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Internal table names.
-		$count_sql   = "SELECT COUNT(*) {$base}{$where}";
-		$total       = (int) $wpdb->get_var( $args ? $wpdb->prepare( $count_sql, $args ) : $count_sql );
-		$limit       = 20;
-		$page        = min( $page, max( 1, (int) ceil( $total / $limit ) ) );
-		$offset      = ( $page - 1 ) * $limit;
-		$list_sql    = "SELECT w.user_id, w.balance, u.display_name, u.user_email, COALESCE(t.earned, 0) AS earned, t.last_activity
-			{$base} LEFT JOIN (SELECT user_id, SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END) AS earned, MAX(created_at) AS last_activity FROM {$transactions} GROUP BY user_id) t ON t.user_id = w.user_id
-			{$where} ORDER BY {$order_by}, w.user_id ASC LIMIT %d OFFSET %d"; // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Order is chosen from a fixed whitelist.
-		$rows        = $wpdb->get_results( $wpdb->prepare( $list_sql, array_merge( $args, array( $limit, $offset ) ) ), ARRAY_A );
-		$rows        = is_array( $rows ) ? $rows : array();
+		)[ $sort ] );
+		$like     = '%' . $wpdb->esc_like( $search ) . '%';
+		// Table names come from WordPress; the sort expression is selected from the fixed list above.
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$total  = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM {$wallets} w INNER JOIN {$wpdb->users} u ON u.ID = w.user_id WHERE (u.display_name LIKE %s OR u.user_email LIKE %s)",
+				$like,
+				$like
+			)
+		);
+		$limit  = 20;
+		$page   = min( $page, max( 1, (int) ceil( $total / $limit ) ) );
+		$offset = ( $page - 1 ) * $limit;
+		$rows   = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT w.user_id, w.balance, u.display_name, u.user_email, COALESCE(t.earned, 0) AS earned, t.last_activity
+				FROM {$wallets} w INNER JOIN {$wpdb->users} u ON u.ID = w.user_id
+				LEFT JOIN (SELECT user_id, SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END) AS earned, MAX(created_at) AS last_activity FROM {$transactions} GROUP BY user_id) t ON t.user_id = w.user_id
+				WHERE (u.display_name LIKE %s OR u.user_email LIKE %s) ORDER BY {$order_by}, w.user_id ASC LIMIT %d OFFSET %d",
+				$like,
+				$like,
+				$limit,
+				$offset
+			),
+			ARRAY_A
+		);
+		$rows   = is_array( $rows ) ? $rows : array();
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Customer selection is read-only.
 		$selected_id = isset( $_GET['customer_id'] ) && is_scalar( $_GET['customer_id'] ) ? absint( wp_unslash( $_GET['customer_id'] ) ) : 0;
 		if ( ! $selected_id && $rows ) {
@@ -63,7 +70,7 @@ class Customers {
 		$summary  = $customer ? $wpdb->get_row( $wpdb->prepare( "SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END), 0) AS earned, COALESCE(SUM(CASE WHEN event_type = 'redemption' AND type = 'debit' THEN points ELSE 0 END), 0) AS redeemed, MAX(CASE WHEN event_type = 'redemption' THEN created_at ELSE NULL END) AS last_redeemed FROM {$transactions} WHERE user_id = %d", $selected_id ), ARRAY_A ) : null;
 		$activity = $customer ? $wpdb->get_results( $wpdb->prepare( "SELECT points, type, event_type, reason, order_id, created_at FROM {$transactions} WHERE user_id = %d ORDER BY transaction_id DESC LIMIT 6", $selected_id ), ARRAY_A ) : array();
 		$activity = is_array( $activity ) ? $activity : array();
-		// phpcs:enable WordPress.DB.PreparedSQL.NotPrepared,WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		?>
 		<div class="wrap infirewards-page">
 			<?php PageHeader::render( 'infirewards-customers' ); ?>

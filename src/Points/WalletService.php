@@ -20,7 +20,7 @@ class WalletService {
 	}
 
 	private function __construct() {
-		// private: use singleton
+		// Construction is restricted to get_instance().
 	}
 
 	public function get_wallet_for_user( int $user_id ): ?WalletModel {
@@ -64,8 +64,8 @@ class WalletService {
 			return false;
 		}
 		$wallet_table = WalletTable::table_name();
-		$txn_table = TransactionsTable::table_name();
-		$earn = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$txn_table} WHERE event_key = %s AND event_type = 'order_earn'", 'order_earn:' . $order_id ), ARRAY_A );
+		$txn_table    = TransactionsTable::table_name();
+		$earn         = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$txn_table} WHERE event_key = %s AND event_type = 'order_earn'", 'order_earn:' . $order_id ), ARRAY_A );
 		if ( ! $earn || (int) $earn['points'] <= 0 ) {
 			return false;
 		}
@@ -89,7 +89,7 @@ class WalletService {
 			return false;
 		}
 		$reverse = null === $spent && (int) $balance >= (int) $earn['points'];
-		$points = $reverse ? (int) $earn['points'] : 0;
+		$points  = $reverse ? (int) $earn['points'] : 0;
 		if ( $reverse ) {
 			$updated = $wpdb->update( $wallet_table, array( 'balance' => (int) $balance - $points, 'updated_at' => current_time( 'mysql' ) ), array( 'user_id' => $user_id ), array( '%d', '%s' ), array( '%d' ) );
 			if ( 1 !== $updated ) {
@@ -98,13 +98,13 @@ class WalletService {
 			}
 		}
 		$inserted = $wpdb->insert( $txn_table, array(
-			'user_id' => $user_id,
-			'order_id' => $order_id,
-			'points' => $points,
-			'type' => 'debit',
+			'user_id'    => $user_id,
+			'order_id'   => $order_id,
+			'points'     => $points,
+			'type'       => 'debit',
 			'event_type' => 'order_reversal',
-			'event_key' => 'order_reversal:' . $order_id,
-			'reason' => $reverse ? sprintf( 'Reversed points for order #%d', $order_id ) : sprintf( 'Reversal waived: points spent since order #%d', $order_id ),
+			'event_key'  => 'order_reversal:' . $order_id,
+			'reason'     => $reverse ? sprintf( 'Reversed points for order #%d', $order_id ) : sprintf( 'Reversal waived: points spent since order #%d', $order_id ),
 			'created_at' => current_time( 'mysql' ),
 		), array( '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s' ) );
 		if ( 1 !== $inserted || false === $wpdb->query( 'COMMIT' ) ) {
