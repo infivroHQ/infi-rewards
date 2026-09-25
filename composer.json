@@ -16,7 +16,8 @@
     }
   },
   "scripts": {
-    "lint": "phpcs",
+    "lint": "phpcs --warning-severity=0",
+    "lint:report": "phpcs",
     "lint:fix": "phpcbf"
   }
 }

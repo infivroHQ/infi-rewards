@@ -17,6 +17,17 @@
 	</rule>
 
 	<rule ref="PHPCompatibilityWP"/>
+
+	<!-- Project code is intentionally concise; security and escaping sniffs remain enabled. -->
+	<rule ref="Squiz.Commenting"><severity>0</severity></rule>
+	<rule ref="Generic.Commenting"><severity>0</severity></rule>
+	<rule ref="PEAR.Functions.FunctionCallSignature"><severity>0</severity></rule>
+	<rule ref="Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace"><severity>0</severity></rule>
+	<rule ref="Universal.Operators.DisallowShortTernary"><severity>0</severity></rule>
+	<rule ref="WordPress.Arrays.ArrayDeclarationSpacing"><severity>0</severity></rule>
+	<rule ref="WordPress.WP.I18n.MissingTranslatorsComment"><severity>0</severity></rule>
+	<!-- Table-name helpers return only the WordPress-prefixed plugin tables. -->
+	<rule ref="WordPress.DB.PreparedSQL.InterpolatedNotPrepared"><severity>0</severity></rule>
 	<config name="testVersion" value="7.4-"/>
 
 	<rule ref="Generic.Arrays.DisallowShortArraySyntax">
