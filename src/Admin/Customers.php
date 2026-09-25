@@ -25,11 +25,11 @@ class Customers {
 		$sort   = isset( $_GET['sort'] ) && is_scalar( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : 'balance';
 		$sort   = in_array( $sort, array( 'balance', 'recent', 'name' ), true ) ? $sort : 'balance';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$order_by = sanitize_sql_orderby( array(
+		$order_by = array(
 			'balance' => 'w.balance DESC',
 			'recent'  => 'last_activity DESC',
 			'name'    => 'u.display_name ASC',
-		)[ $sort ] );
+		)[ $sort ];
 		$like     = '%' . $wpdb->esc_like( $search ) . '%';
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
 		$total  = (int) $wpdb->get_var(
