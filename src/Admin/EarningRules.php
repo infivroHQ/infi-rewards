@@ -75,8 +75,8 @@ class EarningRules {
 						<input type="hidden" name="action" value="infirewards_save_earning_rule">
 						<?php wp_nonce_field( 'infirewards_save_earning_rule' ); ?>
 						<label for="infirewards-rate"><?php esc_html_e( 'Points per currency unit', 'infirewards' ); ?></label>
-						<div class="infirewards-rules__input-row"><input id="infirewards-rate" name="rate" type="number" min="0" max="1000000" step="0.0001" required value="<?php echo esc_attr( $rule ? $rule['rate'] : '1' ); ?>"><span><?php echo esc_html( $currency ); ?></span></div>
-						<p class="description"><?php esc_html_e( 'Up to four decimal places. Points are rounded down to whole numbers.', 'infirewards' ); ?></p>
+						<div class="infirewards-rules__input-row"><input id="infirewards-rate" name="rate" type="number" min="0" max="1000000" step="0.01" required value="<?php echo esc_attr( $rule ? $rule['rate'] : '1' ); ?>"><span><?php echo esc_html( $currency ); ?></span></div>
+						<p class="description"><?php esc_html_e( 'Up to two decimal places. Points are rounded down to whole numbers.', 'infirewards' ); ?></p>
 						<label class="infirewards-rules__checkbox"><input type="checkbox" name="active" value="1" <?php checked( $rule ? $active : true ); ?>> <?php esc_html_e( 'Active', 'infirewards' ); ?></label>
 						<p class="infirewards-rules__submit"><button class="button button-primary" type="submit"><?php echo esc_html( $rule ? __( 'Save Rule', 'infirewards' ) : __( 'Create Rule', 'infirewards' ) ); ?></button></p>
 					</form>
