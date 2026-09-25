@@ -1,22 +1,38 @@
 ( function () {
 	'use strict';
 
+	function setButtonLabel( button, icon, label ) {
+		var iconSpan = document.createElement( 'span' );
+		iconSpan.setAttribute( 'aria-hidden', 'true' );
+		iconSpan.textContent = icon;
+		button.textContent = '';
+		button.appendChild( iconSpan );
+		button.appendChild( document.createTextNode( ' ' + label ) );
+	}
+
 	function setCopiedState( button ) {
 		var status = button.nextElementSibling;
-		var originalLabel = button.getAttribute( 'aria-label' );
+		var labels = window.infirewardsCouponText;
 
 		button.classList.add( 'is-copied' );
-		button.setAttribute( 'aria-label', 'Coupon code copied to clipboard' );
-		button.innerHTML = '<span aria-hidden="true">✓</span> Copied';
+		button.setAttribute( 'aria-label', labels.copiedLabel );
+		setButtonLabel( button, '✓', labels.copied );
 		if ( status ) {
-			status.textContent = 'Coupon code copied to clipboard.';
+			status.textContent = labels.copiedLabel;
 		}
 
 		window.setTimeout( function () {
 			button.classList.remove( 'is-copied' );
-			button.setAttribute( 'aria-label', originalLabel );
-			button.innerHTML = '<span aria-hidden="true">⧉</span> Copy coupon';
+			button.setAttribute( 'aria-label', labels.copyLabel );
+			setButtonLabel( button, '⧉', labels.copy );
 		}, 2000 );
+	}
+
+	function reportCopyFailure( button ) {
+		var status = button.nextElementSibling;
+		if ( status ) {
+			status.textContent = window.infirewardsCouponText.copyFailed;
+		}
 	}
 
 	function copyFallback( code ) {
@@ -49,10 +65,14 @@
 			}, function () {
 				if ( copyFallback( code ) ) {
 					setCopiedState( button );
+				} else {
+					reportCopyFailure( button );
 				}
 			} );
 		} else if ( copyFallback( code ) ) {
 			setCopiedState( button );
+		} else {
+			reportCopyFailure( button );
 		}
 	} );
 }() );

@@ -21,6 +21,17 @@ class RewardsShortcode {
 		if ( ( function_exists( 'is_account_page' ) && is_account_page() ) || ( is_singular() && get_post() && has_shortcode( get_post()->post_content, 'infirewards' ) ) ) {
 			wp_enqueue_style( 'infirewards-customer', plugins_url( 'assets/css/customer-rewards.css', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION );
 			wp_enqueue_script( 'infirewards-customer', plugins_url( 'assets/js/customer-rewards.js', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION, true );
+			wp_localize_script(
+				'infirewards-customer',
+				'infirewardsCouponText',
+				array(
+					'copied'      => __( 'Copied', 'infirewards' ),
+					'copy'        => __( 'Copy coupon', 'infirewards' ),
+					'copiedLabel' => __( 'Coupon code copied to clipboard', 'infirewards' ),
+					'copyLabel'   => __( 'Copy coupon code to clipboard', 'infirewards' ),
+					'copyFailed'  => __( 'Could not copy the coupon code. Please try again.', 'infirewards' ),
+				)
+			);
 		}
 	}
 

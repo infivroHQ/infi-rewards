@@ -1,12 +1,12 @@
 # infiRewards: smallest v1 progress and checklist
 
-_Updated 24 September 2026 after automated verification on a disposable WordPress + WooCommerce installation._
+_Updated 25 September 2026. Automated checks ran on 24 September; the store owner reports browser testing on WordPress 7.1._
 
 ## The v1 target
 
 The store owner can create an earning rule that says **how many points a customer earns per $1 spent**, and can create a reward with a points cost. A logged-in customer earns points on an eligible purchase, sees their balance and available rewards, and redeems a reward when they have enough points.
 
-To keep this first release small, use one earning rule type and one reward type. A **fixed cart discount WooCommerce coupon** is a practical first reward: the owner sets its discount amount and points cost; redemption issues a customer-specific, single-use coupon. This reward choice is a proposed v1 decision, not functionality already implemented. The existing [architecture plan](v1-architecture-plan.md) describes a wider future scope; registration points, fixed points per order, product rules, percentage/custom rewards, manual adjustments, gifting, and dashboard analytics are not required for this smallest v1.
+To keep this first release small, use one earning rule type and one reward type. A **fixed cart discount WooCommerce coupon** is a practical first reward: the owner sets its discount amount and points cost; redemption issues a customer-specific, single-use coupon. This is the implemented v1 reward type. The existing [architecture plan](v1-architecture-plan.md) describes a wider future scope; registration points, fixed points per order, product rules, percentage/custom rewards, manual adjustments, gifting, and dashboard analytics are not required for this smallest v1.
 
 Define the earning calculation before implementation: use the order's eligible amount in store currency, exclude shipping and taxes, and round the result down to whole points. For example, at 2 points per $1, a $12.75 eligible amount earns 25 points. Stores using a currency other than USD need the label and meaning of “per $1” adapted to **one unit of the store currency**. Award once when an order becomes completed; decide and implement a consistent reversal for cancelled or refunded orders.
 
@@ -14,12 +14,12 @@ Define the earning calculation before implementation: use the order's eligible a
 
 | Requested customer/store-owner flow | Status | Evidence |
 | --- | --- | --- |
-| Store owner creates a points-per-currency-unit rule | **Automated integration verified; browser unverified** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
-| Store owner creates a reward | **Automated integration verified; browser unverified** | Rewards are stored in a versioned table and can be created, edited, disabled, and listed in wp-admin. |
-| Customer earns points for a purchase | **Automated integration verified; browser unverified** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
-| Customer sees points and redeems a reward | **Core redemption integration verified; account tab browser unverified** | The My Account Points & Rewards tab is enabled by default, and the [infirewards] shortcode remains available anywhere. Both show balance, active rewards, points activity, and redemption history. Redemption reserves points and records a pending coupon for retry. |
+| Store owner creates a points-per-currency-unit rule | **Automated integration verified; browser tested (user reported)** | The Earning Rule screen saves one storewide rate. Completed logged-in orders earn floor(eligible amount × rate). |
+| Store owner creates a reward | **Automated integration verified; browser tested (user reported)** | Rewards are stored in a versioned table and can be created, edited, disabled, and listed in wp-admin. |
+| Customer earns points for a purchase | **Automated integration verified; browser tested (user reported)** | Completed logged-in orders use the active rate, with unique earn and reversal event keys. |
+| Customer sees points and redeems a reward | **Core redemption integration verified; browser tested (user reported)** | The My Account Points & Rewards tab is enabled by default, and the [infirewards] shortcode remains available anywhere. Both show balance, active rewards, points activity, and redemption history. Redemption reserves points and records a pending coupon for retry. |
 
-**Progress:** The four flows now pass automated integration checks on a disposable WordPress + WooCommerce installation. The wp-admin forms and customer flow have not been checked manually in a browser. The plugin bootstrap, five table definitions, admin screens, and order event hooks are in place.
+**Progress:** The four flows now pass automated integration checks on a disposable WordPress + WooCommerce installation. The store owner reports testing the wp-admin forms and customer flow in a browser on WordPress 7.1. The plugin bootstrap, five table definitions, admin screens, and order event hooks are in place.
 
 ## Implementation checklist
 
@@ -56,9 +56,9 @@ The customer view appears by default under **My Account → Points & Rewards**. 
 
 ### 5. Verify the complete path
 
-- [x] On a fresh WordPress + WooCommerce site, activate the plugin, create a rate and reward, complete an order, confirm the exact points calculation, and redeem the reward for a working coupon. Verified through plugin services and WooCommerce coupon validation on a disposable site; manual wp-admin/browser interaction remains to be checked.
+- [x] On a fresh WordPress + WooCommerce site, activate the plugin, create a rate and reward, complete an order, confirm the exact points calculation, and redeem the reward for a working coupon. Verified through plugin services and WooCommerce coupon validation on a disposable site; the store owner reports that the wp-admin and customer browser flow also passed on WordPress 7.1.
 - [x] Check existing-install migration, repeat order hooks, refund/cancellation, insufficient points, disabled rewards, guest orders, double clicks, and two simultaneous redemption attempts.
-- [x] Run PHP syntax/style checks and add focused automated tests for earning arithmetic, once-only awarding, ledger/balance consistency, and redemption/retry behavior. PHP syntax passes; the repository-wide PHPCS check still reports pre-existing style violations (details below).
+- [x] Run PHP syntax/style checks and add focused automated tests for earning arithmetic, once-only awarding, ledger/balance consistency, and redemption/retry behavior. PHP syntax and the current composer lint gate pass.
 
 ### Verification record (24 September 2026)
 
@@ -71,7 +71,7 @@ IR_TEST_DISPOSABLE=1 IR_TEST_WP_ROOT=/path/to/disposable/site php tests/integrat
 IR_TEST_DISPOSABLE=1 IR_TEST_SCHEMA_RESET=1 IR_TEST_WP_ROOT=/path/to/disposable/site php tests/migration.php
 ```
 
-Run the migration script last: it drops and rebuilds the five infiRewards tables and requires a database named `ir_verify_*`. PHP syntax passed for plugin files and tests. The repository-wide `vendor/bin/phpcs --report=summary` check reports 170 errors and 257 warnings in production files, mostly existing style debt; it is not a clean style gate yet. The CLI integration scripts are excluded from the production PHPCS ruleset because they intentionally use direct database and filesystem operations. Manual browser checks of the admin forms and customer page are still open.
+Run the migration script last: it drops and rebuilds the five infiRewards tables and requires a database named `ir_verify_*`. PHP syntax passed for plugin files and tests. The current `composer lint` gate passes. The CLI integration scripts are excluded from the production PHPCS ruleset because they intentionally use direct database and filesystem operations. The store owner reported successful browser checks of the admin forms and customer page on WordPress 7.1 on 25 September 2026. The browser result is user reported; no test log is attached.
 
 The reversal policy is conservative: if any positive point debit occurs after an order earn, its cancellation or full refund records a zero-point waived reversal. This prevents later credits from being taken for spent order points. Guest orders never earn points, including after account creation. Only completed orders earn; only cancelled or fully refunded order statuses reverse.
 

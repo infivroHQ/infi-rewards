@@ -11,3 +11,5 @@ composer.lock
 phpcs.xml.dist
 .gitignore
 .distignore
+scripts
+dist

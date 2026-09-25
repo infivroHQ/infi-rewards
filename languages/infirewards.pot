@@ -1,0 +1,782 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the infiRewards package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: infiRewards 0.1.0\n"
+"Report-Msgid-Bugs-To: https://infivro.com\n"
+"POT-Creation-Date: 2026-09-25 17:43+0600\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: src/Customer/RewardsPage.php:92
+#, php-format
+msgid "%1$s more points to unlock %2$s"
+msgstr ""
+
+#. translators: %d is the number of configured earning rules.
+#: src/Admin/EarningRules.php:42
+#, php-format
+msgid "%d rule"
+msgid_plural "%d rules"
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/Admin/Customers.php:71 src/Admin/EarningRules.php:51
+#: src/Admin/Rewards.php:69
+msgid "Action"
+msgstr ""
+
+#: src/Admin/EarningRules.php:60 src/Admin/EarningRules.php:80
+#: src/Admin/Rewards.php:68 src/Admin/Rewards.php:80 src/Admin/Rewards.php:119
+#: src/Admin/Settings.php:33
+msgid "Active"
+msgstr ""
+
+#: src/Admin/Rewards.php:64
+msgid "Active rewards"
+msgstr ""
+
+#: src/Admin/Rewards.php:95
+msgid "Active rewards available for customers to redeem."
+msgstr ""
+
+#: src/Admin/Overview.php:103 src/Customer/RewardsPage.php:63
+msgid "Activity"
+msgstr ""
+
+#: src/Admin/Rewards.php:54
+msgid "Add Reward"
+msgstr ""
+
+#: src/Admin/EarningRules.php:31
+msgid "Add Rule"
+msgstr ""
+
+#: src/Admin/Overview.php:87
+msgid "Add a discount customers can redeem with points."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:50
+msgid "Add a valid email address to your account before redeeming."
+msgstr ""
+
+#: src/Admin/Settings.php:43
+msgid "Add this shortcode to a page or post to show customers their balance, available rewards, and history."
+msgstr ""
+
+#: src/Admin/Rewards.php:67
+msgid "All Rewards"
+msgstr ""
+
+#: src/Admin/EarningRules.php:40
+msgid "All Rules"
+msgstr ""
+
+#: src/Admin/Rewards.php:68
+msgid "All rewards"
+msgstr ""
+
+#: src/Admin/Customers.php:71
+msgid "Available Points"
+msgstr ""
+
+#: src/Admin/Customers.php:133 src/Customer/RewardsPage.php:86
+msgid "Available points"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:94 src/Customer/RewardsPage.php:117
+msgid "Available rewards"
+msgstr ""
+
+#: src/Admin/Overview.php:95
+msgid "Check the customer page"
+msgstr ""
+
+#: src/Admin/Overview.php:80
+msgid "Choose how many points customers earn per currency unit."
+msgstr ""
+
+#: src/Admin/EarningRules.php:73
+msgid "Choose the number of points earned for each unit of store currency."
+msgstr ""
+
+#: src/Admin/Settings.php:35
+msgid "Choose where customers can access their points and rewards."
+msgstr ""
+
+#: src/Customer/RewardsShortcode.php:28
+msgid "Copied"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:219 src/Customer/RewardsShortcode.php:29
+msgid "Copy coupon"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:219 src/Customer/RewardsShortcode.php:31
+msgid "Copy coupon code to clipboard"
+msgstr ""
+
+#: src/Customer/RewardsShortcode.php:32
+msgid "Could not copy the coupon code. Please try again."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:52
+msgid "Could not redeem the reward. Please try again."
+msgstr ""
+
+#: src/Admin/Rewards.php:80
+msgid "Coupon"
+msgstr ""
+
+#: src/Customer/RewardsShortcode.php:30
+msgid "Coupon code copied to clipboard"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:192
+msgid "Coupon pending"
+msgstr ""
+
+#: src/Admin/EarningRules.php:72
+msgid "Create Purchase Rule"
+msgstr ""
+
+#: src/Admin/Overview.php:93 src/Admin/Rewards.php:116
+#: src/Admin/Rewards.php:119
+msgid "Create Reward"
+msgstr ""
+
+#: src/Admin/EarningRules.php:81 src/Admin/Overview.php:86
+msgid "Create Rule"
+msgstr ""
+
+#: src/Admin/Overview.php:87
+msgid "Create a reward"
+msgstr ""
+
+#: src/Admin/Rewards.php:113
+msgid "Create an active reward to see it here."
+msgstr ""
+
+#: src/Admin/Overview.php:80
+msgid "Create an earning rule"
+msgstr ""
+
+#: src/Admin/Rewards.php:123
+msgid "Create another reward"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:86
+msgid "Current balance:"
+msgstr ""
+
+#: src/Admin/Customers.php:71 src/Admin/Overview.php:103
+#: src/Admin/Overview.php:121
+msgid "Customer"
+msgstr ""
+
+#: src/Admin/Customers.php:128
+msgid "Customer Details"
+msgstr ""
+
+#: src/Admin/Settings.php:35
+msgid "Customer Page"
+msgstr ""
+
+#: src/Admin/Rewards.php:90
+msgid "Customer Preview"
+msgstr ""
+
+#: src/Admin/Overview.php:129
+msgid "Customer balances will appear here after points are earned."
+msgstr ""
+
+#: src/Admin/Admin.php:53 src/Admin/Admin.php:54 src/Admin/Customers.php:67
+#: src/Admin/Customers.php:69 src/Admin/PageHeader.php:24
+msgid "Customers"
+msgstr ""
+
+#: src/Admin/Rewards.php:116
+msgid "Customers redeem points for a single-use fixed cart discount coupon."
+msgstr ""
+
+#: src/Admin/Overview.php:103
+msgid "Date"
+msgstr ""
+
+#: src/Admin/Settings.php:33
+msgid "Decimal handling"
+msgstr ""
+
+#: src/Admin/Overview.php:110
+msgid "Deleted customer"
+msgstr ""
+
+#: src/Admin/Rewards.php:118
+msgid "Discount amount"
+msgstr ""
+
+#: src/Admin/Overview.php:84 src/Admin/Overview.php:91
+msgid "Done"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:110
+#, php-format
+msgid "Earn %1$s points for each %2$s spent on eligible orders."
+msgstr ""
+
+#: src/Admin/EarningRules.php:56
+msgid "Earn points on completed eligible orders"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:57
+msgid "Earn points, redeem rewards and enjoy exclusive benefits."
+msgstr ""
+
+#. translators: %d is the order ID.
+#. translators: %d is the WooCommerce order ID.
+#: src/Admin/Customers.php:169 src/Admin/Overview.php:145
+#, php-format
+msgid "Earned points for order #%d"
+msgstr ""
+
+#: src/Admin/Admin.php:37 src/Admin/Admin.php:38 src/Admin/EarningRules.php:28
+#: src/Admin/PageHeader.php:22
+msgid "Earning Rules"
+msgstr ""
+
+#: src/Admin/Settings.php:33
+msgid "Earning rule"
+msgstr ""
+
+#: src/Admin/EarningRules.php:34
+msgid "Earning rule saved."
+msgstr ""
+
+#: src/Admin/EarningRules.php:61 src/Admin/Rewards.php:80
+msgid "Edit"
+msgstr ""
+
+#: src/Admin/EarningRules.php:72
+msgid "Edit Purchase Rule"
+msgstr ""
+
+#: src/Admin/Rewards.php:116
+msgid "Edit Reward"
+msgstr ""
+
+#: src/Admin/EarningRules.php:31
+msgid "Edit Rule"
+msgstr ""
+
+#: src/Admin/Settings.php:33
+msgid "Edit rule"
+msgstr ""
+
+#: src/Admin/Settings.php:37
+msgid "Enable My Account endpoint"
+msgstr ""
+
+#: src/Admin/Rewards.php:62
+msgid "Enter a name, positive discount and valid whole points cost."
+msgstr ""
+
+#: src/Admin/EarningRules.php:36
+msgid "Enter a nonnegative rate with up to four decimal places (maximum 1,000,000)."
+msgstr ""
+
+#: src/Admin/Customers.php:70 src/Admin/Rewards.php:68
+msgid "Filter"
+msgstr ""
+
+#: src/Admin/Rewards.php:68
+msgid "Filter rewards"
+msgstr ""
+
+#: src/Admin/Rewards.php:80
+msgid "Fixed cart discount"
+msgstr ""
+
+#: src/Admin/Settings.php:32
+msgid "General"
+msgstr ""
+
+#: src/Admin/Overview.php:77
+msgid "Getting started"
+msgstr ""
+
+#: src/Admin/EarningRules.php:91
+msgid "Guest orders do not earn points."
+msgstr ""
+
+#: src/Admin/Customers.php:70
+msgid "Highest balance"
+msgstr ""
+
+#: src/Admin/EarningRules.php:85
+msgid "How purchase points work"
+msgstr ""
+
+#: src/Admin/EarningRules.php:60 src/Admin/Rewards.php:68
+#: src/Admin/Rewards.php:80 src/Admin/Settings.php:33
+msgid "Inactive"
+msgstr ""
+
+#: src/Admin/Customers.php:71
+msgid "Last Activity"
+msgstr ""
+
+#: src/Admin/Customers.php:133
+msgid "Last redeemed"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:86
+msgid "Lifetime redeemed"
+msgstr ""
+
+#: src/Customer/RewardsShortcode.php:97
+msgid "Log in to see and redeem rewards."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:85
+msgid "My points"
+msgstr ""
+
+#: src/Admin/Customers.php:70
+msgid "Name"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:165
+#, php-format
+msgid "Need %s more points"
+msgstr ""
+
+#: src/Admin/Customers.php:125
+msgid "Next"
+msgstr ""
+
+#: src/Admin/Customers.php:88
+msgid "No customers match this view."
+msgstr ""
+
+#: src/Admin/EarningRules.php:64
+msgid "No earning rule yet. Add a purchase rule to start awarding points."
+msgstr ""
+
+#: src/Admin/Customers.php:151 src/Customer/RewardsPage.php:135
+msgid "No points activity yet."
+msgstr ""
+
+#: src/Admin/Overview.php:116
+msgid "No points activity yet. Transactions will appear here when customers earn or spend points."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:175
+msgid "No redemptions yet."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:98 src/Customer/RewardsPage.php:121
+msgid "No rewards are available right now."
+msgstr ""
+
+#: src/Admin/Rewards.php:85
+msgid "No rewards match this view."
+msgstr ""
+
+#: src/Admin/Customers.php:171
+msgid "Order points reversed"
+msgstr ""
+
+#: src/Admin/Overview.php:148
+msgid "Order reversal waived"
+msgstr ""
+
+#: src/Admin/Overview.php:59
+msgid "Outstanding points"
+msgstr ""
+
+#: src/Admin/Admin.php:29 src/Admin/Admin.php:30 src/Admin/Overview.php:65
+#: src/Admin/PageHeader.php:21 src/Customer/RewardsPage.php:61
+msgid "Overview"
+msgstr ""
+
+#: src/Admin/Overview.php:121
+msgid "Point balance"
+msgstr ""
+
+#: src/Admin/EarningRules.php:49 src/Admin/Overview.php:103
+#: src/Admin/Settings.php:33
+msgid "Points"
+msgstr ""
+
+#: src/Customer/AccountEndpoint.php:62 src/Customer/RewardsPage.php:57
+msgid "Points & Rewards"
+msgstr ""
+
+#: src/Admin/Rewards.php:69
+msgid "Points Cost"
+msgstr ""
+
+#: src/Admin/Customers.php:175 src/Admin/Overview.php:152
+msgid "Points adjustment"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:58
+msgid "Points and rewards sections"
+msgstr ""
+
+#: src/Admin/EarningRules.php:87
+msgid "Points are awarded when a logged-in customer’s order is completed."
+msgstr ""
+
+#: src/Admin/Rewards.php:118
+msgid "Points cost"
+msgstr ""
+
+#: src/Admin/Settings.php:33
+msgid "Points earned are rounded down to whole numbers."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:110
+msgid "Points for purchases"
+msgstr ""
+
+#: src/Admin/Overview.php:57
+msgid "Points issued"
+msgstr ""
+
+#: src/Admin/Settings.php:33
+msgid "Points label"
+msgstr ""
+
+#: src/Admin/EarningRules.php:77
+msgid "Points per currency unit"
+msgstr ""
+
+#: src/Admin/Customers.php:133 src/Admin/Overview.php:58
+msgid "Points redeemed"
+msgstr ""
+
+#: src/Admin/Overview.php:95
+msgid "Preview where customers see points and redeem rewards."
+msgstr ""
+
+#: src/Admin/Customers.php:108
+msgid "Previous"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:92
+msgid "Progress to next reward"
+msgstr ""
+
+#: src/Admin/EarningRules.php:57
+msgid "Purchase"
+msgstr ""
+
+#: src/Admin/EarningRules.php:56
+msgid "Purchase Points"
+msgstr ""
+
+#: src/Admin/Customers.php:138
+msgid "Recent Activity"
+msgstr ""
+
+#: src/Admin/Customers.php:70 src/Admin/Overview.php:101
+msgid "Recent activity"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:131
+msgid "Recent points activity"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:171
+msgid "Recent redemptions"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:161
+msgid "Redeem now"
+msgstr ""
+
+#: src/Admin/Overview.php:150
+msgid "Redeemed a reward"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:86
+msgid "Redeemed points"
+msgstr ""
+
+#: src/Admin/Customers.php:173
+msgid "Redeemed reward"
+msgstr ""
+
+#: src/Admin/Rewards.php:69
+msgid "Redemptions"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:82 src/Customer/RewardsPage.php:196
+msgid "Retry coupon"
+msgstr ""
+
+#. translators: %d is the WooCommerce order ID.
+#: src/Admin/Overview.php:148
+#, php-format
+msgid "Reversed points for order #%d"
+msgstr ""
+
+#: src/Admin/Rewards.php:69
+msgid "Reward"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:180
+#, php-format
+msgid "Reward #%s"
+msgstr ""
+
+#: src/Admin/Rewards.php:118
+msgid "Reward name"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:46
+msgid "Reward redeemed. Your coupon is shown below."
+msgstr ""
+
+#: src/Admin/Rewards.php:58
+msgid "Reward saved."
+msgstr ""
+
+#: src/Admin/Admin.php:45 src/Admin/Admin.php:46 src/Admin/PageHeader.php:23
+#: src/Admin/Rewards.php:54 src/Customer/RewardsPage.php:62
+msgid "Rewards"
+msgstr ""
+
+#: src/Customer/RewardsShortcode.php:100
+msgid "Rewards are temporarily unavailable."
+msgstr ""
+
+#: src/Admin/Overview.php:60
+msgid "Rewards redeemed"
+msgstr ""
+
+#: src/Admin/EarningRules.php:47
+msgid "Rule"
+msgstr ""
+
+#: src/Admin/Settings.php:39
+msgid "Save Changes"
+msgstr ""
+
+#: src/Admin/Rewards.php:119
+msgid "Save Reward"
+msgstr ""
+
+#: src/Admin/EarningRules.php:81
+msgid "Save Rule"
+msgstr ""
+
+#: src/Admin/Customers.php:70
+msgid "Search by name or email..."
+msgstr ""
+
+#: src/Admin/Customers.php:70
+msgid "Search customers"
+msgstr ""
+
+#: src/Admin/Rewards.php:68
+msgid "Search rewards"
+msgstr ""
+
+#: src/Admin/Rewards.php:68
+msgid "Search rewards..."
+msgstr ""
+
+#: src/Admin/Customers.php:137
+msgid "Select a customer to see their points."
+msgstr ""
+
+#: src/Admin/EarningRules.php:29
+msgid "Set how customers earn points from eligible purchases."
+msgstr ""
+
+#: src/Admin/Overview.php:78
+msgid "Set up points and a reward so customers can start using your program."
+msgstr ""
+
+#: src/Admin/Admin.php:61 src/Admin/Admin.php:62 src/Admin/PageHeader.php:25
+#: src/Admin/Settings.php:26
+msgid "Settings"
+msgstr ""
+
+#: src/Admin/Settings.php:30
+msgid "Settings saved."
+msgstr ""
+
+#: src/Admin/EarningRules.php:90
+msgid "Shipping and taxes are excluded."
+msgstr ""
+
+#: src/Admin/Settings.php:43
+msgid "Shortcode"
+msgstr ""
+
+#: src/Admin/Settings.php:37
+msgid "Show Points & Rewards in the WooCommerce My Account menu."
+msgstr ""
+
+#. translators: 1: first customer shown, 2: last customer shown, 3: total customers.
+#: src/Admin/Customers.php:91
+#, php-format
+msgid "Showing %1$d–%2$d of %3$d customers"
+msgstr ""
+
+#: src/Admin/Customers.php:70
+msgid "Sort customers"
+msgstr ""
+
+#: src/Admin/EarningRules.php:50 src/Admin/Rewards.php:69
+msgid "Status"
+msgstr ""
+
+#: src/Admin/Settings.php:33
+msgid "Store currency"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:49
+msgid "That reward is no longer available."
+msgstr ""
+
+#: src/Admin/EarningRules.php:89
+msgid "The eligible amount is the paid total after discounts."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:51
+msgid "The redemption request was invalid."
+msgstr ""
+
+#: src/Admin/Settings.php:38
+msgid "The shortcode below works even when this menu entry is off."
+msgstr ""
+
+#: src/Admin/Overview.php:119
+msgid "Top customers"
+msgstr ""
+
+#: src/Admin/Customers.php:71
+msgid "Total Earned"
+msgstr ""
+
+#: src/Admin/Customers.php:133
+msgid "Total earned"
+msgstr ""
+
+#: src/Admin/Rewards.php:65
+msgid "Total redemptions"
+msgstr ""
+
+#: src/Admin/EarningRules.php:48
+msgid "Trigger"
+msgstr ""
+
+#: src/Admin/Rewards.php:69
+msgid "Type"
+msgstr ""
+
+#: src/Admin/EarningRules.php:79
+msgid "Up to two decimal places. Points are rounded down to whole numbers."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:78 src/Customer/RewardsPage.php:188
+msgid "Used"
+msgstr ""
+
+#: src/Admin/Rewards.php:69
+msgid "Value"
+msgstr ""
+
+#: src/Admin/Customers.php:84
+msgid "View"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:94
+msgid "View all rewards"
+msgstr ""
+
+#: src/Admin/Rewards.php:92
+msgid "View customer page"
+msgstr ""
+
+#: src/Admin/Overview.php:95
+msgid "View page"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:106
+msgid "Ways to earn"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:114
+msgid "Ways to earn points will appear here when available."
+msgstr ""
+
+#: src/Admin/Admin.php:120
+msgid "You cannot edit display settings."
+msgstr ""
+
+#: src/Admin/Admin.php:131
+msgid "You cannot edit earning rules."
+msgstr ""
+
+#: src/Admin/Admin.php:144
+msgid "You cannot edit rewards."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:48
+msgid "You do not have enough points for that reward."
+msgstr ""
+
+#: src/Admin/Settings.php:32
+msgid "Your current rewards program configuration."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:47
+msgid "Your points were deducted, but the coupon could not be delivered yet. Retry it below; you will not be charged again."
+msgstr ""
+
+#: src/Customer/RewardsPage.php:92
+#, php-format
+msgid "You’re %d%% of the way there!"
+msgstr ""
+
+#: src/Admin/Rewards.php:105
+msgid "cart discount"
+msgstr ""
+
+#: src/Admin/Admin.php:20 src/Admin/Admin.php:21 src/Admin/PageHeader.php:28
+msgid "infiRewards"
+msgstr ""
+
+#: src/Admin/PageHeader.php:29
+msgid "infiRewards pages"
+msgstr ""
+
+#: src/Customer/RewardsPage.php:157
+msgid "off your next order"
+msgstr ""
+
+#: src/Admin/Rewards.php:105 src/Customer/RewardsPage.php:92
+#: src/Customer/RewardsPage.php:157
+msgid "points"
+msgstr ""
+
+#. translators: %s is the WooCommerce store currency code.
+#: src/Admin/EarningRules.php:59
+#, php-format
+msgid "points per %s"
+msgstr ""

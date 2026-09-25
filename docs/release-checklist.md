@@ -105,11 +105,17 @@ Fix every failed required check before packaging.
   submit the complete ZIP, and allow for the automated release security-review
   cooldown before announcing availability.
 
+Build the release candidate with `scripts/build-release.sh` (requires `xgettext`, `rsync`, and `zip`). It creates
+`dist/infirewards-VERSION.zip` with a lowercase `infirewards/` root and a
+generated `languages/infirewards.pot`. Run `scripts/generate-pot.sh` to
+refresh the repository POT separately. Install and check the final ZIP on the
+release test site before completing sign-off.
+
 ## Release sign-off
 
 | Release | Date | Tester | Plugin Check | Disposable tests | Browser checks | Approved by |
 | --- | --- | --- | --- | --- | --- | --- |
-| | | | | | | |
+| 0.1.0 | 2026-09-25 | Store owner (reported) | Pending final ZIP | Prior disposable run: 2026-09-24 | Passed on WP 7.1 (user reported) | Pending |
 
 ## Reference standards
 
