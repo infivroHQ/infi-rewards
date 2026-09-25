@@ -9,17 +9,17 @@ Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Loyalty points and rewards for WooCommerce. Let your customers earn points from purchases and account registration, and spend them on rewards.
+Loyalty points and rewards for WooCommerce. Let logged-in customers earn points from completed purchases and spend them on single-use discount coupons.
 
 == Description ==
 
 infiRewards is a comprehensive loyalty program for WooCommerce stores. It allows store owners to incentivize customer loyalty by awarding points for specific actions and offering rewards in exchange for those points.
 
 Key features include:
-* **Custom Earning Rules**: Award points based on completed purchases, amount spent, or account registration.
-* **Flexible Rewards**: Create various reward types, such as fixed or percentage discounts and coupons.
+* **Purchase Earning Rule**: Award points based on the eligible amount of completed purchases.
+* **Fixed Discount Rewards**: Create single-use fixed-cart discount coupons customers can redeem with points.
 * **Customer Wallet**: Customers can track their points balance and view their transaction history.
-* **Admin Control**: Store owners can manually adjust point balances or gift rewards directly to customers.
+* **Admin Setup**: Store owners configure the purchase earning rate, rewards, and the My Account entry.
 * **WooCommerce Integration**: Deeply integrated with WooCommerce to automate point awarding on orders.
 
 == Installation ==
@@ -31,10 +31,10 @@ Key features include:
 == Frequently Asked Questions ==
 
 = How do customers earn points? =
-Customers earn points based on rules set by the store owner, such as completing a purchase or registering a new account.
+Logged-in customers earn points when an eligible purchase is completed, using the store owner's configured earning rate.
 
-= Can I manually add points to a customer's account? =
-Yes, administrators can adjust point balances directly from the admin panel.
+= Can I manually adjust points? =
+No. Version 0.1.0 awards and reverses points from eligible WooCommerce orders.
 
 == Screenshots ==
 
@@ -45,11 +45,7 @@ Yes, administrators can adjust point balances directly from the admin panel.
 
 = 0.1.0 =
 * Initial release.
-* Support for earning rules (Purchases, Amount spent, Registration).
-* Support for various reward types.
+* Support for purchase earning rules.
+* Support for fixed-cart discount rewards.
 * WooCommerce integration.
 * Customer wallet and account endpoints.
-
-== Open Questions ==
-* WooCommerce is required for this plugin to function, but no minimum WooCommerce version is declared anywhere in the code — confirm and add a "WC requires at least" / "WC tested up to" header if applicable.
-* Plugin URI: https://infivro.com
