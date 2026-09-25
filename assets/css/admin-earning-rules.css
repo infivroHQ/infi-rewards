@@ -1,0 +1,44 @@
+.infirewards-rules { max-width: 1480px; color: #1d2327; }
+.infirewards-rules__nav { display: flex; flex-wrap: wrap; gap: 24px; margin: 18px 0 28px; border-bottom: 1px solid #dcdcde; }
+.infirewards-rules__nav a { display: inline-block; padding: 0 0 12px; color: #50575e; text-decoration: none; border-bottom: 2px solid transparent; }
+.infirewards-rules__nav a:hover, .infirewards-rules__nav a:focus, .infirewards-rules__nav a.is-current { color: var(--wp-admin-theme-color, #2271b1); }
+.infirewards-rules__nav a.is-current { border-bottom-color: var(--wp-admin-theme-color, #2271b1); font-weight: 600; }
+.infirewards-rules__heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+.infirewards-rules__heading h2 { margin: 0 0 7px; padding-left: 10px; border-left: 3px solid var(--wp-admin-theme-color, #2271b1); font-size: 15px; line-height: 1.4; text-transform: uppercase; }
+.infirewards-rules__heading p { margin: 0; color: #646970; }
+.infirewards-rules__heading .button { min-height: 36px; padding: 3px 16px; }
+.infirewards-rules__panel { min-width: 0; padding: 22px; background: #fff; border: 1px solid #dcdcde; border-radius: 8px; }
+.infirewards-rules__section-heading { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; }
+.infirewards-rules__panel h3 { margin: 0; padding-left: 9px; border-left: 3px solid var(--wp-admin-theme-color, #2271b1); font-size: 14px; line-height: 1.4; text-transform: uppercase; }
+.infirewards-rules__section-heading span { color: #646970; }
+.infirewards-rules__table-wrap { overflow-x: auto; }
+.infirewards-rules__table { border: 0; box-shadow: none; border-collapse: collapse; }
+.infirewards-rules__table th { color: #50575e; font-weight: 600; }
+.infirewards-rules__table th, .infirewards-rules__table td { padding: 13px 12px; vertical-align: middle; border-bottom: 1px solid #f0f0f1; }
+.infirewards-rules__table thead th { background: #f8f9fb; }
+.infirewards-rules__table tbody tr:last-child td { border-bottom: 0; }
+.infirewards-rules__rule-name { display: flex; align-items: center; gap: 12px; min-width: 210px; }
+.infirewards-rules__rule-name > .dashicons { display: grid; place-items: center; width: 34px; height: 34px; flex: 0 0 34px; color: #4f46c9; background: #f1efff; border-radius: 7px; }
+.infirewards-rules__rule-name strong, .infirewards-rules__rule-name small { display: block; }
+.infirewards-rules__rule-name small { margin-top: 3px; color: #646970; }
+.infirewards-rules__trigger { display: inline-block; padding: 5px 9px; color: #3859ac; background: #eff4ff; border-radius: 5px; }
+.infirewards-rules__status { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 30px; font-weight: 600; }
+.infirewards-rules__status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.infirewards-rules__status.is-active { color: #00805a; background: #e8f8f0; }
+.infirewards-rules__status.is-inactive { color: #646970; background: #f0f0f1; }
+.infirewards-rules__empty { padding: 30px 12px !important; color: #646970; text-align: center; }
+.infirewards-rules__bottom { display: grid; grid-template-columns: minmax(0, 2fr) minmax(250px, 1fr); gap: 16px; margin-top: 18px; align-items: start; }
+.infirewards-rules__form { scroll-margin-top: 40px; }
+.infirewards-rules__form > p, .infirewards-rules__guide > p { color: #646970; line-height: 1.5; }
+.infirewards-rules__form form > label:not(.infirewards-rules__checkbox) { display: block; margin: 22px 0 7px; font-weight: 600; }
+.infirewards-rules__input-row { display: flex; align-items: center; gap: 10px; }
+.infirewards-rules__input-row input { width: min(100%, 230px); min-height: 38px; }
+.infirewards-rules__input-row span { color: #646970; font-weight: 600; }
+.infirewards-rules__form .description { margin: 7px 0 20px; }
+.infirewards-rules__checkbox { display: inline-flex; align-items: center; gap: 7px; font-weight: 600; }
+.infirewards-rules__checkbox input { margin: 0; }
+.infirewards-rules__submit { margin: 23px 0 0; }
+.infirewards-rules__guide-icon { display: grid; place-items: center; width: 42px; height: 42px; margin-top: 20px; color: var(--wp-admin-theme-color, #2271b1); background: #f0f6fc; border-radius: 8px; }
+.infirewards-rules__guide ul { margin: 14px 0 0 18px; color: #50575e; list-style: disc; line-height: 1.6; }
+@media (max-width: 850px) { .infirewards-rules__bottom { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { .infirewards-rules__heading { align-items: flex-start; flex-direction: column; } .infirewards-rules__panel { padding: 16px; } }
