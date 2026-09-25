@@ -71,7 +71,7 @@ class RewardsPage {
 				<?php
 				if ( 'issued' === $notice && 'issued' === $noticed_record['status'] ) :
 					?>
-					<p><strong><?php esc_html_e( 'Coupon code:', 'infirewards' ); ?></strong> <code><?php echo esc_html( $noticed_record['coupon_code'] ); ?></code></p>
+					<p><?php self::coupon_copy_button( $noticed_record['coupon_code'] ); ?></p>
 					<?php
 elseif ( 'pending' === $notice && 'pending' === $noticed_record['status'] ) :
 	?>
@@ -177,7 +177,7 @@ else :
 		<?php
 		if ( 'issued' === $record['status'] ) :
 			?>
-				<span><?php esc_html_e( 'Coupon:', 'infirewards' ); ?> <code><?php echo esc_html( $record['coupon_code'] ); ?></code></span>
+				<?php self::coupon_copy_button( $record['coupon_code'] ); ?>
 				<?php
 else :
 	?>
@@ -191,6 +191,14 @@ endforeach;
 endif;
 ?>
 </div></section>
+		<?php
+	}
+
+	/** Render a compact control without exposing the coupon code in the layout. */
+	private static function coupon_copy_button( string $coupon_code ): void {
+		?>
+		<button class="infirewards-coupon-copy" type="button" data-coupon-code="<?php echo esc_attr( $coupon_code ); ?>" aria-label="<?php echo esc_attr__( 'Copy coupon code to clipboard', 'infirewards' ); ?>"><span aria-hidden="true">⧉</span> <?php esc_html_e( 'Copy coupon', 'infirewards' ); ?></button>
+		<span class="screen-reader-text infirewards-coupon-copy__status" aria-live="polite"></span>
 		<?php
 	}
 }
