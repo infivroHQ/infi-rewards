@@ -1,12 +1,18 @@
 <?php
 /**
  * Plugin Name: infiRewards – Loyalty Points & Rewards
+ * Plugin URI:  https://infivro.com
  * Description: Loyalty points and rewards for WooCommerce.
  * Version:     0.1.0
  * Author:      Infivro
  * Author URI:  https://infivro.com
  * Text Domain: infirewards
+ * Requires at least: 6.0
+ * Requires PHP: 7.4
  * Requires Plugins: woocommerce
+ * WC requires at least: 7.0
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -50,7 +56,8 @@ try {
 		\InfiRewards\Plugin::get_instance()->boot();
 	}
 } catch ( Throwable $e ) {
-	// Fail silently in WP environment; admin notices could be added.
+	// Avoid a fatal error on sites with an incomplete dependency installation.
+	do_action( 'infirewards_boot_error', $e );
 }
 
 // Register activation hook to create database tables.
@@ -69,6 +76,14 @@ register_activation_hook(
 	}
 );
 
+register_deactivation_hook(
+	__FILE__,
+	function (): void {
+		delete_option( 'infirewards_account_endpoint_rewrite_version' );
+		flush_rewrite_rules();
+	}
+);
+
 /**
  * Uninstall handler wrapper.
  * WordPress will include this plugin file before calling the uninstall callback, so ensure
@@ -84,6 +99,9 @@ function infirewards_uninstall(): void {
 	if ( class_exists( \InfiRewards\Database\Installer::class ) ) {
 		\InfiRewards\Database\Installer::get_instance()->uninstall();
 	}
+
+	delete_option( 'infirewards_show_in_my_account' );
+	delete_option( 'infirewards_account_endpoint_rewrite_version' );
 }
 
 register_uninstall_hook( __FILE__, 'infirewards_uninstall' );
