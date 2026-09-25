@@ -131,11 +131,43 @@ generated `languages/infi-rewards.pot`. Run `scripts/generate-pot.sh` to
 refresh the repository POT separately. Install and check the final ZIP on the
 release test site before completing sign-off.
 
+## 0.1.0 audit snapshot (2026-09-25)
+
+Tester: Codex. Environment: local source and the rebuilt
+`dist/infi-rewards-0.1.0.zip`; no disposable WordPress site was used in this
+pass. This is a checkpoint, not release sign-off.
+
+- The supplied ZIP report listed 267 warnings (the request said 257). The
+  matching WordPress database sniffs now report 245 on the rebuilt ZIP:
+  105 direct-query, 98 no-caching, 40 table-name interpolation, and 2 schema
+  change warnings. The 22 `PluginCheck.Security.DirectDB.UnescapedDBParameter`
+  warnings were resolved by preparing the customer search queries and explicitly
+  escaping internal migration table names.
+- Project PHPCS warnings fell from 291 to 205. PHPCBF fixed 84 alignment
+  warnings; the other two non-database warnings were fixed manually. The
+  remaining 205 are the direct-query, no-caching, and schema warnings above.
+- Three CSS files initially failed Plugin Check's bundled PHPCS rules as
+  minified/unreadable. All four packaged CSS files were formatted. The rebuilt
+  ZIP passes those bundled Plugin Check PHPCS rules with zero findings.
+- `composer lint`, PHP syntax checks for packaged source, the WordPress CSS
+  PHPCS check, and `git diff --check` passed. The ZIP was rebuilt after the
+  CSS changes. Its SHA-256 is
+  `3cf006a79ec1b998111536aec18e966aa715259282def3fb57a6a07ab9cfc9fc`.
+- WordPress 6.0 remains the declared minimum. `%i` identifier placeholders
+  require WordPress 6.2, so the 40 table-name interpolation advisories remain.
+  Review the minimum-version choice before changing these queries. Do not cache
+  wallet locks, balance reads, or other transactional operations solely to
+  silence the 98 no-caching warnings.
+- Next: run the full Plugin Check application on the exact ZIP, then install it
+  on a disposable WordPress/WooCommerce site and rerun the integration,
+  migration, and browser checks. The bundled PHPCS pass does not replace these
+  checks or WordPress.org review.
+
 ## Release sign-off
 
 | Release | Date | Tester | Plugin Check | Disposable tests | Browser checks | Approved by |
 | --- | --- | --- | --- | --- | --- | --- |
-| 0.1.0 | 2026-09-25 | Store owner (reported) | Pending final ZIP | Prior disposable run: 2026-09-24 | Passed on WP 7.1 (user reported) | Pending |
+| 0.1.0 | 2026-09-25 | Store owner (reported); Codex audit | Bundled PHPCS rules passed on rebuilt ZIP; full app pending | Prior disposable run: 2026-09-24; rerun pending | Passed on WP 7.1 (user reported); rerun pending | Pending |
 
 ## Reference standards
 
