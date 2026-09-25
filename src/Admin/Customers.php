@@ -31,46 +31,46 @@ class Customers {
 			'name'    => 'u.display_name ASC',
 		)[ $sort ] );
 		$like     = '%' . $wpdb->esc_like( $search ) . '%';
-		// Table names come from WordPress; the sort expression is selected from the fixed list above.
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
 		$total  = (int) $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(*) FROM {$wallets} w INNER JOIN {$wpdb->users} u ON u.ID = w.user_id WHERE (u.display_name LIKE %s OR u.user_email LIKE %s)",
-				$like,
+			$wpdb->prepare( 'SELECT COUNT(*) FROM %i w INNER JOIN %i u ON u.ID = w.user_id WHERE (u.display_name LIKE %s OR u.user_email LIKE %s)', $wallets, $wpdb->users, $like,
 				$like
 			)
 		);
 		$limit  = 20;
 		$page   = min( $page, max( 1, (int) ceil( $total / $limit ) ) );
 		$offset = ( $page - 1 ) * $limit;
-		$rows   = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT w.user_id, w.balance, u.display_name, u.user_email, COALESCE(t.earned, 0) AS earned, t.last_activity
-				FROM {$wallets} w INNER JOIN {$wpdb->users} u ON u.ID = w.user_id
-				LEFT JOIN (SELECT user_id, SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END) AS earned, MAX(created_at) AS last_activity FROM {$transactions} GROUP BY user_id) t ON t.user_id = w.user_id
-				WHERE (u.display_name LIKE %s OR u.user_email LIKE %s) ORDER BY {$order_by}, w.user_id ASC LIMIT %d OFFSET %d",
-				$like,
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Sort clause comes from the fixed three-value map above.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
+		$rows = $wpdb->get_results(
+			$wpdb->prepare( "SELECT w.user_id, w.balance, u.display_name, u.user_email, COALESCE(t.earned, 0) AS earned, t.last_activity
+				FROM %i w INNER JOIN %i u ON u.ID = w.user_id
+				LEFT JOIN (SELECT user_id, SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END) AS earned, MAX(created_at) AS last_activity FROM %i GROUP BY user_id) t ON t.user_id = w.user_id
+				WHERE (u.display_name LIKE %s OR u.user_email LIKE %s) ORDER BY {$order_by}, w.user_id ASC LIMIT %d OFFSET %d", $wallets, $wpdb->users, $transactions, $like,
 				$like,
 				$limit,
 				$offset
 			),
 			ARRAY_A
 		);
-		$rows   = is_array( $rows ) ? $rows : array();
+		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$rows = is_array( $rows ) ? $rows : array();
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Customer selection is read-only.
 		$selected_id = isset( $_GET['customer_id'] ) && is_scalar( $_GET['customer_id'] ) ? absint( wp_unslash( $_GET['customer_id'] ) ) : 0;
 		if ( ! $selected_id && $rows ) {
 			$selected_id = (int) $rows[0]['user_id'];
 		}
 		$customer = $selected_id ? get_userdata( $selected_id ) : false;
-		$wallet   = $customer ? $wpdb->get_row( $wpdb->prepare( "SELECT balance FROM {$wallets} WHERE user_id = %d", $selected_id ), ARRAY_A ) : null;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
+		$wallet = $customer ? $wpdb->get_row( $wpdb->prepare( 'SELECT balance FROM %i WHERE user_id = %d', $wallets, $selected_id ), ARRAY_A ) : null;
 		if ( ! $wallet ) {
 			$customer = false;
 		}
-		$summary  = $customer ? $wpdb->get_row( $wpdb->prepare( "SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END), 0) AS earned, COALESCE(SUM(CASE WHEN event_type = 'redemption' AND type = 'debit' THEN points ELSE 0 END), 0) AS redeemed, MAX(CASE WHEN event_type = 'redemption' THEN created_at ELSE NULL END) AS last_redeemed FROM {$transactions} WHERE user_id = %d", $selected_id ), ARRAY_A ) : null;
-		$activity = $customer ? $wpdb->get_results( $wpdb->prepare( "SELECT points, type, event_type, reason, order_id, created_at FROM {$transactions} WHERE user_id = %d ORDER BY transaction_id DESC LIMIT 6", $selected_id ), ARRAY_A ) : array();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
+		$summary = $customer ? $wpdb->get_row( $wpdb->prepare( "SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END), 0) AS earned, COALESCE(SUM(CASE WHEN event_type = 'redemption' AND type = 'debit' THEN points ELSE 0 END), 0) AS redeemed, MAX(CASE WHEN event_type = 'redemption' THEN created_at ELSE NULL END) AS last_redeemed FROM %i WHERE user_id = %d", $transactions, $selected_id ), ARRAY_A ) : null;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
+		$activity = $customer ? $wpdb->get_results( $wpdb->prepare( 'SELECT points, type, event_type, reason, order_id, created_at FROM %i WHERE user_id = %d ORDER BY transaction_id DESC LIMIT 6', $transactions, $selected_id ), ARRAY_A ) : array();
 		$activity = is_array( $activity ) ? $activity : array();
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		?>
 		<div class="wrap infirewards-page">
 			<?php PageHeader::render( 'infirewards-customers' ); ?>

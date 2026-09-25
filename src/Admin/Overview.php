@@ -25,24 +25,26 @@ class Overview {
 		$transactions = TransactionsTable::table_name();
 		$wallets      = WalletTable::table_name();
 		$redemptions  = RedemptionsTable::table_name();
-		// Table names come from WordPress and contain no request data.
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
-		$totals       = $wpdb->get_row(
-			"SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END), 0) AS issued,
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live admin aggregates from plugin tables change with each ledger write.
+		$totals = $wpdb->get_row(
+			$wpdb->prepare( "SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points ELSE 0 END), 0) AS issued,
 			COALESCE(SUM(CASE WHEN event_type = 'redemption' AND type = 'debit' THEN points ELSE 0 END), 0) AS redeemed
-			FROM {$transactions}",
+			FROM %i", $transactions ),
 			ARRAY_A
 		);
-		$outstanding  = (int) $wpdb->get_var( "SELECT COALESCE(SUM(balance), 0) FROM {$wallets}" );
-		$reward_count = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(*) FROM {$redemptions} WHERE status = %s", 'issued' ) );
-		$activity     = $wpdb->get_results( "SELECT transaction_id, user_id, order_id, points, type, event_type, reason, created_at FROM {$transactions} ORDER BY transaction_id DESC LIMIT 5", ARRAY_A );
-		$customers    = $wpdb->get_results(
-			"SELECT w.user_id, w.balance, u.display_name, u.user_email
-			FROM {$wallets} w INNER JOIN {$wpdb->users} u ON u.ID = w.user_id
-			ORDER BY w.balance DESC, w.user_id ASC LIMIT 5",
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live admin aggregates from plugin tables change with each ledger write.
+		$outstanding = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COALESCE(SUM(balance), 0) FROM %i', $wallets ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live admin aggregates from plugin tables change with each ledger write.
+		$reward_count = (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE status = %s', $redemptions, 'issued' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live admin aggregates from plugin tables change with each ledger write.
+		$activity = $wpdb->get_results( $wpdb->prepare( 'SELECT transaction_id, user_id, order_id, points, type, event_type, reason, created_at FROM %i ORDER BY transaction_id DESC LIMIT 5', $transactions ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live admin aggregates from plugin tables change with each ledger write.
+		$customers  = $wpdb->get_results(
+			$wpdb->prepare( 'SELECT w.user_id, w.balance, u.display_name, u.user_email
+			FROM %i w INNER JOIN %i u ON u.ID = w.user_id
+			ORDER BY w.balance DESC, w.user_id ASC LIMIT 5', $wallets, $wpdb->users ),
 			ARRAY_A
 		);
-		// phpcs:enable WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rule       = RulesEngine::get_instance()->get_rule();
 		$has_rule   = $rule && 1 === (int) $rule['status'] && (float) $rule['rate'] > 0;
 		$has_reward = false;

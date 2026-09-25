@@ -26,8 +26,9 @@ Fix every failed required check before packaging.
   browser never supplies an authoritative points balance or redemption outcome.
 - [ ] Output is escaped for its context when rendered, including database values
   and translated strings.
-- [ ] Dynamic SQL uses `$wpdb->prepare()`; table names use the WordPress prefix;
-  identifiers/order clauses come from strict allow-lists.
+- [ ] Dynamic SQL uses `$wpdb->prepare()`; plugin table names use `%i`
+  identifier placeholders and the WordPress prefix; order clauses come from
+  strict allow-lists.
 - [ ] Balance-changing operations are server-side, atomic, idempotent, and leave
   an auditable ledger entry. Repeat order hooks and repeat redemption requests do
   not duplicate work.
@@ -162,6 +163,25 @@ pass. This is a checkpoint, not release sign-off.
   on a disposable WordPress/WooCommerce site and rerun the integration,
   migration, and browser checks. The bundled PHPCS pass does not replace these
   checks or WordPress.org review.
+
+## 0.1.0 WordPress 6.8 follow-up (2026-09-25)
+
+- The plugin header and readme now require WordPress 6.8. Queries against
+  plugin tables use `%i` identifier placeholders. The one dynamic customer sort
+  clause still comes from a fixed, validated three-value map.
+- The former 40 table-name interpolation findings are resolved. The 105 direct
+  query, 98 no-caching, and 2 schema-change advisories are acknowledged at
+  their individual calls with reasons. These calls still use custom tables;
+  wallet locks, ledger writes, migrations, and live reports need current data.
+  No cache was added to transaction or balance reads solely to reduce warnings.
+- `composer lint`, `composer lint:report`, PHP syntax checks, and `git diff
+  --check` pass with no findings. The rebuilt ZIP passes the installed Plugin
+  Check bundled PHPCS rules with no findings; its packaged CSS passes the
+  WordPress CSS PHPCS check.
+- The rebuilt `dist/infi-rewards-0.1.0.zip` SHA-256 is
+  `b8f46a694f8feb8b93c47b43a91cce93fe40382fd47157851bc03f3a789553aa`.
+  The full Plugin Check application and disposable-site integration, migration,
+  and browser checks remain pending.
 
 ## Release sign-off
 

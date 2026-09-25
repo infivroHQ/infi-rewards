@@ -1,7 +1,7 @@
 === infiRewards – Loyalty Points & Rewards ===
 Contributors: infivro
 Tags: woocommerce, loyalty, points, rewards, discounts
-Requires at least: 6.0
+Requires at least: 6.8
 Tested up to: 7.1
 Requires PHP: 7.4
 Requires plugins: woocommerce

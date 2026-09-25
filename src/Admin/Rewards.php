@@ -27,12 +27,13 @@ class Rewards {
 		$filter    = isset( $_GET['status'] ) && is_scalar( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : 'all';
 		$filter    = in_array( $filter, array( 'all', 'active', 'inactive' ), true ) ? $filter : 'all';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$currency          = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '';
-		$code              = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '';
-		$decimals          = function_exists( 'wc_get_price_decimals' ) ? max( 0, min( 6, (int) wc_get_price_decimals() ) ) : 2;
-		$step              = 0 === $decimals ? '1' : '0.' . str_repeat( '0', $decimals - 1 ) . '1';
-		$redemption_table  = RedemptionsTable::table_name();
-		$counts            = $wpdb->get_results( "SELECT reward_id, COUNT(*) AS total FROM {$redemption_table} GROUP BY reward_id", OBJECT_K ); // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Internal table name.
+		$currency         = function_exists( 'get_woocommerce_currency_symbol' ) ? get_woocommerce_currency_symbol() : '';
+		$code             = function_exists( 'get_woocommerce_currency' ) ? get_woocommerce_currency() : '';
+		$decimals         = function_exists( 'wc_get_price_decimals' ) ? max( 0, min( 6, (int) wc_get_price_decimals() ) ) : 2;
+		$step             = 0 === $decimals ? '1' : '0.' . str_repeat( '0', $decimals - 1 ) . '1';
+		$redemption_table = RedemptionsTable::table_name();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Live reward counts come from the plugin redemption table.
+		$counts            = $wpdb->get_results( $wpdb->prepare( 'SELECT reward_id, COUNT(*) AS total FROM %i GROUP BY reward_id', $redemption_table ), OBJECT_K );
 		$counts            = is_array( $counts ) ? $counts : array();
 		$active_count      = count(
 			array_filter(

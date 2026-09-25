@@ -27,8 +27,8 @@ class RewardRepository {
 			return null;
 		}
 		$table = RewardsTable::table_name();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name comes from the configured WordPress prefix.
-		$row = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE reward_id = %d", $reward_id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reward data is stored in a plugin table and may change in admin.
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE reward_id = %d', $table, $reward_id ), ARRAY_A );
 		return $row ? $row : null;
 	}
 
@@ -40,8 +40,8 @@ class RewardRepository {
 	public function all(): array {
 		global $wpdb;
 		$table = RewardsTable::table_name();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name comes from the configured WordPress prefix.
-		$rows = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY reward_id DESC", ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reward data is stored in a plugin table and may change in admin.
+		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i ORDER BY reward_id DESC', $table ), ARRAY_A );
 		return is_array( $rows ) ? $rows : array();
 	}
 
@@ -83,8 +83,10 @@ class RewardRepository {
 			if ( ! $this->get( $reward_id ) ) {
 				return false;
 			}
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Reward data is stored in a plugin table and may change in admin.
 			return false !== $wpdb->update( $table, $data, array( 'reward_id' => $reward_id ), array( '%s', '%s', '%d', '%d', '%s' ), array( '%d' ) );
 		}
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Reward data is stored in a plugin table and may change in admin.
 		return 1 === $wpdb->insert( $table, $data, array( '%s', '%s', '%d', '%d', '%s' ) );
 	}
 }

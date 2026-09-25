@@ -7,7 +7,7 @@
  * Author:      Infivro
  * Author URI:  https://infivro.com
  * Text Domain: infi-rewards
- * Requires at least: 6.0
+ * Requires at least: 6.8
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce
  * WC requires at least: 7.0

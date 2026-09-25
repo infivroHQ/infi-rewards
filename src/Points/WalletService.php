@@ -27,7 +27,8 @@ class WalletService {
 		global $wpdb;
 
 		$table = WalletTable::table_name();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE user_id = %d", $user_id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE user_id = %d', $table, $user_id ), ARRAY_A );
 		if ( ! $row ) {
 			return null;
 		}
@@ -65,38 +66,49 @@ class WalletService {
 		}
 		$wallet_table = WalletTable::table_name();
 		$txn_table    = TransactionsTable::table_name();
-		$earn         = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$txn_table} WHERE event_key = %s AND event_type = 'order_earn'", 'order_earn:' . $order_id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
+		$earn = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM %i WHERE event_key = %s AND event_type = 'order_earn'", $txn_table, 'order_earn:' . $order_id ), ARRAY_A );
 		if ( ! $earn || (int) $earn['points'] <= 0 ) {
 			return false;
 		}
 		$user_id = (int) $earn['user_id'];
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
 			return false;
 		}
-		$balance = $wpdb->get_var( $wpdb->prepare( "SELECT balance FROM {$wallet_table} WHERE user_id = %d FOR UPDATE", $user_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
+		$balance = $wpdb->get_var( $wpdb->prepare( 'SELECT balance FROM %i WHERE user_id = %d FOR UPDATE', $wallet_table, $user_id ) );
 		if ( null === $balance ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
-		$existing = $wpdb->get_var( $wpdb->prepare( "SELECT transaction_id FROM {$txn_table} WHERE event_key = %s", 'order_reversal:' . $order_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
+		$existing = $wpdb->get_var( $wpdb->prepare( 'SELECT transaction_id FROM %i WHERE event_key = %s', $txn_table, 'order_reversal:' . $order_id ) );
 		if ( null !== $existing ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return true;
 		}
-		$spent = $wpdb->get_var( $wpdb->prepare( "SELECT transaction_id FROM {$txn_table} WHERE user_id = %d AND transaction_id > %d AND type = 'debit' AND points > 0 LIMIT 1", $user_id, (int) $earn['transaction_id'] ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
+		$spent = $wpdb->get_var( $wpdb->prepare( "SELECT transaction_id FROM %i WHERE user_id = %d AND transaction_id > %d AND type = 'debit' AND points > 0 LIMIT 1", $txn_table, $user_id, (int) $earn['transaction_id'] ) );
 		if ( ! empty( $wpdb->last_error ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
 		$reverse = null === $spent && (int) $balance >= (int) $earn['points'];
 		$points  = $reverse ? (int) $earn['points'] : 0;
 		if ( $reverse ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$updated = $wpdb->update( $wallet_table, array( 'balance' => (int) $balance - $points, 'updated_at' => current_time( 'mysql' ) ), array( 'user_id' => $user_id ), array( '%d', '%s' ), array( '%d' ) );
 			if ( 1 !== $updated ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 				$wpdb->query( 'ROLLBACK' );
 				return false;
 			}
 		}
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Wallet and ledger operations require current rows and transaction locks.
 		$inserted = $wpdb->insert( $txn_table, array(
 			'user_id'    => $user_id,
 			'order_id'   => $order_id,
@@ -107,6 +119,7 @@ class WalletService {
 			'reason'     => $reverse ? sprintf( 'Reversed points for order #%d', $order_id ) : sprintf( 'Reversal waived: points spent since order #%d', $order_id ),
 			'created_at' => current_time( 'mysql' ),
 		), array( '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 		if ( 1 !== $inserted || false === $wpdb->query( 'COMMIT' ) ) {
 			$wpdb->query( 'ROLLBACK' );
 			return false;
@@ -143,10 +156,9 @@ class WalletService {
 			return null;
 		}
 		$table = TransactionsTable::table_name();
-		$row   = $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE user_id = %d AND event_key = %s AND event_type = 'redemption'",
-				$user_id,
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
+		$row = $wpdb->get_row(
+			$wpdb->prepare( "SELECT * FROM %i WHERE user_id = %d AND event_key = %s AND event_type = 'redemption'", $table, $user_id,
 				'redemption:' . $request_key
 			),
 			ARRAY_A
@@ -182,38 +194,46 @@ class WalletService {
 		$wallet_table = WalletTable::table_name();
 		$txn_table    = TransactionsTable::table_name();
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
 			return false;
 		}
 
 		// A zero row ensures concurrent first credits lock the same wallet.
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 		$created = $wpdb->query(
-			$wpdb->prepare( "INSERT IGNORE INTO {$wallet_table} (user_id, balance) VALUES (%d, 0)", $user_id )
+			$wpdb->prepare( 'INSERT IGNORE INTO %i (user_id, balance) VALUES (%d, 0)', $wallet_table, $user_id )
 		);
 		if ( false === $created ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 		$balance = $wpdb->get_var(
-			$wpdb->prepare( "SELECT balance FROM {$wallet_table} WHERE user_id = %d FOR UPDATE", $user_id )
+			$wpdb->prepare( 'SELECT balance FROM %i WHERE user_id = %d FOR UPDATE', $wallet_table, $user_id )
 		);
 		if ( null === $balance ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
 
 		// A repeated keyed event is a successful no-op after the wallet lock.
 		if ( null !== $event_key ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$existing = $wpdb->get_row(
-				$wpdb->prepare( "SELECT user_id, type, event_type FROM {$txn_table} WHERE event_key = %s", $event_key ),
+				$wpdb->prepare( 'SELECT user_id, type, event_type FROM %i WHERE event_key = %s', $txn_table, $event_key ),
 				ARRAY_A
 			);
 			if ( $existing ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 				$wpdb->query( 'ROLLBACK' );
 				return (int) $existing['user_id'] === $user_id && $existing['type'] === $type && $existing['event_type'] === $event_type;
 			}
 			if ( ! empty( $wpdb->last_error ) ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 				$wpdb->query( 'ROLLBACK' );
 				return false;
 			}
@@ -222,12 +242,14 @@ class WalletService {
 		$balance = (int) $balance;
 		if ( $balance < 0 || ( 'debit' === $type && $balance < $points ) ||
 			( 'credit' === $type && $balance > 2147483647 - $points ) ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
 
 		$new_balance = 'credit' === $type ? $balance + $points : $balance - $points;
-		$updated     = $wpdb->update(
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
+		$updated = $wpdb->update(
 			$wallet_table,
 			array(
 				'balance'    => $new_balance,
@@ -238,10 +260,12 @@ class WalletService {
 			array( '%d' )
 		);
 		if ( 1 !== $updated ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Wallet and ledger operations require current rows and transaction locks.
 		$txn_inserted = $wpdb->insert(
 			$txn_table,
 			array(
@@ -258,10 +282,12 @@ class WalletService {
 			array( '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%s' )
 		);
 		if ( 1 !== $txn_inserted ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 			$wpdb->query( 'ROLLBACK' );
 			return false;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Wallet and ledger operations require current rows and transaction locks.
 		if ( false === $wpdb->query( 'COMMIT' ) ) {
 			$wpdb->query( 'ROLLBACK' );
 			return false;

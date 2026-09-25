@@ -151,25 +151,41 @@ class Installer {
 		$installed_version = get_option( 'infirewards_db_version', '0' );
 		$migrated          = true;
 		if ( version_compare( $installed_version, self::DB_VERSION, '<' ) ) {
-			$migrated = false !== $wpdb->query( "UPDATE {$transactions_table} SET type = 'debit', points = ABS(points) WHERE points < 0" );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+			$migrated = false !== $wpdb->query( $wpdb->prepare( "UPDATE %i SET type = 'debit', points = ABS(points) WHERE points < 0", $transactions_table ) );
 		}
 
 		// Do not claim a completed migration if dbDelta could not add a column or index.
-		$wallet_column            = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$wallets_table} LIKE %s", 'balance' ) );
-		$type_column              = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'type' ) );
-		$event_column             = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_type' ) );
-		$key_column               = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'event_key' ) );
-		$reward_column            = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$transactions_table} LIKE %s", 'reward_id' ) );
-		$reward_name_column       = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'name' ) );
-		$discount_column          = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'discount_amount' ) );
-		$cost_column              = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'points_cost' ) );
-		$status_column            = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$rewards_table} LIKE %s", 'status' ) );
-		$redemption_coupon_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'coupon_id' ) );
-		$redemption_amount_column = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'discount_amount' ) );
-		$redemption_email_column  = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'customer_email' ) );
-		$redemption_code_column   = $wpdb->get_var( $wpdb->prepare( "SHOW COLUMNS FROM {$redemptions_table} LIKE %s", 'coupon_code' ) );
-		$redemption_key_unique    = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0', $redemptions_table, 'request_key' ) );
-		$unique_key               = $wpdb->get_var(
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$wallet_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $wallets_table, 'balance' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$type_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $transactions_table, 'type' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$event_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $transactions_table, 'event_type' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$key_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $transactions_table, 'event_key' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$reward_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $transactions_table, 'reward_id' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$reward_name_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $rewards_table, 'name' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$discount_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $rewards_table, 'discount_amount' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$cost_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $rewards_table, 'points_cost' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$status_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $rewards_table, 'status' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$redemption_coupon_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $redemptions_table, 'coupon_id' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$redemption_amount_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $redemptions_table, 'discount_amount' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$redemption_email_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $redemptions_table, 'customer_email' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$redemption_code_column = $wpdb->get_var( $wpdb->prepare( 'SHOW COLUMNS FROM %i LIKE %s', $redemptions_table, 'coupon_code' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$redemption_key_unique = $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0', $redemptions_table, 'request_key' ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$unique_key = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT COUNT(*) FROM information_schema.STATISTICS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s AND NON_UNIQUE = 0',
 				$transactions_table,
@@ -197,6 +213,7 @@ class Installer {
 	private function ensure_innodb( string $table ): bool {
 		global $wpdb;
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 		$engine = $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
@@ -210,12 +227,12 @@ class Installer {
 			return true;
 		}
 
-		// Table names are built from the configured WordPress prefix.
-		$quoted_table = esc_sql( str_replace( '`', '``', $table ) );
-		if ( false === $wpdb->query( "ALTER TABLE `{$quoted_table}` ENGINE=InnoDB" ) ) {
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- Installer schema conversion or explicit uninstall needs this plugin-table DDL.
+		if ( false === $wpdb->query( $wpdb->prepare( 'ALTER TABLE %i ENGINE=InnoDB', $table ) ) ) {
 			return false;
 		}
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 		return 'InnoDB' === $wpdb->get_var(
 			$wpdb->prepare(
 				'SELECT ENGINE FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s',
@@ -233,32 +250,36 @@ class Installer {
 		$wallets_table      = esc_sql( $wallets_table );
 		$transactions_table = esc_sql( $transactions_table );
 
-		$wallets = $wpdb->get_results( "SELECT user_id FROM {$wallets_table}", ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+		$wallets = $wpdb->get_results( $wpdb->prepare( 'SELECT user_id FROM %i', $wallets_table ), ARRAY_A );
 		if ( null === $wallets || ! empty( $wpdb->last_error ) ) {
 			return false;
 		}
 
 		foreach ( $wallets as $wallet ) {
 			$user_id = (int) $wallet['user_id'];
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 			if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
 				return false;
 			}
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 			$balance = $wpdb->get_var(
-				$wpdb->prepare( "SELECT balance FROM {$wallets_table} WHERE user_id = %d FOR UPDATE", $user_id )
+				$wpdb->prepare( 'SELECT balance FROM %i WHERE user_id = %d FOR UPDATE', $wallets_table, $user_id )
 			);
-			$ledger  = $wpdb->get_var(
-				$wpdb->prepare(
-					"SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points WHEN type = 'debit' THEN -points ELSE 0 END), 0) FROM {$transactions_table} WHERE user_id = %d",
-					$user_id
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+			$ledger = $wpdb->get_var(
+				$wpdb->prepare( "SELECT COALESCE(SUM(CASE WHEN type = 'credit' THEN points WHEN type = 'debit' THEN -points ELSE 0 END), 0) FROM %i WHERE user_id = %d", $transactions_table, $user_id
 				)
 			);
 			if ( null === $balance || null === $ledger ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 				$wpdb->query( 'ROLLBACK' );
 				return false;
 			}
 
 			$difference = (int) $balance - (int) $ledger;
 			if ( 0 !== $difference ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Migration and transaction state require direct, current plugin table access.
 				$inserted = $wpdb->insert(
 					$transactions_table,
 					array(
@@ -270,10 +291,12 @@ class Installer {
 					array( '%d', '%d', '%s', '%s' )
 				);
 				if ( 1 !== $inserted ) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 					$wpdb->query( 'ROLLBACK' );
 					return false;
 				}
 			}
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 			if ( false === $wpdb->query( 'COMMIT' ) ) {
 				$wpdb->query( 'ROLLBACK' );
 				return false;
@@ -290,11 +313,12 @@ class Installer {
 		global $wpdb;
 		$transactions_table = esc_sql( $transactions_table );
 
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 		$orders = $wpdb->get_results(
-			"SELECT order_id, type, MIN(transaction_id) AS first_id
-			FROM {$transactions_table}
+			$wpdb->prepare( "SELECT order_id, type, MIN(transaction_id) AS first_id
+			FROM %i
 			WHERE order_id IS NOT NULL AND order_id > 0 AND type IN ('credit', 'debit')
-			GROUP BY order_id, type",
+			GROUP BY order_id, type", $transactions_table ),
 			ARRAY_A
 		);
 		if ( null === $orders || ! empty( $wpdb->last_error ) ) {
@@ -305,8 +329,9 @@ class Installer {
 			$type      = 'credit' === $order['type'] ? 'order_earn' : 'order_reversal';
 			$event_key = $type . ':' . (int) $order['order_id'];
 			$first_id  = (int) $order['first_id'];
-			$existing  = $wpdb->get_var(
-				$wpdb->prepare( "SELECT event_key FROM {$transactions_table} WHERE transaction_id = %d", $first_id )
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
+			$existing = $wpdb->get_var(
+				$wpdb->prepare( 'SELECT event_key FROM %i WHERE transaction_id = %d', $transactions_table, $first_id )
 			);
 			if ( null !== $existing ) {
 				if ( $event_key !== $existing ) {
@@ -315,6 +340,7 @@ class Installer {
 				continue;
 			}
 
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Migration and transaction state require direct, current plugin table access.
 			$updated = $wpdb->update(
 				$transactions_table,
 				array(
@@ -373,7 +399,8 @@ class Installer {
 
 		foreach ( $tables as $table ) {
 			// Drop each table if it exists. This is irreversible.
-			$wpdb->query( "DROP TABLE IF EXISTS {$table};" );
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.DirectDatabaseQuery.SchemaChange -- Installer schema conversion or explicit uninstall needs this plugin-table DDL.
+			$wpdb->query( $wpdb->prepare( 'DROP TABLE IF EXISTS %i;', $table ) );
 		}
 
 		// Cleanup related options after dropping tables

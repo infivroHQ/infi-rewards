@@ -38,8 +38,8 @@ class RewardsPage {
 		}
 		global $wpdb;
 		$table = TransactionsTable::table_name();
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name comes from the WordPress prefix.
-		$redeemed_points = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(points), 0) FROM {$table} WHERE user_id = %d AND type = 'debit' AND event_type = 'redemption'", $user_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redeemed totals must reflect current ledger entries.
+		$redeemed_points = (int) $wpdb->get_var( $wpdb->prepare( "SELECT COALESCE(SUM(points), 0) FROM %i WHERE user_id = %d AND type = 'debit' AND event_type = 'redemption'", $table, $user_id ) );
 		// phpcs:disable WordPress.Security.NonceVerification.Recommended -- Redirect parameters only select a notice and the current user's record.
 		$notice        = isset( $_GET['infirewards_notice'] ) && is_scalar( $_GET['infirewards_notice'] ) ? sanitize_key( wp_unslash( $_GET['infirewards_notice'] ) ) : '';
 		$redemption_id = isset( $_GET['infirewards_redemption'] ) && is_scalar( $_GET['infirewards_redemption'] ) ? absint( wp_unslash( $_GET['infirewards_redemption'] ) ) : 0;

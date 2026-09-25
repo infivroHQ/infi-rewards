@@ -21,7 +21,8 @@ class RulesEngine {
 	public function get_rule(): ?array {
 		global $wpdb;
 		$table = RulesTable::table_name();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE type = %s ORDER BY rule_id ASC LIMIT 1", self::TYPE ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- The rule is stored in a plugin table and may change in admin.
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE type = %s ORDER BY rule_id ASC LIMIT 1', $table, self::TYPE ), ARRAY_A );
 		if ( ! $row ) {
 			return null;
 		}
@@ -45,8 +46,10 @@ class RulesEngine {
 		);
 		$rule  = $this->get_rule();
 		if ( $rule ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- The rule is stored in a plugin table and may change in admin.
 			return false !== $wpdb->update( $table, $data, array( 'rule_id' => (int) $rule['rule_id'] ) );
 		}
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- The rule is stored in a plugin table and may change in admin.
 		return 1 === $wpdb->insert( $table, $data );
 	}
 

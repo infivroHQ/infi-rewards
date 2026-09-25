@@ -29,32 +29,42 @@ class RedemptionService {
 		$wallets      = WalletTable::table_name();
 		$transactions = TransactionsTable::table_name();
 		$rewards      = RewardsTable::table_name();
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
 			return 'error';
 		}
 		// All debits lock the same wallet row. This also serializes repeated requests.
-		$created = $wpdb->query( $wpdb->prepare( "INSERT IGNORE INTO {$wallets} (user_id, balance) VALUES (%d, 0)", $user_id ) );
-		$balance = false === $created ? null : $wpdb->get_var( $wpdb->prepare( "SELECT balance FROM {$wallets} WHERE user_id = %d FOR UPDATE", $user_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$created = $wpdb->query( $wpdb->prepare( 'INSERT IGNORE INTO %i (user_id, balance) VALUES (%d, 0)', $wallets, $user_id ) );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$balance = false === $created ? null : $wpdb->get_var( $wpdb->prepare( 'SELECT balance FROM %i WHERE user_id = %d FOR UPDATE', $wallets, $user_id ) );
 		if ( null === $balance ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$wpdb->query( 'ROLLBACK' );
 			return 'error';
 		}
-		$existing = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE request_key = %s", $request_key ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$existing = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE request_key = %s', $table, $request_key ), ARRAY_A );
 		if ( $existing ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$wpdb->query( 'ROLLBACK' );
 			return (int) $existing['user_id'] === $user_id && (int) $existing['reward_id'] === $reward_id ? $this->issue_coupon( $existing ) : 'invalid';
 		}
-		$reward = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$rewards} WHERE reward_id = %d FOR UPDATE", $reward_id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$reward = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE reward_id = %d FOR UPDATE', $rewards, $reward_id ), ARRAY_A );
 		if ( ! $reward || 1 !== (int) $reward['status'] || (int) $reward['points_cost'] <= 0 || (float) $reward['discount_amount'] <= 0 ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$wpdb->query( 'ROLLBACK' );
 			return 'unavailable';
 		}
 		$cost = (int) $reward['points_cost'];
 		if ( (int) $balance < $cost ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$wpdb->query( 'ROLLBACK' );
 			return 'points';
 		}
-		$updated        = $wpdb->update(
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$updated = $wpdb->update(
 			$wallets,
 			array(
 				'balance'    => (int) $balance - $cost,
@@ -64,6 +74,7 @@ class RedemptionService {
 			array( '%d', '%s' ),
 			array( '%d' )
 		);
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Redemption uses row locks and current plugin table state.
 		$inserted       = 1 === $updated ? $wpdb->insert(
 			$transactions,
 			array(
@@ -80,7 +91,8 @@ class RedemptionService {
 		) : false;
 		$transaction_id = $inserted ? (int) $wpdb->insert_id : 0;
 		$code           = 'ir-' . substr( hash_hmac( 'sha256', $request_key, wp_salt( 'auth' ) ), 0, 32 );
-		$recorded       = $transaction_id ? $wpdb->insert(
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery -- Redemption uses row locks and current plugin table state.
+		$recorded      = $transaction_id ? $wpdb->insert(
 			$table,
 			array(
 				'user_id'         => $user_id,
@@ -95,7 +107,8 @@ class RedemptionService {
 			),
 			array( '%d', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s' )
 		) : false;
-		$redemption_id  = $recorded ? (int) $wpdb->insert_id : 0;
+		$redemption_id = $recorded ? (int) $wpdb->insert_id : 0;
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 		if ( 1 !== $recorded || false === $wpdb->query( 'COMMIT' ) ) {
 			$wpdb->query( 'ROLLBACK' );
 			return 'error';
@@ -107,28 +120,32 @@ class RedemptionService {
 	public function get( int $user_id, int $redemption_id ): ?array {
 		global $wpdb;
 		$table = RedemptionsTable::table_name();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE user_id = %d AND redemption_id = %d", $user_id, $redemption_id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE user_id = %d AND redemption_id = %d', $table, $user_id, $redemption_id ), ARRAY_A );
 		return $row ?: null;
 	}
 
 	public function get_by_key( int $user_id, string $key ): ?array {
 		global $wpdb;
 		$table = RedemptionsTable::table_name();
-		$row   = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE user_id = %d AND request_key = %s", $user_id, $key ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$row = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE user_id = %d AND request_key = %s', $table, $user_id, $key ), ARRAY_A );
 		return $row ?: null;
 	}
 
 	public function history( int $user_id ): array {
 		global $wpdb;
 		$table = RedemptionsTable::table_name();
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE user_id = %d ORDER BY redemption_id DESC LIMIT 20", $user_id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE user_id = %d ORDER BY redemption_id DESC LIMIT 20', $table, $user_id ), ARRAY_A );
 		return is_array( $rows ) ? $rows : array();
 	}
 
 	public function points_history( int $user_id ): array {
 		global $wpdb;
 		$table = TransactionsTable::table_name();
-		$rows  = $wpdb->get_results( $wpdb->prepare( "SELECT * FROM {$table} WHERE user_id = %d ORDER BY transaction_id DESC LIMIT 20", $user_id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$rows = $wpdb->get_results( $wpdb->prepare( 'SELECT * FROM %i WHERE user_id = %d ORDER BY transaction_id DESC LIMIT 20', $table, $user_id ), ARRAY_A );
 		return is_array( $rows ) ? $rows : array();
 	}
 
@@ -148,15 +165,19 @@ class RedemptionService {
 		}
 		$table = RedemptionsTable::table_name();
 		$id    = (int) $record['redemption_id'];
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 		if ( false === $wpdb->query( 'START TRANSACTION' ) ) {
 			return 'pending';
 		}
-		$locked = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM {$table} WHERE redemption_id = %d FOR UPDATE", $id ), ARRAY_A );
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
+		$locked = $wpdb->get_row( $wpdb->prepare( 'SELECT * FROM %i WHERE redemption_id = %d FOR UPDATE', $table, $id ), ARRAY_A );
 		if ( ! $locked ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$wpdb->query( 'ROLLBACK' );
 			return 'pending';
 		}
 		if ( 'issued' === $locked['status'] && (int) $locked['coupon_id'] > 0 ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$wpdb->query( 'COMMIT' );
 			return 'issued';
 		}
@@ -171,6 +192,7 @@ class RedemptionService {
 					if ( 0 !== $owner || abs( (float) $orphan->get_amount() - (float) $locked['discount_amount'] ) >= 0.000001 ||
 						array( $locked['customer_email'] ) !== $orphan->get_email_restrictions() ||
 						1 !== (int) $orphan->get_usage_limit() ) {
+						// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 						$wpdb->query( 'ROLLBACK' );
 						return 'pending';
 					}
@@ -181,6 +203,7 @@ class RedemptionService {
 				if ( 0 === $coupon_owner ) {
 					update_post_meta( $coupon_id, '_infirewards_user_id', (int) $locked['user_id'] );
 				} elseif ( $coupon_owner !== (int) $locked['user_id'] ) {
+					// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 					$wpdb->query( 'ROLLBACK' );
 					return 'pending';
 				}
@@ -197,9 +220,11 @@ class RedemptionService {
 				$coupon_id = $coupon->save();
 			}
 			if ( ! $coupon_id ) {
+				// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 				$wpdb->query( 'ROLLBACK' );
 				return 'pending';
 			}
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$updated = $wpdb->update(
 				$table,
 				array(
@@ -210,12 +235,14 @@ class RedemptionService {
 				array( '%d', '%s' ),
 				array( '%d' )
 			);
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			if ( 1 !== $updated || false === $wpdb->query( 'COMMIT' ) ) {
 				$wpdb->query( 'ROLLBACK' );
 				return 'pending';
 			}
 			return 'issued';
 		} catch ( \Throwable $error ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Redemption uses row locks and current plugin table state.
 			$wpdb->query( 'ROLLBACK' );
 			return 'pending';
 		}
