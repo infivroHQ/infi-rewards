@@ -126,8 +126,8 @@ Customer balance and redemption interfaces can live with their owning domain com
 When the project grows, the repository can move toward this fuller layout:
 
 ```text
-infirewards/
-├── infirewards.php        # Main plugin bootstrap
+infi-rewards/
+├── infi-rewards.php        # Main plugin bootstrap
 ├── uninstall.php          # Permanent cleanup
 ├── readme.txt             # WordPress.org readme
 ├── composer.json

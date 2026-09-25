@@ -67,11 +67,11 @@ class Customers {
 		?>
 		<div class="wrap infirewards-page">
 			<?php PageHeader::render( 'infirewards-customers' ); ?>
-			<div class="infirewards-page__heading"><h2><?php esc_html_e( 'Customers', 'infirewards' ); ?></h2></div>
+			<div class="infirewards-page__heading"><h2><?php esc_html_e( 'Customers', 'infi-rewards' ); ?></h2></div>
 			<div class="infirewards-page__customer-grid">
-				<section class="infirewards-page__panel"><h3><?php esc_html_e( 'Customers', 'infirewards' ); ?></h3>
-					<form class="infirewards-page__filters" method="get"><input type="hidden" name="page" value="infirewards-customers"><label class="screen-reader-text" for="infirewards-customer-search"><?php esc_html_e( 'Search customers', 'infirewards' ); ?></label><input id="infirewards-customer-search" name="s" type="search" placeholder="<?php esc_attr_e( 'Search by name or email...', 'infirewards' ); ?>" value="<?php echo esc_attr( $search ); ?>"><label class="screen-reader-text" for="infirewards-customer-sort"><?php esc_html_e( 'Sort customers', 'infirewards' ); ?></label><select name="sort" id="infirewards-customer-sort"><option value="balance" <?php selected( $sort, 'balance' ); ?>><?php esc_html_e( 'Highest balance', 'infirewards' ); ?></option><option value="recent" <?php selected( $sort, 'recent' ); ?>><?php esc_html_e( 'Recent activity', 'infirewards' ); ?></option><option value="name" <?php selected( $sort, 'name' ); ?>><?php esc_html_e( 'Name', 'infirewards' ); ?></option></select><button class="button" type="submit"><?php esc_html_e( 'Filter', 'infirewards' ); ?></button></form>
-					<div class="infirewards-page__table-wrap"><table class="widefat infirewards-page__table"><thead><tr><th scope="col"><?php esc_html_e( 'Customer', 'infirewards' ); ?></th><th scope="col"><?php esc_html_e( 'Available Points', 'infirewards' ); ?></th><th scope="col"><?php esc_html_e( 'Total Earned', 'infirewards' ); ?></th><th scope="col"><?php esc_html_e( 'Last Activity', 'infirewards' ); ?></th><th scope="col"><?php esc_html_e( 'Action', 'infirewards' ); ?></th></tr></thead><tbody>
+				<section class="infirewards-page__panel"><h3><?php esc_html_e( 'Customers', 'infi-rewards' ); ?></h3>
+					<form class="infirewards-page__filters" method="get"><input type="hidden" name="page" value="infirewards-customers"><label class="screen-reader-text" for="infirewards-customer-search"><?php esc_html_e( 'Search customers', 'infi-rewards' ); ?></label><input id="infirewards-customer-search" name="s" type="search" placeholder="<?php esc_attr_e( 'Search by name or email...', 'infi-rewards' ); ?>" value="<?php echo esc_attr( $search ); ?>"><label class="screen-reader-text" for="infirewards-customer-sort"><?php esc_html_e( 'Sort customers', 'infi-rewards' ); ?></label><select name="sort" id="infirewards-customer-sort"><option value="balance" <?php selected( $sort, 'balance' ); ?>><?php esc_html_e( 'Highest balance', 'infi-rewards' ); ?></option><option value="recent" <?php selected( $sort, 'recent' ); ?>><?php esc_html_e( 'Recent activity', 'infi-rewards' ); ?></option><option value="name" <?php selected( $sort, 'name' ); ?>><?php esc_html_e( 'Name', 'infi-rewards' ); ?></option></select><button class="button" type="submit"><?php esc_html_e( 'Filter', 'infi-rewards' ); ?></button></form>
+					<div class="infirewards-page__table-wrap"><table class="widefat infirewards-page__table"><thead><tr><th scope="col"><?php esc_html_e( 'Customer', 'infi-rewards' ); ?></th><th scope="col"><?php esc_html_e( 'Available Points', 'infi-rewards' ); ?></th><th scope="col"><?php esc_html_e( 'Total Earned', 'infi-rewards' ); ?></th><th scope="col"><?php esc_html_e( 'Last Activity', 'infi-rewards' ); ?></th><th scope="col"><?php esc_html_e( 'Action', 'infi-rewards' ); ?></th></tr></thead><tbody>
 					<?php
 					foreach ( $rows as $row ) :
 						$url = add_query_arg(
@@ -84,14 +84,14 @@ class Customers {
 							admin_url( 'admin.php?page=infirewards-customers' )
 						);
 						?>
-						<tr class="<?php echo $selected_id === (int) $row['user_id'] ? 'is-selected' : ''; ?>"><td><span class="infirewards-page__identity"><?php echo get_avatar( (int) $row['user_id'], 32 ); ?><span><strong><?php echo esc_html( $row['display_name'] ? $row['display_name'] : $row['user_email'] ); ?></strong><small><?php echo esc_html( $row['user_email'] ); ?></small></span></span></td><td><strong><?php echo esc_html( number_format_i18n( (int) $row['balance'] ) ); ?></strong></td><td><?php echo esc_html( number_format_i18n( (int) $row['earned'] ) ); ?></td><td><?php echo $row['last_activity'] ? esc_html( mysql2date( get_option( 'date_format' ), $row['last_activity'] ) ) : '—'; ?></td><td><a class="button button-small" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'View', 'infirewards' ); ?></a></td></tr>
+						<tr class="<?php echo $selected_id === (int) $row['user_id'] ? 'is-selected' : ''; ?>"><td><span class="infirewards-page__identity"><?php echo get_avatar( (int) $row['user_id'], 32 ); ?><span><strong><?php echo esc_html( $row['display_name'] ? $row['display_name'] : $row['user_email'] ); ?></strong><small><?php echo esc_html( $row['user_email'] ); ?></small></span></span></td><td><strong><?php echo esc_html( number_format_i18n( (int) $row['balance'] ) ); ?></strong></td><td><?php echo esc_html( number_format_i18n( (int) $row['earned'] ) ); ?></td><td><?php echo $row['last_activity'] ? esc_html( mysql2date( get_option( 'date_format' ), $row['last_activity'] ) ) : '—'; ?></td><td><a class="button button-small" href="<?php echo esc_url( $url ); ?>"><?php esc_html_e( 'View', 'infi-rewards' ); ?></a></td></tr>
 						<?php
 					endforeach; if ( ! $rows ) :
 						?>
-						<tr><td colspan="5" class="infirewards-page__empty"><?php esc_html_e( 'No customers match this view.', 'infirewards' ); ?></td></tr><?php endif; ?>
+						<tr><td colspan="5" class="infirewards-page__empty"><?php esc_html_e( 'No customers match this view.', 'infi-rewards' ); ?></td></tr><?php endif; ?>
 					</tbody></table></div>
 					<?php // translators: 1: first customer shown, 2: last customer shown, 3: total customers. ?>
-					<div class="infirewards-page__pagination"><span><?php echo esc_html( sprintf( __( 'Showing %1$d–%2$d of %3$d customers', 'infirewards' ), $total ? $offset + 1 : 0, min( $offset + $limit, $total ), $total ) ); ?></span><span>
+					<div class="infirewards-page__pagination"><span><?php echo esc_html( sprintf( __( 'Showing %1$d–%2$d of %3$d customers', 'infi-rewards' ), $total ? $offset + 1 : 0, min( $offset + $limit, $total ), $total ) ); ?></span><span>
 					<?php
 					if ( $page > 1 ) :
 						?>
@@ -108,7 +108,7 @@ class Customers {
 							)
 						);
 						?>
-						"><?php esc_html_e( 'Previous', 'infirewards' ); ?></a><?php endif; ?>
+						"><?php esc_html_e( 'Previous', 'infi-rewards' ); ?></a><?php endif; ?>
 		<?php
 		if ( $offset + $limit < $total ) :
 			?>
@@ -125,20 +125,20 @@ class Customers {
 							)
 						);
 						?>
-						"><?php esc_html_e( 'Next', 'infirewards' ); ?></a><?php endif; ?></span></div>
+						"><?php esc_html_e( 'Next', 'infi-rewards' ); ?></a><?php endif; ?></span></div>
 				</section>
 				<div class="infirewards-page__sidebar">
-					<section class="infirewards-page__panel"><h3><?php esc_html_e( 'Customer Details', 'infirewards' ); ?></h3>
+					<section class="infirewards-page__panel"><h3><?php esc_html_e( 'Customer Details', 'infi-rewards' ); ?></h3>
 					<?php
 					if ( $customer ) :
 						?>
 						<div class="infirewards-page__profile"><?php echo get_avatar( $customer->ID, 48 ); ?><span><strong><?php echo esc_html( $customer->display_name ? $customer->display_name : $customer->user_email ); ?></strong><small><?php echo esc_html( $customer->user_email ); ?></small></span></div>
-					<dl class="infirewards-page__details"><div><dt><?php esc_html_e( 'Available points', 'infirewards' ); ?></dt><dd><?php echo esc_html( number_format_i18n( (int) $wallet['balance'] ) ); ?></dd></div><div><dt><?php esc_html_e( 'Total earned', 'infirewards' ); ?></dt><dd><?php echo esc_html( number_format_i18n( (int) $summary['earned'] ) ); ?></dd></div><div><dt><?php esc_html_e( 'Points redeemed', 'infirewards' ); ?></dt><dd><?php echo esc_html( number_format_i18n( (int) $summary['redeemed'] ) ); ?></dd></div><div><dt><?php esc_html_e( 'Last redeemed', 'infirewards' ); ?></dt><dd><?php echo $summary['last_redeemed'] ? esc_html( mysql2date( get_option( 'date_format' ), $summary['last_redeemed'] ) ) : '—'; ?></dd></div></dl>
+					<dl class="infirewards-page__details"><div><dt><?php esc_html_e( 'Available points', 'infi-rewards' ); ?></dt><dd><?php echo esc_html( number_format_i18n( (int) $wallet['balance'] ) ); ?></dd></div><div><dt><?php esc_html_e( 'Total earned', 'infi-rewards' ); ?></dt><dd><?php echo esc_html( number_format_i18n( (int) $summary['earned'] ) ); ?></dd></div><div><dt><?php esc_html_e( 'Points redeemed', 'infi-rewards' ); ?></dt><dd><?php echo esc_html( number_format_i18n( (int) $summary['redeemed'] ) ); ?></dd></div><div><dt><?php esc_html_e( 'Last redeemed', 'infi-rewards' ); ?></dt><dd><?php echo $summary['last_redeemed'] ? esc_html( mysql2date( get_option( 'date_format' ), $summary['last_redeemed'] ) ) : '—'; ?></dd></div></dl>
 						<?php
 					else :
 						?>
-						<p class="infirewards-page__muted"><?php esc_html_e( 'Select a customer to see their points.', 'infirewards' ); ?></p><?php endif; ?></section>
-					<section class="infirewards-page__panel"><h3><?php esc_html_e( 'Recent Activity', 'infirewards' ); ?></h3>
+						<p class="infirewards-page__muted"><?php esc_html_e( 'Select a customer to see their points.', 'infi-rewards' ); ?></p><?php endif; ?></section>
+					<section class="infirewards-page__panel"><h3><?php esc_html_e( 'Recent Activity', 'infi-rewards' ); ?></h3>
 					<?php
 					if ( $activity ) :
 						?>
@@ -151,7 +151,7 @@ class Customers {
 						<?php
 					else :
 						?>
-						<p class="infirewards-page__muted"><?php esc_html_e( 'No points activity yet.', 'infirewards' ); ?></p><?php endif; ?>
+						<p class="infirewards-page__muted"><?php esc_html_e( 'No points activity yet.', 'infi-rewards' ); ?></p><?php endif; ?>
 					</section>
 				</div>
 			</div>
@@ -169,13 +169,13 @@ class Customers {
 		switch ( $entry['event_type'] ) {
 			case 'order_earn':
 				// translators: %d is the order ID.
-				return sprintf( __( 'Earned points for order #%d', 'infirewards' ), (int) $entry['order_id'] );
+				return sprintf( __( 'Earned points for order #%d', 'infi-rewards' ), (int) $entry['order_id'] );
 			case 'order_reversal':
-				return __( 'Order points reversed', 'infirewards' );
+				return __( 'Order points reversed', 'infi-rewards' );
 			case 'redemption':
-				return __( 'Redeemed reward', 'infirewards' );
+				return __( 'Redeemed reward', 'infi-rewards' );
 			default:
-				return $entry['reason'] ? $entry['reason'] : __( 'Points adjustment', 'infirewards' );
+				return $entry['reason'] ? $entry['reason'] : __( 'Points adjustment', 'infi-rewards' );
 		}
 	}
 }

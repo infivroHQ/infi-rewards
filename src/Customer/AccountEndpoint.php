@@ -59,7 +59,7 @@ class AccountEndpoint {
 			$logout = $items['customer-logout'];
 			unset( $items['customer-logout'] );
 		}
-		$items[ self::ENDPOINT ] = __( 'Points & Rewards', 'infirewards' );
+		$items[ self::ENDPOINT ] = __( 'Points & Rewards', 'infi-rewards' );
 		if ( null !== $logout ) {
 			$items['customer-logout'] = $logout;
 		}

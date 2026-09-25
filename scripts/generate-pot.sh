@@ -3,7 +3,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
-output="${1:-$root/languages/infirewards.pot}"
+output="${1:-$root/languages/infi-rewards.pot}"
 version="$(sed -n 's/^Stable tag: //p' readme.txt | head -n 1)"
 mkdir -p "$(dirname "$output")"
 
@@ -27,6 +27,6 @@ xgettext \
   --keyword=esc_attr__ \
   --keyword=esc_attr_e \
   --output="$output" \
-  infirewards.php "${php_files[@]}"
+  infi-rewards.php "${php_files[@]}"
 
 echo "Generated $output"

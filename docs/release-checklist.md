@@ -6,7 +6,7 @@ Fix every failed required check before packaging.
 
 ## 1. Define the release
 
-- [ ] Bump the version everywhere it appears: `infirewards.php`,
+- [ ] Bump the version everywhere it appears: `infi-rewards.php`,
   `INFIREWARDS_VERSION`, and `readme.txt` Stable tag/changelog.
 - [ ] Confirm the plugin header and readme agree on name, slug/text domain,
   minimum WordPress/PHP versions, WooCommerce dependency, license, and version.
@@ -43,7 +43,7 @@ Fix every failed required check before packaging.
 
 - [ ] Plugin assets are local and enqueue only on relevant screens. Use
   WordPress-provided dependencies instead of bundling or loading CDN copies.
-- [ ] User-facing strings use literal gettext calls with the exact `infirewards`
+- [ ] User-facing strings use literal gettext calls with the exact `infi-rewards`
   text domain.
 - [ ] Admin and customer views work by keyboard, keep visible focus, have labels
   and semantic controls, announce errors/statuses, and do not rely on colour
@@ -58,7 +58,24 @@ Fix every failed required check before packaging.
 
 ## 4. Run automated checks
 
-- [ ] Run `composer lint` (or `vendor/bin/phpcs`) and resolve new violations.
+- [ ] Run `composer lint` and `composer lint:report`. Review warnings as well as
+  errors: the lint gate ignores warnings, and the project ruleset disables some
+  sniffs that Plugin Check enables.
+- [ ] Preflight translated strings with placeholders. Put a `translators:` note
+  immediately above each gettext call and explain every placeholder. Check
+  strings embedded in HTML/PHP output too. Run
+  `vendor/bin/phpcs --standard=WordPress --sniffs=WordPress.WP.I18n src/`.
+- [ ] Review each `$_GET`/`$_POST` read. State-changing handlers must verify a
+  nonce and capability before acting. For read-only navigation, notices, and
+  filters, sanitize and allow-list values; use a narrow, reasoned PHPCS ignore
+  only where the nonce warning is a false positive. Run
+  `vendor/bin/phpcs --standard=WordPress --sniffs=WordPress.Security.NonceVerification src/`.
+- [ ] Audit custom-table SQL: prepare request-controlled values, derive table
+  names from the WordPress prefix, and allow-list dynamic identifiers and sort
+  clauses. Review direct-query, caching, and schema warnings against the actual
+  operation; avoid caching transaction/locking reads or hiding warnings broadly.
+- [ ] Keep the `readme.txt` short description at 150 characters or fewer and
+  validate the readme before Plugin Check.
 - [ ] Run PHP syntax checks for changed PHP files.
 - [ ] On a disposable WordPress + WooCommerce site, run:
 
@@ -102,12 +119,15 @@ Fix every failed required check before packaging.
   is contextual and dismissible or disappears once resolved. Frontend credits
   are opt-in and off by default.
 - [ ] For WordPress.org: verify account 2FA, validate the final `readme.txt`,
-  submit the complete ZIP, and allow for the automated release security-review
-  cooldown before announcing availability.
+  submit the complete ZIP, and confirm the assigned slug is `infi-rewards`
+  before approval. Adjust it through the submission process if needed; the
+  public slug determines the text domain and cannot be renamed after approval.
+  Allow for the automated release security-review cooldown before announcing
+  availability.
 
 Build the release candidate with `scripts/build-release.sh` (requires `xgettext`, `rsync`, and `zip`). It creates
-`dist/infirewards-VERSION.zip` with a lowercase `infirewards/` root and a
-generated `languages/infirewards.pot`. Run `scripts/generate-pot.sh` to
+`dist/infi-rewards-VERSION.zip` with a lowercase `infi-rewards/` root and a
+generated `languages/infi-rewards.pot`. Run `scripts/generate-pot.sh` to
 refresh the repository POT separately. Install and check the final ZIP on the
 release test site before completing sign-off.
 

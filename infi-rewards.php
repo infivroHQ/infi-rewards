@@ -6,7 +6,7 @@
  * Version:     0.1.0
  * Author:      Infivro
  * Author URI:  https://infivro.com
- * Text Domain: infirewards
+ * Text Domain: infi-rewards
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Requires Plugins: woocommerce

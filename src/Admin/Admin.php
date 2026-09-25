@@ -17,8 +17,8 @@ class Admin {
 
 	public static function register_menu(): void {
 		$dashboard_hook = add_menu_page(
-			__( 'infiRewards', 'infirewards' ),
-			__( 'infiRewards', 'infirewards' ),
+			__( 'infiRewards', 'infi-rewards' ),
+			__( 'infiRewards', 'infi-rewards' ),
 			'manage_options',
 			'infirewards',
 			array( __CLASS__, 'render_dashboard' ),
@@ -26,40 +26,40 @@ class Admin {
 		);
 		add_submenu_page(
 			'infirewards',
-			__( 'Overview', 'infirewards' ),
-			__( 'Overview', 'infirewards' ),
+			__( 'Overview', 'infi-rewards' ),
+			__( 'Overview', 'infi-rewards' ),
 			'manage_options',
 			'infirewards',
 			array( __CLASS__, 'render_dashboard' )
 		);
 		$rule_hook      = add_submenu_page(
 			'infirewards',
-			__( 'Earning Rules', 'infirewards' ),
-			__( 'Earning Rules', 'infirewards' ),
+			__( 'Earning Rules', 'infi-rewards' ),
+			__( 'Earning Rules', 'infi-rewards' ),
 			'manage_options',
 			'infirewards-earning-rule',
 			array( __CLASS__, 'render_earning_rule' )
 		);
 		$rewards_hook   = add_submenu_page(
 			'infirewards',
-			__( 'Rewards', 'infirewards' ),
-			__( 'Rewards', 'infirewards' ),
+			__( 'Rewards', 'infi-rewards' ),
+			__( 'Rewards', 'infi-rewards' ),
 			'manage_options',
 			'infirewards-rewards',
 			array( __CLASS__, 'render_rewards' )
 		);
 		$customers_hook = add_submenu_page(
 			'infirewards',
-			__( 'Customers', 'infirewards' ),
-			__( 'Customers', 'infirewards' ),
+			__( 'Customers', 'infi-rewards' ),
+			__( 'Customers', 'infi-rewards' ),
 			'manage_options',
 			'infirewards-customers',
 			array( __CLASS__, 'render_customers' )
 		);
 		$settings_hook = add_submenu_page(
 			'infirewards',
-			__( 'Settings', 'infirewards' ),
-			__( 'Settings', 'infirewards' ),
+			__( 'Settings', 'infi-rewards' ),
+			__( 'Settings', 'infi-rewards' ),
 			'manage_options',
 			'infirewards-settings',
 			array( __CLASS__, 'render_settings' )
@@ -117,7 +117,7 @@ class Admin {
 	/** Save whether rewards appear in the account menu. */
 	public static function save_display(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You cannot edit display settings.', 'infirewards' ) );
+			wp_die( esc_html__( 'You cannot edit display settings.', 'infi-rewards' ) );
 		}
 		check_admin_referer( 'infirewards_save_display' );
 		$enabled = isset( $_POST['show_in_my_account'] ) && is_scalar( $_POST['show_in_my_account'] ) && '1' === sanitize_text_field( wp_unslash( $_POST['show_in_my_account'] ) );
@@ -128,7 +128,7 @@ class Admin {
 
 	public static function save_earning_rule(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You cannot edit earning rules.', 'infirewards' ) );
+			wp_die( esc_html__( 'You cannot edit earning rules.', 'infi-rewards' ) );
 		}
 		check_admin_referer( 'infirewards_save_earning_rule' );
 		$rate = isset( $_POST['rate'] ) && is_scalar( $_POST['rate'] ) ? trim( sanitize_text_field( wp_unslash( $_POST['rate'] ) ) ) : '';
@@ -141,7 +141,7 @@ class Admin {
 	/** Handle a reward edit submitted by an administrator. */
 	public static function save_reward(): void {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'You cannot edit rewards.', 'infirewards' ) );
+			wp_die( esc_html__( 'You cannot edit rewards.', 'infi-rewards' ) );
 		}
 		check_admin_referer( 'infirewards_save_reward' );
 		$reward_id = isset( $_POST['reward_id'] ) && is_scalar( $_POST['reward_id'] ) ? absint( wp_unslash( $_POST['reward_id'] ) ) : 0;
