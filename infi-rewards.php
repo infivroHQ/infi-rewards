@@ -1,7 +1,6 @@
 <?php
 /**
  * Plugin Name: infiRewards – Loyalty Points & Rewards
- * Plugin URI:  https://infivro.com
  * Description: Loyalty points and rewards for WooCommerce.
  * Version:     0.1.0
  * Author:      Infivro
