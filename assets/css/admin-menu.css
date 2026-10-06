@@ -1,0 +1,15 @@
+#adminmenu #toplevel_page_infirewards .wp-menu-image {
+	display:flex;
+	align-items:center;
+	justify-content:center
+}
+
+#adminmenu #toplevel_page_infirewards .wp-menu-image img {
+	display:block;
+	width:20px;
+	height:20px;
+	max-width:100%;
+	padding:0;
+	opacity:1;
+	object-fit:contain
+}

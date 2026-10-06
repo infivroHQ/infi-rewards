@@ -24,7 +24,7 @@ class Admin {
 			'manage_options',
 			'infirewards',
 			array( __CLASS__, 'render_dashboard' ),
-			'dashicons-star-filled'
+			plugins_url( 'assets/images/infivro-rewards-icon.png', INFIREWARDS_PLUGIN_FILE )
 		);
 		add_submenu_page(
 			'infirewards',
@@ -79,6 +79,8 @@ class Admin {
 	}
 
 	public static function enqueue_admin_assets( string $hook ): void {
+		// The sidebar icon appears on every admin screen.
+		wp_enqueue_style( 'infirewards-menu', plugins_url( 'assets/css/admin-menu.css', INFIREWARDS_PLUGIN_FILE ), array(), INFIREWARDS_VERSION );
 		if ( ! in_array( $hook, self::$page_hooks, true ) ) {
 			return;
 		}

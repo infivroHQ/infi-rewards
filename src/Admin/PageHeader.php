@@ -25,7 +25,10 @@ class PageHeader {
 			'infirewards-settings'     => array( __( 'Settings', 'infivro-loyalty-rewards' ), 'dashicons-admin-settings' ),
 		);
 		?>
-		<h1><?php esc_html_e( 'Infivro Loyalty Rewards for WooCommerce', 'infivro-loyalty-rewards' ); ?></h1>
+		<h1 class="infirewards-page__brand">
+			<img src="<?php echo esc_url( plugins_url( 'assets/images/infivro-rewards-logo.png', INFIREWARDS_PLUGIN_FILE ) ); ?>" alt="" width="56" height="56" />
+			<span><?php esc_html_e( 'Infivro Loyalty Rewards for WooCommerce', 'infivro-loyalty-rewards' ); ?></span>
+		</h1>
 		<nav class="infirewards-page__nav" aria-label="<?php esc_attr_e( 'Infivro Loyalty Rewards for WooCommerce pages', 'infivro-loyalty-rewards' ); ?>">
 			<?php foreach ( $pages as $slug => $page ) : ?>
 				<a class="<?php echo $current === $slug ? 'is-current' : ''; ?>" <?php echo $current === $slug ? 'aria-current="page"' : ''; ?> href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>"><span class="dashicons <?php echo esc_attr( $page[1] ); ?>" aria-hidden="true"></span><?php echo esc_html( $page[0] ); ?></a>
