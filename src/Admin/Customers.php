@@ -25,12 +25,14 @@ class Customers {
 		$sort   = isset( $_GET['sort'] ) && is_scalar( $_GET['sort'] ) ? sanitize_key( wp_unslash( $_GET['sort'] ) ) : 'balance';
 		$sort   = in_array( $sort, array( 'balance', 'recent', 'name' ), true ) ? $sort : 'balance';
 		// phpcs:enable WordPress.Security.NonceVerification.Recommended
-		$order_by = array(
-			'balance' => 'w.balance DESC',
-			'recent'  => 'last_activity DESC',
-			'name'    => 'u.display_name ASC',
-		)[ $sort ];
-		$like     = '%' . $wpdb->esc_like( $search ) . '%';
+		if ( 'name' === $sort ) {
+			$order_by = $wpdb->prepare( 'u.%i ASC', 'display_name' );
+		} elseif ( 'recent' === $sort ) {
+			$order_by = $wpdb->prepare( 't.%i DESC', 'last_activity' );
+		} else {
+			$order_by = $wpdb->prepare( 'w.%i DESC', 'balance' );
+		}
+		$like = '%' . $wpdb->esc_like( $search ) . '%';
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
 		$total  = (int) $wpdb->get_var(
 			$wpdb->prepare( 'SELECT COUNT(*) FROM %i w INNER JOIN %i u ON u.ID = w.user_id WHERE (u.display_name LIKE %s OR u.user_email LIKE %s)', $wallets, $wpdb->users, $like,
@@ -40,7 +42,7 @@ class Customers {
 		$limit  = 20;
 		$page   = min( $page, max( 1, (int) ceil( $total / $limit ) ) );
 		$offset = ( $page - 1 ) * $limit;
-		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Sort clause comes from the fixed three-value map above.
+		// phpcs:disable WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Sort identifiers are prepared above with fixed directions.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- Customer balances and activity must reflect current plugin table data.
 		$rows = $wpdb->get_results(
 			$wpdb->prepare( "SELECT w.user_id, w.balance, u.display_name, u.user_email, COALESCE(t.earned, 0) AS earned, t.last_activity
