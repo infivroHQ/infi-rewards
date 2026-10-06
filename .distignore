@@ -13,3 +13,4 @@ phpcs.xml.dist
 .distignore
 scripts
 dist
+*.[mM][dD]

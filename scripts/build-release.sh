@@ -32,7 +32,7 @@ fi
 
 (
   cd "$stage"
-  zip -qr "$stage/release.zip" infivro-loyalty-rewards
+  zip -qr "$stage/release.zip" infivro-loyalty-rewards -x '*.[mM][dD]'
 )
 mv -f "$stage/release.zip" "$output"
 echo "Built $output"
