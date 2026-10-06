@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the infiRewards package.
+# This file is distributed under the same license as the Infivro Loyalty Rewards for WooCommerce package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: infiRewards 0.1.0\n"
+"Project-Id-Version: Infivro Loyalty Rewards for WooCommerce 0.1.0\n"
 "Report-Msgid-Bugs-To: https://infivro.com\n"
-"POT-Creation-Date: 2026-09-25 18:26+0600\n"
+"POT-Creation-Date: 2026-10-06 22:23+0600\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -32,30 +32,30 @@ msgid_plural "%d rules"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/Admin/Customers.php:74 src/Admin/EarningRules.php:51
-#: src/Admin/Rewards.php:71
+#: src/Admin/Customers.php:81 src/Admin/EarningRules.php:51
+#: src/Admin/Rewards.php:72
 msgid "Action"
 msgstr ""
 
 #: src/Admin/EarningRules.php:60 src/Admin/EarningRules.php:80
-#: src/Admin/Rewards.php:70 src/Admin/Rewards.php:82 src/Admin/Rewards.php:121
+#: src/Admin/Rewards.php:71 src/Admin/Rewards.php:83 src/Admin/Rewards.php:122
 #: src/Admin/Settings.php:34
 msgid "Active"
 msgstr ""
 
-#: src/Admin/Rewards.php:66
+#: src/Admin/Rewards.php:67
 msgid "Active rewards"
 msgstr ""
 
-#: src/Admin/Rewards.php:97
+#: src/Admin/Rewards.php:98
 msgid "Active rewards available for customers to redeem."
 msgstr ""
 
-#: src/Admin/Overview.php:103 src/Customer/RewardsPage.php:66
+#: src/Admin/Overview.php:105 src/Customer/RewardsPage.php:66
 msgid "Activity"
 msgstr ""
 
-#: src/Admin/Rewards.php:56
+#: src/Admin/Rewards.php:57
 msgid "Add Reward"
 msgstr ""
 
@@ -63,7 +63,7 @@ msgstr ""
 msgid "Add Rule"
 msgstr ""
 
-#: src/Admin/Overview.php:87
+#: src/Admin/Overview.php:89
 msgid "Add a discount customers can redeem with points."
 msgstr ""
 
@@ -75,7 +75,7 @@ msgstr ""
 msgid "Add this shortcode to a page or post to show customers their balance, available rewards, and history."
 msgstr ""
 
-#: src/Admin/Rewards.php:69
+#: src/Admin/Rewards.php:70
 msgid "All Rewards"
 msgstr ""
 
@@ -83,15 +83,15 @@ msgstr ""
 msgid "All Rules"
 msgstr ""
 
-#: src/Admin/Rewards.php:70
+#: src/Admin/Rewards.php:71
 msgid "All rewards"
 msgstr ""
 
-#: src/Admin/Customers.php:74
+#: src/Admin/Customers.php:81
 msgid "Available Points"
 msgstr ""
 
-#: src/Admin/Customers.php:136 src/Customer/RewardsPage.php:89
+#: src/Admin/Customers.php:143 src/Customer/RewardsPage.php:89
 msgid "Available points"
 msgstr ""
 
@@ -99,11 +99,11 @@ msgstr ""
 msgid "Available rewards"
 msgstr ""
 
-#: src/Admin/Overview.php:95
+#: src/Admin/Overview.php:97
 msgid "Check the customer page"
 msgstr ""
 
-#: src/Admin/Overview.php:80
+#: src/Admin/Overview.php:82
 msgid "Choose how many points customers earn per currency unit."
 msgstr ""
 
@@ -135,7 +135,7 @@ msgstr ""
 msgid "Could not redeem the reward. Please try again."
 msgstr ""
 
-#: src/Admin/Rewards.php:82
+#: src/Admin/Rewards.php:83
 msgid "Coupon"
 msgstr ""
 
@@ -151,28 +151,28 @@ msgstr ""
 msgid "Create Purchase Rule"
 msgstr ""
 
-#: src/Admin/Overview.php:93 src/Admin/Rewards.php:118
-#: src/Admin/Rewards.php:121
+#: src/Admin/Overview.php:95 src/Admin/Rewards.php:119
+#: src/Admin/Rewards.php:122
 msgid "Create Reward"
 msgstr ""
 
-#: src/Admin/EarningRules.php:81 src/Admin/Overview.php:86
+#: src/Admin/EarningRules.php:81 src/Admin/Overview.php:88
 msgid "Create Rule"
 msgstr ""
 
-#: src/Admin/Overview.php:87
+#: src/Admin/Overview.php:89
 msgid "Create a reward"
 msgstr ""
 
-#: src/Admin/Rewards.php:115
+#: src/Admin/Rewards.php:116
 msgid "Create an active reward to see it here."
 msgstr ""
 
-#: src/Admin/Overview.php:80
+#: src/Admin/Overview.php:82
 msgid "Create an earning rule"
 msgstr ""
 
-#: src/Admin/Rewards.php:125
+#: src/Admin/Rewards.php:126
 msgid "Create another reward"
 msgstr ""
 
@@ -180,12 +180,12 @@ msgstr ""
 msgid "Current balance:"
 msgstr ""
 
-#: src/Admin/Customers.php:74 src/Admin/Overview.php:103
-#: src/Admin/Overview.php:121
+#: src/Admin/Customers.php:81 src/Admin/Overview.php:105
+#: src/Admin/Overview.php:123
 msgid "Customer"
 msgstr ""
 
-#: src/Admin/Customers.php:131
+#: src/Admin/Customers.php:138
 msgid "Customer Details"
 msgstr ""
 
@@ -193,24 +193,24 @@ msgstr ""
 msgid "Customer Page"
 msgstr ""
 
-#: src/Admin/Rewards.php:92
+#: src/Admin/Rewards.php:93
 msgid "Customer Preview"
 msgstr ""
 
-#: src/Admin/Overview.php:129
+#: src/Admin/Overview.php:131
 msgid "Customer balances will appear here after points are earned."
 msgstr ""
 
-#: src/Admin/Admin.php:53 src/Admin/Admin.php:54 src/Admin/Customers.php:70
-#: src/Admin/Customers.php:72 src/Admin/PageHeader.php:24
+#: src/Admin/Admin.php:55 src/Admin/Admin.php:56 src/Admin/Customers.php:77
+#: src/Admin/Customers.php:79 src/Admin/PageHeader.php:24
 msgid "Customers"
 msgstr ""
 
-#: src/Admin/Rewards.php:118
+#: src/Admin/Rewards.php:119
 msgid "Customers redeem points for a single-use fixed cart discount coupon."
 msgstr ""
 
-#: src/Admin/Overview.php:103
+#: src/Admin/Overview.php:105
 msgid "Date"
 msgstr ""
 
@@ -218,15 +218,15 @@ msgstr ""
 msgid "Decimal handling"
 msgstr ""
 
-#: src/Admin/Overview.php:110
+#: src/Admin/Overview.php:112
 msgid "Deleted customer"
 msgstr ""
 
-#: src/Admin/Rewards.php:120
+#: src/Admin/Rewards.php:121
 msgid "Discount amount"
 msgstr ""
 
-#: src/Admin/Overview.php:84 src/Admin/Overview.php:91
+#: src/Admin/Overview.php:86 src/Admin/Overview.php:93
 msgid "Done"
 msgstr ""
 
@@ -246,12 +246,12 @@ msgstr ""
 
 #. translators: %d is the order ID.
 #. translators: %d is the WooCommerce order ID.
-#: src/Admin/Customers.php:172 src/Admin/Overview.php:145
+#: src/Admin/Customers.php:179 src/Admin/Overview.php:147
 #, php-format
 msgid "Earned points for order #%d"
 msgstr ""
 
-#: src/Admin/Admin.php:37 src/Admin/Admin.php:38 src/Admin/EarningRules.php:28
+#: src/Admin/Admin.php:39 src/Admin/Admin.php:40 src/Admin/EarningRules.php:28
 #: src/Admin/PageHeader.php:22
 msgid "Earning Rules"
 msgstr ""
@@ -264,7 +264,7 @@ msgstr ""
 msgid "Earning rule saved."
 msgstr ""
 
-#: src/Admin/EarningRules.php:61 src/Admin/Rewards.php:82
+#: src/Admin/EarningRules.php:61 src/Admin/Rewards.php:83
 msgid "Edit"
 msgstr ""
 
@@ -272,7 +272,7 @@ msgstr ""
 msgid "Edit Purchase Rule"
 msgstr ""
 
-#: src/Admin/Rewards.php:118
+#: src/Admin/Rewards.php:119
 msgid "Edit Reward"
 msgstr ""
 
@@ -288,7 +288,7 @@ msgstr ""
 msgid "Enable My Account endpoint"
 msgstr ""
 
-#: src/Admin/Rewards.php:64
+#: src/Admin/Rewards.php:65
 msgid "Enter a name, positive discount and valid whole points cost."
 msgstr ""
 
@@ -296,15 +296,15 @@ msgstr ""
 msgid "Enter a nonnegative rate with up to four decimal places (maximum 1,000,000)."
 msgstr ""
 
-#: src/Admin/Customers.php:73 src/Admin/Rewards.php:70
+#: src/Admin/Customers.php:80 src/Admin/Rewards.php:71
 msgid "Filter"
 msgstr ""
 
-#: src/Admin/Rewards.php:70
+#: src/Admin/Rewards.php:71
 msgid "Filter rewards"
 msgstr ""
 
-#: src/Admin/Rewards.php:82
+#: src/Admin/Rewards.php:83
 msgid "Fixed cart discount"
 msgstr ""
 
@@ -312,7 +312,7 @@ msgstr ""
 msgid "General"
 msgstr ""
 
-#: src/Admin/Overview.php:77
+#: src/Admin/Overview.php:79
 msgid "Getting started"
 msgstr ""
 
@@ -320,7 +320,7 @@ msgstr ""
 msgid "Guest orders do not earn points."
 msgstr ""
 
-#: src/Admin/Customers.php:73
+#: src/Admin/Customers.php:80
 msgid "Highest balance"
 msgstr ""
 
@@ -328,16 +328,28 @@ msgstr ""
 msgid "How purchase points work"
 msgstr ""
 
-#: src/Admin/EarningRules.php:60 src/Admin/Rewards.php:70
-#: src/Admin/Rewards.php:82 src/Admin/Settings.php:34
+#: src/Admin/EarningRules.php:60 src/Admin/Rewards.php:71
+#: src/Admin/Rewards.php:83 src/Admin/Settings.php:34
 msgid "Inactive"
 msgstr ""
 
-#: src/Admin/Customers.php:74
+#: src/Admin/Admin.php:22 src/Admin/PageHeader.php:28
+msgid "Infivro Loyalty Rewards for WooCommerce"
+msgstr ""
+
+#: src/Admin/PageHeader.php:29
+msgid "Infivro Loyalty Rewards for WooCommerce pages"
+msgstr ""
+
+#: src/Admin/Admin.php:23
+msgid "Infivro Rewards"
+msgstr ""
+
+#: src/Admin/Customers.php:81
 msgid "Last Activity"
 msgstr ""
 
-#: src/Admin/Customers.php:136
+#: src/Admin/Customers.php:143
 msgid "Last redeemed"
 msgstr ""
 
@@ -353,7 +365,7 @@ msgstr ""
 msgid "My points"
 msgstr ""
 
-#: src/Admin/Customers.php:73
+#: src/Admin/Customers.php:80
 msgid "Name"
 msgstr ""
 
@@ -363,11 +375,11 @@ msgstr ""
 msgid "Need %s more points"
 msgstr ""
 
-#: src/Admin/Customers.php:128
+#: src/Admin/Customers.php:135
 msgid "Next"
 msgstr ""
 
-#: src/Admin/Customers.php:91
+#: src/Admin/Customers.php:98
 msgid "No customers match this view."
 msgstr ""
 
@@ -375,11 +387,11 @@ msgstr ""
 msgid "No earning rule yet. Add a purchase rule to start awarding points."
 msgstr ""
 
-#: src/Admin/Customers.php:154 src/Customer/RewardsPage.php:144
+#: src/Admin/Customers.php:161 src/Customer/RewardsPage.php:144
 msgid "No points activity yet."
 msgstr ""
 
-#: src/Admin/Overview.php:116
+#: src/Admin/Overview.php:118
 msgid "No points activity yet. Transactions will appear here when customers earn or spend points."
 msgstr ""
 
@@ -391,32 +403,32 @@ msgstr ""
 msgid "No rewards are available right now."
 msgstr ""
 
-#: src/Admin/Rewards.php:87
+#: src/Admin/Rewards.php:88
 msgid "No rewards match this view."
 msgstr ""
 
-#: src/Admin/Customers.php:174
+#: src/Admin/Customers.php:181
 msgid "Order points reversed"
 msgstr ""
 
-#: src/Admin/Overview.php:148
+#: src/Admin/Overview.php:150
 msgid "Order reversal waived"
 msgstr ""
 
-#: src/Admin/Overview.php:59
+#: src/Admin/Overview.php:61
 msgid "Outstanding points"
 msgstr ""
 
-#: src/Admin/Admin.php:29 src/Admin/Admin.php:30 src/Admin/Overview.php:65
+#: src/Admin/Admin.php:31 src/Admin/Admin.php:32 src/Admin/Overview.php:67
 #: src/Admin/PageHeader.php:21 src/Customer/RewardsPage.php:64
 msgid "Overview"
 msgstr ""
 
-#: src/Admin/Overview.php:121
+#: src/Admin/Overview.php:123
 msgid "Point balance"
 msgstr ""
 
-#: src/Admin/EarningRules.php:49 src/Admin/Overview.php:103
+#: src/Admin/EarningRules.php:49 src/Admin/Overview.php:105
 #: src/Admin/Settings.php:34
 msgid "Points"
 msgstr ""
@@ -425,11 +437,11 @@ msgstr ""
 msgid "Points & Rewards"
 msgstr ""
 
-#: src/Admin/Rewards.php:71
+#: src/Admin/Rewards.php:72
 msgid "Points Cost"
 msgstr ""
 
-#: src/Admin/Customers.php:178 src/Admin/Overview.php:152
+#: src/Admin/Customers.php:185 src/Admin/Overview.php:154
 msgid "Points adjustment"
 msgstr ""
 
@@ -441,7 +453,7 @@ msgstr ""
 msgid "Points are awarded when a logged-in customer’s order is completed."
 msgstr ""
 
-#: src/Admin/Rewards.php:120
+#: src/Admin/Rewards.php:121
 msgid "Points cost"
 msgstr ""
 
@@ -453,7 +465,7 @@ msgstr ""
 msgid "Points for purchases"
 msgstr ""
 
-#: src/Admin/Overview.php:57
+#: src/Admin/Overview.php:59
 msgid "Points issued"
 msgstr ""
 
@@ -465,15 +477,15 @@ msgstr ""
 msgid "Points per currency unit"
 msgstr ""
 
-#: src/Admin/Customers.php:136 src/Admin/Overview.php:58
+#: src/Admin/Customers.php:143 src/Admin/Overview.php:60
 msgid "Points redeemed"
 msgstr ""
 
-#: src/Admin/Overview.php:95
+#: src/Admin/Overview.php:97
 msgid "Preview where customers see points and redeem rewards."
 msgstr ""
 
-#: src/Admin/Customers.php:111
+#: src/Admin/Customers.php:118
 msgid "Previous"
 msgstr ""
 
@@ -489,11 +501,11 @@ msgstr ""
 msgid "Purchase Points"
 msgstr ""
 
-#: src/Admin/Customers.php:141
+#: src/Admin/Customers.php:148
 msgid "Recent Activity"
 msgstr ""
 
-#: src/Admin/Customers.php:73 src/Admin/Overview.php:101
+#: src/Admin/Customers.php:80 src/Admin/Overview.php:103
 msgid "Recent activity"
 msgstr ""
 
@@ -509,7 +521,7 @@ msgstr ""
 msgid "Redeem now"
 msgstr ""
 
-#: src/Admin/Overview.php:150
+#: src/Admin/Overview.php:152
 msgid "Redeemed a reward"
 msgstr ""
 
@@ -517,11 +529,11 @@ msgstr ""
 msgid "Redeemed points"
 msgstr ""
 
-#: src/Admin/Customers.php:176
+#: src/Admin/Customers.php:183
 msgid "Redeemed reward"
 msgstr ""
 
-#: src/Admin/Rewards.php:71
+#: src/Admin/Rewards.php:72
 msgid "Redemptions"
 msgstr ""
 
@@ -530,12 +542,12 @@ msgid "Retry coupon"
 msgstr ""
 
 #. translators: %d is the WooCommerce order ID.
-#: src/Admin/Overview.php:148
+#: src/Admin/Overview.php:150
 #, php-format
 msgid "Reversed points for order #%d"
 msgstr ""
 
-#: src/Admin/Rewards.php:71
+#: src/Admin/Rewards.php:72
 msgid "Reward"
 msgstr ""
 
@@ -545,7 +557,7 @@ msgstr ""
 msgid "Reward #%s"
 msgstr ""
 
-#: src/Admin/Rewards.php:120
+#: src/Admin/Rewards.php:121
 msgid "Reward name"
 msgstr ""
 
@@ -553,12 +565,12 @@ msgstr ""
 msgid "Reward redeemed. Your coupon is shown below."
 msgstr ""
 
-#: src/Admin/Rewards.php:60
+#: src/Admin/Rewards.php:61
 msgid "Reward saved."
 msgstr ""
 
-#: src/Admin/Admin.php:45 src/Admin/Admin.php:46 src/Admin/PageHeader.php:23
-#: src/Admin/Rewards.php:56 src/Customer/RewardsPage.php:65
+#: src/Admin/Admin.php:47 src/Admin/Admin.php:48 src/Admin/PageHeader.php:23
+#: src/Admin/Rewards.php:57 src/Customer/RewardsPage.php:65
 msgid "Rewards"
 msgstr ""
 
@@ -566,7 +578,7 @@ msgstr ""
 msgid "Rewards are temporarily unavailable."
 msgstr ""
 
-#: src/Admin/Overview.php:60
+#: src/Admin/Overview.php:62
 msgid "Rewards redeemed"
 msgstr ""
 
@@ -578,7 +590,7 @@ msgstr ""
 msgid "Save Changes"
 msgstr ""
 
-#: src/Admin/Rewards.php:121
+#: src/Admin/Rewards.php:122
 msgid "Save Reward"
 msgstr ""
 
@@ -586,23 +598,23 @@ msgstr ""
 msgid "Save Rule"
 msgstr ""
 
-#: src/Admin/Customers.php:73
+#: src/Admin/Customers.php:80
 msgid "Search by name or email..."
 msgstr ""
 
-#: src/Admin/Customers.php:73
+#: src/Admin/Customers.php:80
 msgid "Search customers"
 msgstr ""
 
-#: src/Admin/Rewards.php:70
+#: src/Admin/Rewards.php:71
 msgid "Search rewards"
 msgstr ""
 
-#: src/Admin/Rewards.php:70
+#: src/Admin/Rewards.php:71
 msgid "Search rewards..."
 msgstr ""
 
-#: src/Admin/Customers.php:140
+#: src/Admin/Customers.php:147
 msgid "Select a customer to see their points."
 msgstr ""
 
@@ -610,11 +622,11 @@ msgstr ""
 msgid "Set how customers earn points from eligible purchases."
 msgstr ""
 
-#: src/Admin/Overview.php:78
+#: src/Admin/Overview.php:80
 msgid "Set up points and a reward so customers can start using your program."
 msgstr ""
 
-#: src/Admin/Admin.php:61 src/Admin/Admin.php:62 src/Admin/PageHeader.php:25
+#: src/Admin/Admin.php:63 src/Admin/Admin.php:64 src/Admin/PageHeader.php:25
 #: src/Admin/Settings.php:27
 msgid "Settings"
 msgstr ""
@@ -636,16 +648,16 @@ msgid "Show Points & Rewards in the WooCommerce My Account menu."
 msgstr ""
 
 #. translators: 1: first customer shown, 2: last customer shown, 3: total customers.
-#: src/Admin/Customers.php:94
+#: src/Admin/Customers.php:101
 #, php-format
 msgid "Showing %1$d–%2$d of %3$d customers"
 msgstr ""
 
-#: src/Admin/Customers.php:73
+#: src/Admin/Customers.php:80
 msgid "Sort customers"
 msgstr ""
 
-#: src/Admin/EarningRules.php:50 src/Admin/Rewards.php:71
+#: src/Admin/EarningRules.php:50 src/Admin/Rewards.php:72
 msgid "Status"
 msgstr ""
 
@@ -669,19 +681,19 @@ msgstr ""
 msgid "The shortcode below works even when this menu entry is off."
 msgstr ""
 
-#: src/Admin/Overview.php:119
+#: src/Admin/Overview.php:121
 msgid "Top customers"
 msgstr ""
 
-#: src/Admin/Customers.php:74
+#: src/Admin/Customers.php:81
 msgid "Total Earned"
 msgstr ""
 
-#: src/Admin/Customers.php:136
+#: src/Admin/Customers.php:143
 msgid "Total earned"
 msgstr ""
 
-#: src/Admin/Rewards.php:67
+#: src/Admin/Rewards.php:68
 msgid "Total redemptions"
 msgstr ""
 
@@ -689,7 +701,7 @@ msgstr ""
 msgid "Trigger"
 msgstr ""
 
-#: src/Admin/Rewards.php:71
+#: src/Admin/Rewards.php:72
 msgid "Type"
 msgstr ""
 
@@ -701,11 +713,11 @@ msgstr ""
 msgid "Used"
 msgstr ""
 
-#: src/Admin/Rewards.php:71
+#: src/Admin/Rewards.php:72
 msgid "Value"
 msgstr ""
 
-#: src/Admin/Customers.php:87
+#: src/Admin/Customers.php:94
 msgid "View"
 msgstr ""
 
@@ -713,11 +725,11 @@ msgstr ""
 msgid "View all rewards"
 msgstr ""
 
-#: src/Admin/Rewards.php:94
+#: src/Admin/Rewards.php:95
 msgid "View customer page"
 msgstr ""
 
-#: src/Admin/Overview.php:95
+#: src/Admin/Overview.php:97
 msgid "View page"
 msgstr ""
 
@@ -729,15 +741,15 @@ msgstr ""
 msgid "Ways to earn points will appear here when available."
 msgstr ""
 
-#: src/Admin/Admin.php:120
+#: src/Admin/Admin.php:129
 msgid "You cannot edit display settings."
 msgstr ""
 
-#: src/Admin/Admin.php:131
+#: src/Admin/Admin.php:140
 msgid "You cannot edit earning rules."
 msgstr ""
 
-#: src/Admin/Admin.php:144
+#: src/Admin/Admin.php:153
 msgid "You cannot edit rewards."
 msgstr ""
 
@@ -759,23 +771,15 @@ msgstr ""
 msgid "You’re %d%% of the way there!"
 msgstr ""
 
-#: src/Admin/Rewards.php:107
+#: src/Admin/Rewards.php:108
 msgid "cart discount"
-msgstr ""
-
-#: src/Admin/Admin.php:20 src/Admin/Admin.php:21 src/Admin/PageHeader.php:28
-msgid "infiRewards"
-msgstr ""
-
-#: src/Admin/PageHeader.php:29
-msgid "infiRewards pages"
 msgstr ""
 
 #: src/Customer/RewardsPage.php:168
 msgid "off your next order"
 msgstr ""
 
-#: src/Admin/Rewards.php:107 src/Customer/RewardsPage.php:99
+#: src/Admin/Rewards.php:108 src/Customer/RewardsPage.php:99
 #: src/Customer/RewardsPage.php:168
 msgid "points"
 msgstr ""

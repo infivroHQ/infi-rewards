@@ -1,4 +1,4 @@
-# infiRewards: smallest v1 progress and checklist
+# Infivro Loyalty Rewards for WooCommerce: smallest v1 progress and checklist
 
 _Updated 25 September 2026. Automated checks ran on 24 September; the store owner reports browser testing on WordPress 7.1._
 
@@ -52,7 +52,7 @@ Checkboxes marked complete describe code that exists, even if the surrounding fl
 - [x] Create a redemption record linked to the customer, reward, points debit, and issued coupon. Issue a customer-specific, single-use fixed cart discount coupon; make a retry safe if coupon creation fails after a debit.
 - [x] Show the issued coupon and a clear success/error message. Keep a basic points/redemption history so the customer can see what happened.
 
-The customer view appears by default under **My Account → Points & Rewards**. The store owner can turn off that menu entry on the **infiRewards** admin page. The same page displays the optional `[infirewards]` shortcode, which works on any customer-facing page even when the My Account entry is off. Both locations show the balance, available rewards, recent points activity, and coupons. Pending coupon issuance can be retried from either location without another debit.
+The customer view appears by default under **My Account → Points & Rewards**. The store owner can turn off that menu entry on the **Infivro Loyalty Rewards for WooCommerce** admin page. The same page displays the optional `[infirewards]` shortcode, which works on any customer-facing page even when the My Account entry is off. Both locations show the balance, available rewards, recent points activity, and coupons. Pending coupon issuance can be retried from either location without another debit.
 
 ### 5. Verify the complete path
 
@@ -62,16 +62,16 @@ The customer view appears by default under **My Account → Points & Rewards**. 
 
 ### Verification record (24 September 2026)
 
-The checks in `tests/integration.php` ran against a disposable WordPress database with WooCommerce and infiRewards activated. They covered a 12.75 eligible amount at 2 points per currency unit (25 points after rounding down), repeat completion, customer shortcode output, coupon validation for the owner and rejection for another account, one-use coupon properties, insufficient points, disabled rewards, repeat request keys, pending coupon retry, both reversal policies, guest account assignment, signed ledger reconciliation, and two simultaneous redemption attempts. `tests/migration.php` rebuilt a v1.2 schema in that disposable database and verified schema upgrade, signed debit normalization, balance reconciliation, historical order keys, and repeatable migration.
+The checks in `tests/integration.php` ran against a disposable WordPress database with WooCommerce and Infivro Loyalty Rewards for WooCommerce activated. They covered a 12.75 eligible amount at 2 points per currency unit (25 points after rounding down), repeat completion, customer shortcode output, coupon validation for the owner and rejection for another account, one-use coupon properties, insufficient points, disabled rewards, repeat request keys, pending coupon retry, both reversal policies, guest account assignment, signed ledger reconciliation, and two simultaneous redemption attempts. `tests/migration.php` rebuilt a v1.2 schema in that disposable database and verified schema upgrade, signed debit normalization, balance reconciliation, historical order keys, and repeatable migration.
 
-Run these tests only on a disposable WordPress installation with WooCommerce and infiRewards activated:
+Run these tests only on a disposable WordPress installation with WooCommerce and Infivro Loyalty Rewards for WooCommerce activated:
 
 ```sh
 IR_TEST_DISPOSABLE=1 IR_TEST_WP_ROOT=/path/to/disposable/site php tests/integration.php
 IR_TEST_DISPOSABLE=1 IR_TEST_SCHEMA_RESET=1 IR_TEST_WP_ROOT=/path/to/disposable/site php tests/migration.php
 ```
 
-Run the migration script last: it drops and rebuilds the five infiRewards tables and requires a database named `ir_verify_*`. PHP syntax passed for plugin files and tests. The current `composer lint` gate passes. The CLI integration scripts are excluded from the production PHPCS ruleset because they intentionally use direct database and filesystem operations. The store owner reported successful browser checks of the admin forms and customer page on WordPress 7.1 on 25 September 2026. The browser result is user reported; no test log is attached.
+Run the migration script last: it drops and rebuilds the five Infivro Loyalty Rewards for WooCommerce tables and requires a database named `ir_verify_*`. PHP syntax passed for plugin files and tests. The current `composer lint` gate passes. The CLI integration scripts are excluded from the production PHPCS ruleset because they intentionally use direct database and filesystem operations. The store owner reported successful browser checks of the admin forms and customer page on WordPress 7.1 on 25 September 2026. The browser result is user reported; no test log is attached.
 
 The reversal policy is conservative: if any positive point debit occurs after an order earn, its cancellation or full refund records a zero-point waived reversal. This prevents later credits from being taken for spent order points. Guest orders never earn points, including after account creation. Only completed orders earn; only cancelled or fully refunded order statuses reverse.
 

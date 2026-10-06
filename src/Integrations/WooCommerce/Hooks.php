@@ -6,7 +6,7 @@ use InfiRewards\Points\PointsManager;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * WooCommerce Hooks integration for infiRewards.
+ * WooCommerce Hooks integration for Infivro Loyalty Rewards for WooCommerce.
  *
  * Registers order-related hooks and delegates to the core PointsManager.
  * Uses a singleton pattern and ensures hooks are registered only once.

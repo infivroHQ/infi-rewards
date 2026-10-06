@@ -1,4 +1,4 @@
-# infiRewards release checklist
+# Infivro Loyalty Rewards for WooCommerce release checklist
 
 Use this checklist for every release. Check an item only after recording the
 version, tester, date, environment, and result in the release PR or ticket.
@@ -6,7 +6,7 @@ Fix every failed required check before packaging.
 
 ## 1. Define the release
 
-- [ ] Bump the version everywhere it appears: `infi-rewards.php`,
+- [ ] Bump the version everywhere it appears: `infivro-loyalty-rewards.php`,
   `INFIREWARDS_VERSION`, and `readme.txt` Stable tag/changelog.
 - [ ] Confirm the plugin header and readme agree on name, slug/text domain,
   minimum WordPress/PHP versions, WooCommerce dependency, license, and version.
@@ -44,7 +44,7 @@ Fix every failed required check before packaging.
 
 - [ ] Plugin assets are local and enqueue only on relevant screens. Use
   WordPress-provided dependencies instead of bundling or loading CDN copies.
-- [ ] User-facing strings use literal gettext calls with the exact `infi-rewards`
+- [ ] User-facing strings use literal gettext calls with the exact `infivro-loyalty-rewards`
   text domain.
 - [ ] Admin and customer views work by keyboard, keep visible focus, have labels
   and semantic controls, announce errors/statuses, and do not rely on colour
@@ -120,17 +120,19 @@ Fix every failed required check before packaging.
   is contextual and dismissible or disappears once resolved. Frontend credits
   are opt-in and off by default.
 - [ ] For WordPress.org: verify account 2FA, validate the final `readme.txt`,
-  submit the complete ZIP, and confirm the assigned slug is `infi-rewards`
+  submit the complete ZIP, and confirm the assigned slug is `infivro-loyalty-rewards`
   before approval. Adjust it through the submission process if needed; the
   public slug determines the text domain and cannot be renamed after approval.
   Allow for the automated release security-review cooldown before announcing
   availability.
 
 Build the release candidate with `scripts/build-release.sh` (requires `xgettext`, `rsync`, and `zip`). It creates
-`dist/infi-rewards-VERSION.zip` with a lowercase `infi-rewards/` root and a
-generated `languages/infi-rewards.pot`. Run `scripts/generate-pot.sh` to
+`dist/infivro-loyalty-rewards-VERSION.zip` with a lowercase `infivro-loyalty-rewards/` root and a
+generated `languages/infivro-loyalty-rewards.pot`. Run `scripts/generate-pot.sh` to
 refresh the repository POT separately. Install and check the final ZIP on the
 release test site before completing sign-off.
+
+Historical snapshots below retain the original ZIP names and checksums.
 
 ## 0.1.0 audit snapshot (2026-09-25)
 
@@ -182,6 +184,38 @@ pass. This is a checkpoint, not release sign-off.
   `b8f46a694f8feb8b93c47b43a91cce93fe40382fd47157851bc03f3a789553aa`.
   The full Plugin Check application and disposable-site integration, migration,
   and browser checks remain pending.
+
+## WordPress.org review fixes (2026-10-06)
+
+- Public name: `Infivro Loyalty Rewards for WooCommerce`. Slug/text domain:
+  `infivro-loyalty-rewards`. Headers, UI labels, gettext calls, POT generation,
+  documentation, and packaging metadata agree. No ZIP was created.
+- Notice CSS uses `wp_add_inline_style()` on the existing admin stylesheet.
+  Assets and quiet-screen callbacks use WordPress's returned menu hooks, which
+  change with the translated menu title.
+- Sidebar label: `Infivro Rewards`; page title and official plugin name stay
+  `Infivro Loyalty Rewards for WooCommerce`.
+- Bootstrap follow-up: renamed the main file to `infivro-loyalty-rewards.php`
+  and updated packaging, translation generation, and documentation references.
+- Kept the `InfiRewards` namespace, internal identifiers, and historical ZIP
+  references. Tables, options, hooks, asset handles,
+  shortcode, and account endpoint retain compatibility. The escaped customer
+  progress width attribute remains dynamic HTML; no raw asset tags remain.
+- PHP syntax: all 1,189 PHP files, including vendor, passed; final plugin/test
+  check: 28 files passed. Project PHPCS (including warnings), Plugin Check's
+  bundled PHPCS rules, shell syntax, and `git diff --check` passed.
+- Disposable WordPress 7.1.2 / WooCommerce 11.1.2 / PHP 8.4.1 / MySQL 8.0.46:
+  activation passed without a fatal error; 83 runtime assertions verified all
+  five plugin screens, five unrelated screens, customer asset scoping, and
+  metadata. Integration: 26 assertions passed, including concurrent redemption.
+  Migration: 8 assertions passed. The existing site was not modified.
+- Full Plugin Check on staged distributable files: zero errors, one warning
+  (`PluginCheck.Security.DirectDB.UnescapedDBParameter`) at
+  `src/Admin/Customers.php:45`. The sort clause comes from a fixed three-value
+  allowlist; the checker still flags its interpolation. No query change or
+  suppression was added for this warning.
+- Next: inspect this patch and confirm the assigned slug with the reviewer.
+  Browser checks and a final packaged-release check remain before sign-off.
 
 ## Release sign-off
 

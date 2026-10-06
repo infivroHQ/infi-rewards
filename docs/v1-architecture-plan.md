@@ -1,8 +1,8 @@
-# infiRewards v1 architecture plan
+# Infivro Loyalty Rewards for WooCommerce v1 architecture plan
 
 ## Goal
 
-infiRewards lets store owners create earning rules and rewards. Customers earn points from eligible actions and spend them on rewards. Store owners can also adjust points or gift a reward directly to a customer.
+Infivro Loyalty Rewards for WooCommerce lets store owners create earning rules and rewards. Customers earn points from eligible actions and spend them on rewards. Store owners can also adjust points or gift a reward directly to a customer.
 
 This document describes the proposed **v1 target**. The repository now places its active classes under `src/` using the minimal v1 layout below. The layout defines responsibilities; it does not imply that every planned v1 feature is implemented. A separate layout shows how the project could grow later.
 
@@ -126,8 +126,8 @@ Customer balance and redemption interfaces can live with their owning domain com
 When the project grows, the repository can move toward this fuller layout:
 
 ```text
-infi-rewards/
-├── infi-rewards.php        # Main plugin bootstrap
+infivro-loyalty-rewards/
+├── infivro-loyalty-rewards.php        # Main plugin bootstrap
 ├── uninstall.php          # Permanent cleanup
 ├── readme.txt             # WordPress.org readme
 ├── composer.json

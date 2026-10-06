@@ -1,10 +1,10 @@
 # Competitor Design Findings
 
-Comparison of six loyalty plugins (WPLoyalty, WP Swings, LoyaltyX, Simple Points & Rewards, XT Points & Rewards, GamiPress/myCred) against infiRewards v1.
+Comparison of six loyalty plugins (WPLoyalty, WP Swings, LoyaltyX, Simple Points & Rewards, XT Points & Rewards, GamiPress/myCred) against Infivro Loyalty Rewards for WooCommerce v1.
 
 ## Key takeaway
 
-The best customer page (Simple P&R) and the best admin dashboard (LoyaltyX) share one lesson infiRewards is missing: show what points are worth in money, what the customer can redeem right now, and let them apply it to the cart in one click. Most competitors just show a balance with no next step.
+The best customer page (Simple P&R) and the best admin dashboard (LoyaltyX) share one lesson Infivro Loyalty Rewards for WooCommerce is missing: show what points are worth in money, what the customer can redeem right now, and let them apply it to the cart in one click. Most competitors just show a balance with no next step.
 
 ## Best ideas worth copying
 
@@ -16,10 +16,10 @@ The best customer page (Simple P&R) and the best admin dashboard (LoyaltyX) shar
 ## Weak points to avoid
 
 - WP Swings / XT: plain text balance, no visual hierarchy, no clear CTA.
-- Nobody but LoyaltyX has an admin dashboard — infiRewards has none either, just raw settings forms.
+- Nobody but LoyaltyX has an admin dashboard — Infivro Loyalty Rewards for WooCommerce has none either, just raw settings forms.
 - Nobody exposes an "adjust customer points manually" admin UI, despite it being a common ask.
 
-## Gaps in infiRewards v1
+## Gaps in Infivro Loyalty Rewards for WooCommerce v1
 
 - No My Account balance hero, no rewards grid, no points-to-money conversion shown to the customer.
 - No admin dashboard (KPI tiles, charts, recent activity).

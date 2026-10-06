@@ -21,7 +21,7 @@ use InfiRewards\Rewards\RewardRepository;
 use InfiRewards\Rules\RulesEngine;
 
 if ( ! class_exists( WC_Order::class ) || ! class_exists( RulesEngine::class ) ) {
-	throw new RuntimeException( 'Activate WooCommerce and infiRewards first.' );
+	throw new RuntimeException( 'Activate WooCommerce and Infivro Loyalty Rewards for WooCommerce first.' );
 }
 add_filter( 'pre_wp_mail', '__return_true' );
 

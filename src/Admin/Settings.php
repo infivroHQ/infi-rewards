@@ -24,24 +24,24 @@ class Settings {
 		?>
 		<div class="wrap infirewards-page">
 			<?php PageHeader::render( 'infirewards-settings' ); ?>
-			<div class="infirewards-page__heading"><h2><?php esc_html_e( 'Settings', 'infi-rewards' ); ?></h2></div>
+			<div class="infirewards-page__heading"><h2><?php esc_html_e( 'Settings', 'infivro-loyalty-rewards' ); ?></h2></div>
 			<?php
 			if ( 'saved' === $notice ) :
 				?>
-				<div class="notice notice-success"><p><?php esc_html_e( 'Settings saved.', 'infi-rewards' ); ?></p></div><?php endif; ?>
+				<div class="notice notice-success"><p><?php esc_html_e( 'Settings saved.', 'infivro-loyalty-rewards' ); ?></p></div><?php endif; ?>
 			<div class="infirewards-page__settings-grid">
-				<section class="infirewards-page__panel"><h3><span class="dashicons dashicons-admin-generic" aria-hidden="true"></span><?php esc_html_e( 'General', 'infi-rewards' ); ?></h3><p class="infirewards-page__muted"><?php esc_html_e( 'Your current rewards program configuration.', 'infi-rewards' ); ?></p>
-					<dl class="infirewards-page__setting-list"><div><dt><?php esc_html_e( 'Points label', 'infi-rewards' ); ?></dt><dd><?php esc_html_e( 'Points', 'infi-rewards' ); ?></dd></div><div><dt><?php esc_html_e( 'Earning rule', 'infi-rewards' ); ?></dt><dd><span class="infirewards-page__status <?php echo $active ? 'is-active' : 'is-inactive'; ?>"><?php echo esc_html( $active ? __( 'Active', 'infi-rewards' ) : __( 'Inactive', 'infi-rewards' ) ); ?></span><a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-earning-rule' ) ); ?>"><?php esc_html_e( 'Edit rule', 'infi-rewards' ); ?></a></dd></div><div><dt><?php esc_html_e( 'Store currency', 'infi-rewards' ); ?></dt><dd><?php echo esc_html( $currency ); ?></dd></div><div><dt><?php esc_html_e( 'Decimal handling', 'infi-rewards' ); ?></dt><dd><?php esc_html_e( 'Points earned are rounded down to whole numbers.', 'infi-rewards' ); ?></dd></div></dl>
+				<section class="infirewards-page__panel"><h3><span class="dashicons dashicons-admin-generic" aria-hidden="true"></span><?php esc_html_e( 'General', 'infivro-loyalty-rewards' ); ?></h3><p class="infirewards-page__muted"><?php esc_html_e( 'Your current rewards program configuration.', 'infivro-loyalty-rewards' ); ?></p>
+					<dl class="infirewards-page__setting-list"><div><dt><?php esc_html_e( 'Points label', 'infivro-loyalty-rewards' ); ?></dt><dd><?php esc_html_e( 'Points', 'infivro-loyalty-rewards' ); ?></dd></div><div><dt><?php esc_html_e( 'Earning rule', 'infivro-loyalty-rewards' ); ?></dt><dd><span class="infirewards-page__status <?php echo $active ? 'is-active' : 'is-inactive'; ?>"><?php echo esc_html( $active ? __( 'Active', 'infivro-loyalty-rewards' ) : __( 'Inactive', 'infivro-loyalty-rewards' ) ); ?></span><a href="<?php echo esc_url( admin_url( 'admin.php?page=infirewards-earning-rule' ) ); ?>"><?php esc_html_e( 'Edit rule', 'infivro-loyalty-rewards' ); ?></a></dd></div><div><dt><?php esc_html_e( 'Store currency', 'infivro-loyalty-rewards' ); ?></dt><dd><?php echo esc_html( $currency ); ?></dd></div><div><dt><?php esc_html_e( 'Decimal handling', 'infivro-loyalty-rewards' ); ?></dt><dd><?php esc_html_e( 'Points earned are rounded down to whole numbers.', 'infivro-loyalty-rewards' ); ?></dd></div></dl>
 				</section>
-				<section class="infirewards-page__panel"><h3><span class="dashicons dashicons-admin-users" aria-hidden="true"></span><?php esc_html_e( 'Customer Page', 'infi-rewards' ); ?></h3><p class="infirewards-page__muted"><?php esc_html_e( 'Choose where customers can access their points and rewards.', 'infi-rewards' ); ?></p>
+				<section class="infirewards-page__panel"><h3><span class="dashicons dashicons-admin-users" aria-hidden="true"></span><?php esc_html_e( 'Customer Page', 'infivro-loyalty-rewards' ); ?></h3><p class="infirewards-page__muted"><?php esc_html_e( 'Choose where customers can access their points and rewards.', 'infivro-loyalty-rewards' ); ?></p>
 					<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>"><input type="hidden" name="action" value="infirewards_save_display"><?php wp_nonce_field( 'infirewards_save_display' ); ?>
-						<label class="infirewards-page__setting-toggle"><span><strong><?php esc_html_e( 'Enable My Account endpoint', 'infi-rewards' ); ?></strong><small><?php esc_html_e( 'Show Points & Rewards in the WooCommerce My Account menu.', 'infi-rewards' ); ?></small></span><input type="checkbox" name="show_in_my_account" value="1" <?php checked( AccountEndpoint::is_enabled() ); ?>></label>
-						<p class="infirewards-page__muted"><?php esc_html_e( 'The shortcode below works even when this menu entry is off.', 'infi-rewards' ); ?></p>
-						<p class="infirewards-page__actions"><button class="button button-primary" type="submit"><?php esc_html_e( 'Save Changes', 'infi-rewards' ); ?></button></p>
+						<label class="infirewards-page__setting-toggle"><span><strong><?php esc_html_e( 'Enable My Account endpoint', 'infivro-loyalty-rewards' ); ?></strong><small><?php esc_html_e( 'Show Points & Rewards in the WooCommerce My Account menu.', 'infivro-loyalty-rewards' ); ?></small></span><input type="checkbox" name="show_in_my_account" value="1" <?php checked( AccountEndpoint::is_enabled() ); ?>></label>
+						<p class="infirewards-page__muted"><?php esc_html_e( 'The shortcode below works even when this menu entry is off.', 'infivro-loyalty-rewards' ); ?></p>
+						<p class="infirewards-page__actions"><button class="button button-primary" type="submit"><?php esc_html_e( 'Save Changes', 'infivro-loyalty-rewards' ); ?></button></p>
 					</form>
 				</section>
 			</div>
-			<section class="infirewards-page__panel infirewards-page__shortcode"><h3><span class="dashicons dashicons-shortcode" aria-hidden="true"></span><?php esc_html_e( 'Shortcode', 'infi-rewards' ); ?></h3><p class="infirewards-page__muted"><?php esc_html_e( 'Add this shortcode to a page or post to show customers their balance, available rewards, and history.', 'infi-rewards' ); ?></p><code>[infirewards]</code></section>
+			<section class="infirewards-page__panel infirewards-page__shortcode"><h3><span class="dashicons dashicons-shortcode" aria-hidden="true"></span><?php esc_html_e( 'Shortcode', 'infivro-loyalty-rewards' ); ?></h3><p class="infirewards-page__muted"><?php esc_html_e( 'Add this shortcode to a page or post to show customers their balance, available rewards, and history.', 'infivro-loyalty-rewards' ); ?></p><code>[infirewards]</code></section>
 		</div>
 		<?php
 	}

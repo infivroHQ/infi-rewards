@@ -18,15 +18,15 @@ class PageHeader {
 	 */
 	public static function render( string $current ): void {
 		$pages = array(
-			'infirewards'              => array( __( 'Overview', 'infi-rewards' ), 'dashicons-chart-area' ),
-			'infirewards-earning-rule' => array( __( 'Earning Rules', 'infi-rewards' ), 'dashicons-admin-generic' ),
-			'infirewards-rewards'      => array( __( 'Rewards', 'infi-rewards' ), 'dashicons-awards' ),
-			'infirewards-customers'    => array( __( 'Customers', 'infi-rewards' ), 'dashicons-groups' ),
-			'infirewards-settings'     => array( __( 'Settings', 'infi-rewards' ), 'dashicons-admin-settings' ),
+			'infirewards'              => array( __( 'Overview', 'infivro-loyalty-rewards' ), 'dashicons-chart-area' ),
+			'infirewards-earning-rule' => array( __( 'Earning Rules', 'infivro-loyalty-rewards' ), 'dashicons-admin-generic' ),
+			'infirewards-rewards'      => array( __( 'Rewards', 'infivro-loyalty-rewards' ), 'dashicons-awards' ),
+			'infirewards-customers'    => array( __( 'Customers', 'infivro-loyalty-rewards' ), 'dashicons-groups' ),
+			'infirewards-settings'     => array( __( 'Settings', 'infivro-loyalty-rewards' ), 'dashicons-admin-settings' ),
 		);
 		?>
-		<h1><?php esc_html_e( 'infiRewards', 'infi-rewards' ); ?></h1>
-		<nav class="infirewards-page__nav" aria-label="<?php esc_attr_e( 'infiRewards pages', 'infi-rewards' ); ?>">
+		<h1><?php esc_html_e( 'Infivro Loyalty Rewards for WooCommerce', 'infivro-loyalty-rewards' ); ?></h1>
+		<nav class="infirewards-page__nav" aria-label="<?php esc_attr_e( 'Infivro Loyalty Rewards for WooCommerce pages', 'infivro-loyalty-rewards' ); ?>">
 			<?php foreach ( $pages as $slug => $page ) : ?>
 				<a class="<?php echo $current === $slug ? 'is-current' : ''; ?>" <?php echo $current === $slug ? 'aria-current="page"' : ''; ?> href="<?php echo esc_url( admin_url( 'admin.php?page=' . $slug ) ); ?>"><span class="dashicons <?php echo esc_attr( $page[1] ); ?>" aria-hidden="true"></span><?php echo esc_html( $page[0] ); ?></a>
 			<?php endforeach; ?>

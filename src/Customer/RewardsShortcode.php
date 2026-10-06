@@ -25,11 +25,11 @@ class RewardsShortcode {
 				'infirewards-customer',
 				'infirewardsCouponText',
 				array(
-					'copied'      => __( 'Copied', 'infi-rewards' ),
-					'copy'        => __( 'Copy coupon', 'infi-rewards' ),
-					'copiedLabel' => __( 'Coupon code copied to clipboard', 'infi-rewards' ),
-					'copyLabel'   => __( 'Copy coupon code to clipboard', 'infi-rewards' ),
-					'copyFailed'  => __( 'Could not copy the coupon code. Please try again.', 'infi-rewards' ),
+					'copied'      => __( 'Copied', 'infivro-loyalty-rewards' ),
+					'copy'        => __( 'Copy coupon', 'infivro-loyalty-rewards' ),
+					'copiedLabel' => __( 'Coupon code copied to clipboard', 'infivro-loyalty-rewards' ),
+					'copyLabel'   => __( 'Copy coupon code to clipboard', 'infivro-loyalty-rewards' ),
+					'copyFailed'  => __( 'Could not copy the coupon code. Please try again.', 'infivro-loyalty-rewards' ),
 				)
 			);
 		}
@@ -94,10 +94,10 @@ class RewardsShortcode {
 
 	public static function render(): string {
 		if ( ! is_user_logged_in() ) {
-			return '<p>' . esc_html__( 'Log in to see and redeem rewards.', 'infi-rewards' ) . '</p>';
+			return '<p>' . esc_html__( 'Log in to see and redeem rewards.', 'infivro-loyalty-rewards' ) . '</p>';
 		}
 		if ( ! class_exists( 'WC_Coupon' ) ) {
-			return '<p>' . esc_html__( 'Rewards are temporarily unavailable.', 'infi-rewards' ) . '</p>';
+			return '<p>' . esc_html__( 'Rewards are temporarily unavailable.', 'infivro-loyalty-rewards' ) . '</p>';
 		}
 		return RewardsPage::render();
 	}

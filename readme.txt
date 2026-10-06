@@ -1,4 +1,4 @@
-=== infiRewards – Loyalty Points & Rewards ===
+=== Infivro Loyalty Rewards for WooCommerce ===
 Contributors: infivro, shahriar12
 Tags: woocommerce, loyalty, points, rewards, discounts
 Requires at least: 6.8
@@ -13,7 +13,7 @@ WooCommerce loyalty points for completed purchases, redeemable for single-use di
 
 == Description ==
 
-infiRewards is a comprehensive loyalty program for WooCommerce stores. It allows store owners to incentivize customer loyalty by awarding points for specific actions and offering rewards in exchange for those points.
+Infivro Loyalty Rewards for WooCommerce is a comprehensive loyalty program for WooCommerce stores. It allows store owners to incentivize customer loyalty by awarding points for specific actions and offering rewards in exchange for those points.
 
 Key features include:
 * **Purchase Earning Rule**: Award points based on the eligible amount of completed purchases.
@@ -24,7 +24,7 @@ Key features include:
 
 == Installation ==
 
-1. Upload the `infi-rewards` folder to the `/wp-content/plugins/` directory.
+1. Upload the `infivro-loyalty-rewards` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Configure your earning rules and rewards in the plugin settings.
 

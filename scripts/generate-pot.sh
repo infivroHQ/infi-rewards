@@ -3,7 +3,7 @@ set -euo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
-output="${1:-$root/languages/infi-rewards.pot}"
+output="${1:-$root/languages/infivro-loyalty-rewards.pot}"
 version="$(sed -n 's/^Stable tag: //p' readme.txt | head -n 1)"
 mkdir -p "$(dirname "$output")"
 
@@ -11,7 +11,7 @@ mapfile -d '' php_files < <(find src -type f -name '*.php' -print0 | sort -z)
 xgettext \
   --language=PHP \
   --from-code=UTF-8 \
-  --package-name=infiRewards \
+  --package-name="Infivro Loyalty Rewards for WooCommerce" \
   --package-version="$version" \
   --msgid-bugs-address=https://infivro.com \
   --add-comments=translators: \
@@ -27,6 +27,6 @@ xgettext \
   --keyword=esc_attr__ \
   --keyword=esc_attr_e \
   --output="$output" \
-  infi-rewards.php "${php_files[@]}"
+  infivro-loyalty-rewards.php "${php_files[@]}"
 
 echo "Generated $output"

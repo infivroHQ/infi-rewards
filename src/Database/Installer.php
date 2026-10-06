@@ -4,7 +4,7 @@ namespace InfiRewards\Database;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Database installer for infiRewards.
+ * Database installer for Infivro Loyalty Rewards for WooCommerce.
  *
  * Creates required tables on plugin activation and provides a migration entrypoint.
  */
