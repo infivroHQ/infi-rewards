@@ -38,8 +38,10 @@ No. Version 0.1.0 awards and reverses points from eligible WooCommerce orders.
 
 == Screenshots ==
 
-1. Admin Dashboard - Manage earning rules and rewards.
-2. Customer Account - View points balance and available rewards.
+1. Admin overview - points issued, points redeemed, recent activity and top customers.
+2. Rewards - manage fixed-cart discount rewards and preview what customers see.
+3. Earning rules - set how many points customers earn per currency unit spent.
+4. My Account - customers see their points balance, available rewards and ways to earn.
 
 == Changelog ==
 
